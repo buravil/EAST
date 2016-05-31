@@ -2807,11 +2807,6 @@ a20:
                 DSTL3( aa,c1,c4,U,ref D1 );
                 if (D1 < d)
                     d = D1;
-
-
-                DSTL3(aa, c2, c4, U, ref D1);
-                if (D1 < d)
-                    d = D1;
             }
         }
 
