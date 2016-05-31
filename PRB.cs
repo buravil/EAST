@@ -466,7 +466,7 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDIST";
+                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
                     ctl.WriteLine( str );
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
@@ -933,21 +933,9 @@ ad82:
                         CRN = 1.0;
                     } else { CRN = 2.0; };
                     // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
-
-                    //сохраняем расстояние от землетрясения до точки
-                    if (sk == NETPNT)
-                    {
-                        ctl.Write("{0}\n", RMI);
-                    }
-                    else
-                    {
-                        ctl.Write("{0}\t", RMI);
-                    }
                     
-
-
-                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
-                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / RMI) / 2.0 )) + 1.0;
+                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / 2.0) ) / 2.0) + 1.0;
+                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / 2.0) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
                     RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
@@ -956,16 +944,27 @@ ad82:
                     //			RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-                    if(R3D >= RBALL3)
+
+                   
+                    if (R3D >= RBALL3)
                         continue;
 
-
                     RR = Math.Sqrt( RR );
-
                     if(RR < 1.0E-5) { RR += .01; }
-                   
+
                     MACRR3();
-                    if(emexit == 1)
+
+                    //сохраняем расстояние от точки сетки до ближайшей точки очага
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", DISTMIN);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", DISTMIN);
+                    }
+
+                    if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND( ref UI,ref VI );
                     if(emexit == 1)
@@ -1318,18 +1317,9 @@ al82:
                         CRN = 1.0;
                     } else { CRN = 2.0; };
 
-                    //сохраняем расстояние от землетрясения до точки
-                    if (sk == NETPNT)
-                    {
-                        ctl.Write("{0}\n", RMI);
-                    }
-                    else
-                    {
-                        ctl.Write("{0}\t", RMI);
-                    }
-
-                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / RMI ) / 2.0) + 1.0;
-                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / RMI ) / 2.0) + 1.0;
+                    
+                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / 2.0 ) / 2.0) + 1.0;
+                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / 2.0 ) / 2.0) + 1.0;
                     if(KSTIC == 1)
                         RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
@@ -1339,11 +1329,26 @@ al82:
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
                     if(R3D >= RBALL3)
                         continue;
+
+
                     RR = Math.Sqrt( RR );
                     if(RR < 1.0e-5) { RR += .01; }
 
+
                     MACRR3();
-                    if(emexit == 1)
+
+                    //сохраняем расстояние от точки сетки до ближайшей точки очага
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", DISTMIN);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", DISTMIN);
+                    }
+
+
+                    if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND( ref UI,ref VI );
                     if(emexit == 1)
@@ -1873,7 +1878,8 @@ a306:
             CBET = (XX * CROT - YY * SROT) / RR;// !INPUT FOR FINCORR
             SBET = (XX * SROT + YY * CROT) / RR;// !SAME
             FINCOR(RR, SBET, CBET, ref DISTMIN, ref FCOR, AMW);
-            BALL = AIBAS + DIDMW * (AMW - AMWBAS) + DIDA * Math.Log10((FCOR * ATT(R3D, AMW)) / DENOM);
+                //DISTMIN
+           BALL = AIBAS + DIDMW * (AMW - AMWBAS) + DIDA * Math.Log10((FCOR * ATT(R3D, AMW)) / DENOM);
             }
                 LLOOP = 0;            
             return;
@@ -2799,7 +2805,12 @@ a20:
                 if(D1 < d)
                     d = D1;
                 DSTL3( aa,c1,c4,U,ref D1 );
-                if(D1 < d)
+                if (D1 < d)
+                    d = D1;
+
+
+                DSTL3(aa, c2, c4, U, ref D1);
+                if (D1 < d)
                     d = D1;
             }
         }
