@@ -67,7 +67,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 500000;
+        const int NRP = 50000;//500000
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -466,7 +466,7 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1";
+                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDIST";
                     ctl.WriteLine( str );
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
@@ -906,7 +906,8 @@ ad82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));//t{1:.0}
+                       // ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));//t{1:.0}
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -919,20 +920,25 @@ ad82:
                 GLBVI = SDEVM * VI;
                 int sk;
 
-                for(sk = 1; sk <= NETPNT; sk++)
+                for (sk = 1; sk <= NETPNT; sk++)//
                 {
                     double zz = 0.0;
-                    DSTPRG( XNET[ sk ],YNET[ sk ],zz,US1,US2,US3,US4,ref RMI );
-                    if(emexit == 1)
+                    DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
+                    if (emexit == 1)
                         goto a306;//критическая остановка
 
-                    if(RMI < R3DMIN)//   !#############Rmin for source grid
+                    if (RMI < R3DMIN)//   !#############Rmin for source grid
                     {
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
                     // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
-                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
+
+                    //сохраняем расстояние от землетрясения до точки
+                    ctl.Write("{0}\n", RMI);
+
+
+                   RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / RMI) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
                     RPAR[ 6 ] = 1.0;
@@ -1277,7 +1283,7 @@ al82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ctl.WriteLine( String.Format( "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ] ) );
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ]);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -1301,6 +1307,10 @@ al82:
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
+
+                    //сохраняем расстояние от землетрясения до точки
+                    ctl.Write("{0}\n", RMI);
+
                     RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / RMI ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / RMI ) / 2.0) + 1.0;
                     if(KSTIC == 1)
