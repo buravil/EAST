@@ -752,7 +752,6 @@ a305:
                 NZ1+=rs.GetRecordCount();
                 rs.Close();
             */
-
             rsDT = FillTable( "select ind from Линеаменты ORDER BY ind ASC" );
             lin_kol = rsDT.Rows.Count;
             rsDT = FillTable( "select ind from Домены ORDER BY ind ASC" );
@@ -778,7 +777,6 @@ a305:
 add321:
             // начало доменов
             rdomDT = FillTable( "select * from Домены ORDER BY ind ASC" );
-
             
             iw = 1;
             for(int j = 0; j < rdomDT.Rows.Count; j++)//начало доменов
