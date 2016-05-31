@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="East_CSharp">
+</Property><Property Name="Файл решения" Value="D:\COPY_FROM_C\MySources\EAST_2003_sources\EAST_2010\East_CSharp\East_CSharp.sln">
+</Property><Property Name="Date" Value="2 июня 2012 г.">
+</Property><Property Name="Time" Value="23:34">
+</Property></Properties><Event ErrorLevel="0" Project="East_CSharp" Source="East_CSharp.csproj" Description="Проект успешно преобразован">
+</Event><Event ErrorLevel="3" Project="East_CSharp" Source="East_CSharp.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="East_CSharp.sln" Description="Преобразование решения успешно завершено">
+</Event><Event ErrorLevel="3" Project="" Source="East_CSharp.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="East_CSharp" Source="East_CSharp.csproj" Description="Сканирование завершено: обновление для файлов проекта не требуется.">
+</Event></UpgradeLog>
