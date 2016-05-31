@@ -935,10 +935,18 @@ ad82:
                     // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
 
                     //сохраняем расстояние от землетрясения до точки
-                    ctl.Write("{0}\n", RMI);
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", RMI);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", RMI);
+                    }
+                    
 
 
-                   RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
+                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / RMI) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
                     RPAR[ 6 ] = 1.0;
@@ -950,6 +958,8 @@ ad82:
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
                     if(R3D >= RBALL3)
                         continue;
+
+
                     RR = Math.Sqrt( RR );
 
                     if(RR < 1.0E-5) { RR += .01; }
@@ -1309,7 +1319,14 @@ al82:
                     } else { CRN = 2.0; };
 
                     //сохраняем расстояние от землетрясения до точки
-                    ctl.Write("{0}\n", RMI);
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", RMI);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", RMI);
+                    }
 
                     RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / RMI ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / RMI ) / 2.0) + 1.0;
