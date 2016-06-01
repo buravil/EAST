@@ -33,6 +33,7 @@
             this.textBox_mdbPath = new System.Windows.Forms.TextBox();
             this.buttonOpen = new System.Windows.Forms.Button();
             this.buttonRun = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -72,11 +73,24 @@
             this.buttonRun.UseVisualStyleBackColor = true;
             this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(212, 69);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(97, 17);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "Быстрый счет";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 113);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.buttonRun);
             this.Controls.Add(this.buttonOpen);
             this.Controls.Add(this.textBox_mdbPath);
@@ -97,6 +111,7 @@
         private System.Windows.Forms.TextBox textBox_mdbPath;
         private System.Windows.Forms.Button buttonOpen;
         private System.Windows.Forms.Button buttonRun;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

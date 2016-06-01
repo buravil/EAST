@@ -40,7 +40,9 @@ namespace East_CSharp
             prb.i_az = 1;
             prb.i_bz = 1;
             prb.i_cz = 1;
+            checkBox1.Enabled = false;
             prb.OpenData();
+            checkBox1.Enabled = true;
 
             TimeSpan TS = DateTime.Now - DT;
 
