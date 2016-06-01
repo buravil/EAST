@@ -65,7 +65,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 500000;
+        const int NRP = 100000;//500000
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -105,7 +105,7 @@ namespace East_CSharp
         double CC, RA, RB, DR, SB, XX, YY, R3D, DENOM, DIDA, DIDMW, R35, R36, R37, R38, R39;
         double GI0, AN1, AN2, DL, DW, HB, PHIB, RNLB, FCORB, CBET, SBET;
         double ALB, AWB, RNWB, CMAG, AIBAS, ALBYWB, DIST, CONTRIB, RSWITCH;
-        double RQ1, RQ2, CMW1, CMW2, CLW1, CLW2, DISTMIN, RBAS, AMLHBAS, AMW;
+        double RQ1, RQ2, CMW1, CMW2, CLW1, CLW2, DISTMIN, RBAS, AMLHBAS, AMW, ML;
         double PI, PHI0, AL0, X1, X2, X3, Y1, Y2, Y3, X, Y, AZ0;
         double NLB, NWB, NL, NL2, NW, NW2;
         long IMW, LLOOP;
@@ -119,7 +119,7 @@ namespace East_CSharp
 
         double[,] IGST = new double[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-        double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, 100000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD, LCAT, DEAG = 0;
         long[] KPNT = new long[7];
@@ -464,8 +464,8 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1";
-                    ctl.WriteLine( str );
+                   // str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
+                    ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
             }
@@ -526,13 +526,11 @@ a308:
                 balldeagr5 = new double[200];
                 balldeagr6 = new double[200];
                 balldeagr7 = new double[200];
-         
-            while(BALLDEAGREG.EndOfStream != true)
-            {
-                aaa = BALLDEAGREG.ReadLine();
-
-                String[] nums = aaa.Split('\t');
-                /*заполнение массивов значениями из файла*/
+                while (BALLDEAGREG.EndOfStream != true)
+                {
+                    aaa = BALLDEAGREG.ReadLine();
+                    String[] nums = aaa.Split('\t');
+                    /*заполнение массивов значениями из файла*/
                 balldeagrx[iii] = Convert.ToDouble(nums[0]);
                 balldeagry[iii] = Convert.ToDouble(nums[1]);
                 balldeagr1[iii] = Convert.ToDouble(nums[2]);
@@ -558,15 +556,25 @@ a308:
                 XNET[ ii ] = Convert.ToDouble( aa.Substring( 0,aa.IndexOf( " " ) ).Trim() );
                 YNET[ ii ] = Convert.ToDouble( aa.Substring( aa.IndexOf( " " ) ).Trim() );
 
-                if(aa.StartsWith( "9999.0" ))
+                if(aa.StartsWith( "9999.0"))
+                {
+                    for (int k = 0; k < ii-1; k++)
+                    {
+                        ctl.Write("R_{0}\t",k);
+                    }
+                    ctl.Write("\n");
                     goto a305;
+                }
                 if(aa.StartsWith( "-9999.0" ))
                     goto a306;
 
                 ii++;
                 if(ii > NRP)
+
                     goto a305;
             }
+
+            
 
 
 a305:
@@ -904,7 +912,8 @@ ad82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));//t{1:.0}
+                        ML = MwToMl(AMW);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -917,21 +926,22 @@ ad82:
                 GLBVI = SDEVM * VI;
                 int sk;
 
-                for(sk = 1; sk <= NETPNT; sk++)
+                for (sk = 1; sk <= NETPNT; sk++)//
                 {
                     double zz = 0.0;
-                    DSTPRG( XNET[ sk ],YNET[ sk ],zz,US1,US2,US3,US4,ref RMI );
-                    if(emexit == 1)
+                    DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
+                    if (emexit == 1)
                         goto a306;//критическая остановка
 
-                    if(RMI < R3DMIN)//   !#############Rmin for source grid
+                    if (RMI < R3DMIN)//   !#############Rmin for source grid
                     {
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
                     // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
-                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / RMI) ) / 2.0) + 1.0;
-                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / RMI) / 2.0 )) + 1.0;
+                    
+                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / 2.0) ) / 2.0) + 1.0;
+                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / 2.0) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
                     RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
@@ -940,14 +950,27 @@ ad82:
                     //			RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-                    if(R3D >= RBALL3)
-                        continue;
-                    RR = Math.Sqrt( RR );
 
-                    if(RR < 1.0E-5) { RR += .01; }
                    
+                  //  if (R3D >= RBALL3)
+                  //     continue;
+
+                    RR = Math.Sqrt( RR );
+                    if(RR < 1.0E-5) { RR += .01; }
+
                     MACRR3();
-                    if(emexit == 1)
+
+                    //сохраняем расстояние от точки сетки до ближайшей точки очага
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", DISTMIN);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", DISTMIN);
+                    }
+
+                    if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND( ref UI,ref VI );
                     if(emexit == 1)
@@ -1275,9 +1298,11 @@ al82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ctl.WriteLine( String.Format( "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ] ) );
+                        ML = MwToMl(AMW);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
+
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
                 if(emexit == 1)
                     goto a306;//критическая остановка
@@ -1299,8 +1324,10 @@ al82:
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
-                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / RMI ) / 2.0) + 1.0;
-                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / RMI ) / 2.0) + 1.0;
+
+                    
+                    RPAR[ 5 ] = 2.0 * (Convert.ToInt32( CRN * SPAR[ 2 ] / 2.0 ) / 2.0) + 1.0;
+                    RPAR[ 6 ] = 2.0 * (Convert.ToInt32( SPAR[ 3 ] / 2.0 ) / 2.0) + 1.0;
                     if(KSTIC == 1)
                         RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
@@ -1308,13 +1335,29 @@ al82:
                     RR = Math.Pow( XX,2.0 ) + Math.Pow( YY,2.0 );
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-                    if(R3D >= RBALL3)
-                        continue;
+
+
+                  //  if(R3D >= RBALL3)
+                   //     continue;
+
                     RR = Math.Sqrt( RR );
                     if(RR < 1.0e-5) { RR += .01; }
 
+
                     MACRR3();
-                    if(emexit == 1)
+
+                    //сохраняем расстояние от точки сетки до ближайшей точки очага
+                    if (sk == NETPNT)
+                    {
+                        ctl.Write("{0}\n", DISTMIN);
+                    }
+                    else
+                    {
+                        ctl.Write("{0}\t", DISTMIN);
+                    }
+
+
+                    if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND( ref UI,ref VI );
                     if(emexit == 1)
@@ -1844,7 +1887,8 @@ a306:
             CBET = (XX * CROT - YY * SROT) / RR;// !INPUT FOR FINCORR
             SBET = (XX * SROT + YY * CROT) / RR;// !SAME
             FINCOR(RR, SBET, CBET, ref DISTMIN, ref FCOR, AMW);
-            BALL = AIBAS + DIDMW * (AMW - AMWBAS) + DIDA * Math.Log10((FCOR * ATT(R3D, AMW)) / DENOM);
+                //DISTMIN
+           BALL = AIBAS + DIDMW * (AMW - AMWBAS) + DIDA * Math.Log10((FCOR * ATT(R3D, AMW)) / DENOM);
             }
                 LLOOP = 0;            
             return;
@@ -2235,6 +2279,11 @@ a2:
             }
             if(smg > bsm3[ im3 ])
                 r3m = dst3[ im3 ];
+        }
+
+        private double MwToMl(double mw)
+        {
+            return Math.Round(((-0.0295* mw* mw* mw) + (0.5014* mw* mw) + (-1.5317* mw) + 3.2564),1);
         }
 
         private void NORMRND(ref double S1,ref double S2)
@@ -2770,7 +2819,7 @@ a20:
                 if(D1 < d)
                     d = D1;
                 DSTL3( aa,c1,c4,U,ref D1 );
-                if(D1 < d)
+                if (D1 < d)
                     d = D1;
             }
         }
