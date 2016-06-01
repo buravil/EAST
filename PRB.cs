@@ -67,7 +67,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 50000;//500000
+        const int NRP = 500000;//500000
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
