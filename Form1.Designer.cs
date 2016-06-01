@@ -33,6 +33,9 @@
             this.textBox_mdbPath = new System.Windows.Forms.TextBox();
             this.buttonOpen = new System.Windows.Forms.Button();
             this.buttonRun = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxSaveKatalog = new System.Windows.Forms.CheckBox();
+            this.checkBoxDeagreg = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -72,11 +75,48 @@
             this.buttonRun.UseVisualStyleBackColor = true;
             this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(212, 69);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(97, 17);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "Быстрый счет";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxSaveKatalog
+            // 
+            this.checkBoxSaveKatalog.AutoSize = true;
+            this.checkBoxSaveKatalog.Checked = true;
+            this.checkBoxSaveKatalog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSaveKatalog.Location = new System.Drawing.Point(316, 69);
+            this.checkBoxSaveKatalog.Name = "checkBoxSaveKatalog";
+            this.checkBoxSaveKatalog.Size = new System.Drawing.Size(122, 17);
+            this.checkBoxSaveKatalog.TabIndex = 5;
+            this.checkBoxSaveKatalog.Text = "Сохранять каталог";
+            this.checkBoxSaveKatalog.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxDeagreg
+            // 
+            this.checkBoxDeagreg.AutoSize = true;
+            this.checkBoxDeagreg.Location = new System.Drawing.Point(445, 69);
+            this.checkBoxDeagreg.Name = "checkBoxDeagreg";
+            this.checkBoxDeagreg.Size = new System.Drawing.Size(93, 17);
+            this.checkBoxDeagreg.TabIndex = 6;
+            this.checkBoxDeagreg.Text = "Деагрегация";
+            this.checkBoxDeagreg.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 113);
+            this.Controls.Add(this.checkBoxDeagreg);
+            this.Controls.Add(this.checkBoxSaveKatalog);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.buttonRun);
             this.Controls.Add(this.buttonOpen);
             this.Controls.Add(this.textBox_mdbPath);
@@ -97,6 +137,9 @@
         private System.Windows.Forms.TextBox textBox_mdbPath;
         private System.Windows.Forms.Button buttonOpen;
         private System.Windows.Forms.Button buttonRun;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxSaveKatalog;
+        private System.Windows.Forms.CheckBox checkBoxDeagreg;
     }
 }
 

@@ -58,6 +58,8 @@ namespace East_CSharp
         public int i_gst1, i_gst2 = 0, i_gst3;
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
+        public int fastCalc, LCAT, DEAG;
+        
 
         int day;
         int hours;
@@ -118,10 +120,11 @@ namespace East_CSharp
         double FIRSTMAG,FIRSTMAGRound;
 
         double[,] IGST = new double[NRP + 1, 7];
+        //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-        double[,] POVTOR = new double[10, 100000]; //double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
-        long KMOD, LCAT, DEAG = 0;
+        long KMOD;
         long[] KPNT = new long[7];
         long[] NSEG = new long[IMM + 1], L0 = new long[IMM + 1];
         long[,] ISOS = new long[IMM + 1, 101];
@@ -428,9 +431,10 @@ a307:
                 rbb70 = Convert.ToDouble(rsDT.Rows[0]["rb70"]); 
                 rbb75 = Convert.ToDouble(rsDT.Rows[0]["rb75"]); 
                 rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]); 
-                LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
-                DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
+               // LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
+              //  DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
             }
+            
             rsDT.Clear();
 
             if (LCAT == 1)//&&(catinp.DoModal()!=2))
@@ -464,8 +468,9 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                   // str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
-                    ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
+                    // ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
+                    ctl.Write("ML\t");
+
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
             }
@@ -773,7 +778,7 @@ a305:
             NGEN = 0;
             //long[ , ] 
             IGST = new double[ NRP + 1,IMGS + 1 ];/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+           // IGST = new long[NRP + 1, IMGS + 1];//
 
             long iw,Jf,Jx;//,Jq;
             posi = 0;
@@ -863,10 +868,15 @@ add321:
                 {
                     rbb = rbb80;
                 }
-            
 
 
-                TMAX2 = ((kszon / (3.141592 * rbb * rbb)) / (GR[1])) * NCYCL;
+
+
+                if (fastCalc == 1)
+                    TMAX2 = ((kszon / (3.141592 * rbb * rbb)) / (GR[1])) * NCYCL;
+                else
+                    TMAX2 = TMAX;
+
                 T = 0.0;
                 L0 = new long[ IMM + 1 ];
                 ISBR = 2;
@@ -913,7 +923,8 @@ ad82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        // ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ctl.Write("{0}\t", ML);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -938,24 +949,21 @@ ad82:
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
-                    // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
-                    
+                    // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)                    
                     RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / 2.0) ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / 2.0) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
-                    RPAR[ 6 ] = 1.0;
+                        RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
                     YY = YNET[ sk ] - SPAR[ 10 ];
                     RR = Math.Pow( XX,2.0 ) + Math.Pow( YY,2.0 );
                     //			RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-
-                   
-                  //  if (R3D >= RBALL3)
+                   // if (R3D >= RBALL3)
                   //     continue;
-
                     RR = Math.Sqrt( RR );
+
                     if(RR < 1.0E-5) { RR += .01; }
 
                     MACRR3();
@@ -1116,7 +1124,10 @@ ad82:
 
                     if(IGIST > IMGS) { IGIST = IMGS; }
                     k22 = IGIST;
-                    IGST[sk, k22] = IGST[sk, k22] + (KOEFF[ISM] * (TMAX/TMAX2));
+                    if (fastCalc == 1)
+                        IGST[sk, k22] = IGST[sk, k22] + (KOEFF[ISM] * (TMAX/TMAX2));
+                    else
+                        IGST[sk, k22]++;
 
                 };
                 goto ad90;
@@ -1299,7 +1310,8 @@ al82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        //ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ctl.Write("{0}\t", ML);
                     }
                 }
 
@@ -2570,21 +2582,32 @@ a20:
 
             if(KUMUL == 0)
             {
-          //      GR[ INMAX + 1 ] = 0.0;
-            //    for(Kvz = INMAX; Kvz >= 1; Kvz--)
-              //      GR[ Kvz ] = GR[ Kvz + 1 ] + GR[ Kvz ];
-                GR2[INMAX + 1] = 0.0;
-                GR2[INMAX] = GR[1];
-                for(Kvz = INMAX-1; Kvz >= 1; Kvz--)
-                    GR2[Kvz] = GR[1] + GR2[Kvz+1];
+
+              if (fastCalc == 1)
+                {
+                    GR2[INMAX + 1] = 0.0;
+                    GR2[INMAX] = GR[1];
+                    for (Kvz = INMAX - 1; Kvz >= 1; Kvz--)
+                        GR2[Kvz] = GR[1] + GR2[Kvz + 1];
+                }
+              else
+                {
+                    GR[ INMAX + 1 ] = 0.0;
+                    for (Kvz = INMAX; Kvz >= 1; Kvz--)
+                        GR[ Kvz ] = GR[ Kvz + 1 ] + GR[ Kvz ];
+                }
 
             }
 
-            KOEFF[0] = 0;
-            for (int i_koeff = 1; i_koeff <= INMAX; i_koeff++)
+            if (fastCalc==1)
             {
-                KOEFF[i_koeff] =  GR[i_koeff]/GR[1];
+                KOEFF[0] = 0;
+                for (int i_koeff = 1; i_koeff <= INMAX; i_koeff++)
+                {
+                    KOEFF[i_koeff] = GR[i_koeff] / GR[1];
+                }
             }
+
 
 
                 HA[1] = Convert.ToDouble(rdomDT.Rows[position_rdom]["h1"]);
@@ -2749,7 +2772,11 @@ a20:
                 for(Jvz = 1; Jvz <= INMAX; Jvz++)
                 {
                     MGNT[ Jvz ] = MGN[ Jvz + K0 ];
-                    GRF[ Jvz ] = GR2[ Jvz + K0 ] * SZON;//надо GR2
+
+                    if (fastCalc == 1)
+                        GRF[ Jvz ] = GR2[ Jvz + K0 ] * SZON;
+                    else
+                        GRF[Jvz] = GR[Jvz + K0] * SZON;
                 }
             }
 
@@ -2757,7 +2784,11 @@ a20:
             SLD = GRF[ 1 ];
             for(Kvz = 1; Kvz <= INMAX; Kvz++)
             {
-                GR2[ Kvz ] = GRF[ Kvz ] / SZON;
+                if (fastCalc ==1)
+                    GR2[ Kvz ] = GRF[ Kvz ] / SZON;
+                else
+                    GR[Kvz] = GRF[Kvz] / SZON;
+
                 GRF[ Kvz ] = GRF[ Kvz ] / SLD;
             }
             RECZON( XP,NVS );
