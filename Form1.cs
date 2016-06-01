@@ -92,5 +92,21 @@ namespace East_CSharp
             if(prb != null)
                 prb.Close();
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked == true)
+            {
+                checkBoxSaveKatalog.Checked = false;
+                checkBoxSaveKatalog.Enabled = false;
+            }
+            else
+            {
+                checkBoxSaveKatalog.Checked = true;
+                checkBoxSaveKatalog.Enabled = true;
+            }
+
+
+        }
     }
 }
