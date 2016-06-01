@@ -946,8 +946,8 @@ ad82:
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
 
                    
-                    if (R3D >= RBALL3)
-                        continue;
+                  //  if (R3D >= RBALL3)
+                  //     continue;
 
                     RR = Math.Sqrt( RR );
                     if(RR < 1.0E-5) { RR += .01; }
@@ -1327,12 +1327,14 @@ al82:
                     RR = Math.Pow( XX,2.0 ) + Math.Pow( YY,2.0 );
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
+
+
                     if(R3D >= RBALL3)
                         continue;
 
 
-                    RR = Math.Sqrt( RR );
-                    if(RR < 1.0e-5) { RR += .01; }
+                   // RR = Math.Sqrt( RR );
+                   // if(RR < 1.0e-5) { RR += .01; }
 
 
                     MACRR3();
