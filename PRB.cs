@@ -946,24 +946,21 @@ ad82:
                         RMI = R3DMIN;
                         CRN = 1.0;
                     } else { CRN = 2.0; };
-                    // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)
-                    
+                    // ПЕРЕСМОТРЕТЬ ТУТ ghbdtltybt nbgjd: (int)                    
                     RPAR[ 5 ] = 2.0 * (Convert.ToInt32( (CRN * SPAR[ 2 ] / 2.0) ) / 2.0) + 1.0;
                     RPAR[ 6 ] = 2.0 * (Convert.ToInt32( (SPAR[ 3 ] / 2.0) / 2.0 )) + 1.0;
                     if(KSTIC == 1)
-                    RPAR[ 6 ] = 1.0;
+                        RPAR[ 6 ] = 1.0;
                     XX = XNET[ sk ] - SPAR[ 9 ];
                     YY = YNET[ sk ] - SPAR[ 10 ];
                     RR = Math.Pow( XX,2.0 ) + Math.Pow( YY,2.0 );
                     //			RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-
-                   
-                  //  if (R3D >= RBALL3)
+                   // if (R3D >= RBALL3)
                   //     continue;
-
                     RR = Math.Sqrt( RR );
+
                     if(RR < 1.0E-5) { RR += .01; }
 
                     MACRR3();
@@ -2581,21 +2578,32 @@ a20:
 
             if(KUMUL == 0)
             {
-          //      GR[ INMAX + 1 ] = 0.0;
-            //    for(Kvz = INMAX; Kvz >= 1; Kvz--)
-              //      GR[ Kvz ] = GR[ Kvz + 1 ] + GR[ Kvz ];
-                GR2[INMAX + 1] = 0.0;
-                GR2[INMAX] = GR[1];
-                for(Kvz = INMAX-1; Kvz >= 1; Kvz--)
-                    GR2[Kvz] = GR[1] + GR2[Kvz+1];
+
+              if (fastCalc == 1)
+                {
+                    GR2[INMAX + 1] = 0.0;
+                    GR2[INMAX] = GR[1];
+                    for (Kvz = INMAX - 1; Kvz >= 1; Kvz--)
+                        GR2[Kvz] = GR[1] + GR2[Kvz + 1];
+                }
+              else
+                {
+                    GR[ INMAX + 1 ] = 0.0;
+                    for (Kvz = INMAX; Kvz >= 1; Kvz--)
+                        GR[ Kvz ] = GR[ Kvz + 1 ] + GR[ Kvz ];
+                }
 
             }
 
-            KOEFF[0] = 0;
-            for (int i_koeff = 1; i_koeff <= INMAX; i_koeff++)
+            if (fastCalc==1)
             {
-                KOEFF[i_koeff] =  GR[i_koeff]/GR[1];
+                KOEFF[0] = 0;
+                for (int i_koeff = 1; i_koeff <= INMAX; i_koeff++)
+                {
+                    KOEFF[i_koeff] = GR[i_koeff] / GR[1];
+                }
             }
+
 
 
                 HA[1] = Convert.ToDouble(rdomDT.Rows[position_rdom]["h1"]);
@@ -2760,7 +2768,11 @@ a20:
                 for(Jvz = 1; Jvz <= INMAX; Jvz++)
                 {
                     MGNT[ Jvz ] = MGN[ Jvz + K0 ];
-                    GRF[ Jvz ] = GR2[ Jvz + K0 ] * SZON;//надо GR2
+
+                    if (fastCalc == 1)
+                        GRF[ Jvz ] = GR2[ Jvz + K0 ] * SZON;
+                    else
+                        GRF[Jvz] = GR[Jvz + K0] * SZON;
                 }
             }
 
@@ -2768,7 +2780,11 @@ a20:
             SLD = GRF[ 1 ];
             for(Kvz = 1; Kvz <= INMAX; Kvz++)
             {
-                GR2[ Kvz ] = GRF[ Kvz ] / SZON;
+                if (fastCalc ==1)
+                    GR2[ Kvz ] = GRF[ Kvz ] / SZON;
+                else
+                    GR[Kvz] = GRF[Kvz] / SZON;
+
                 GRF[ Kvz ] = GRF[ Kvz ] / SLD;
             }
             RECZON( XP,NVS );
