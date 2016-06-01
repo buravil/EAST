@@ -467,8 +467,9 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                   // str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
-                    ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
+                    // ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
+                    ctl.Write("ML\t");
+
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
             }
@@ -921,7 +922,8 @@ ad82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        // ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ctl.Write("{0}\t", ML);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -1307,7 +1309,8 @@ al82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        //ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ctl.Write("{0}\t", ML);
                     }
                 }
 
