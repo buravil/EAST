@@ -58,6 +58,7 @@ namespace East_CSharp
         public int i_gst1, i_gst2 = 0, i_gst3;
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
+        public int fastCalc;
 
         int day;
         int hours;
@@ -118,8 +119,9 @@ namespace East_CSharp
         double FIRSTMAG,FIRSTMAGRound;
 
         double[,] IGST = new double[NRP + 1, 7];
+        //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-        double[,] POVTOR = new double[10, 100000]; //double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD, LCAT, DEAG = 0;
         long[] KPNT = new long[7];
@@ -431,6 +433,7 @@ a307:
                 LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
                 DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
             }
+            
             rsDT.Clear();
 
             if (LCAT == 1)//&&(catinp.DoModal()!=2))
@@ -773,7 +776,7 @@ a305:
             NGEN = 0;
             //long[ , ] 
             IGST = new double[ NRP + 1,IMGS + 1 ];/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+           // IGST = new long[NRP + 1, IMGS + 1];//
 
             long iw,Jf,Jx;//,Jq;
             posi = 0;
@@ -863,10 +866,15 @@ add321:
                 {
                     rbb = rbb80;
                 }
-            
 
 
-                TMAX2 = ((kszon / (3.141592 * rbb * rbb)) / (GR[1])) * NCYCL;
+
+
+                if (fastCalc == 1)
+                    TMAX2 = ((kszon / (3.141592 * rbb * rbb)) / (GR[1])) * NCYCL;
+                else
+                    TMAX2 = TMAX;
+
                 T = 0.0;
                 L0 = new long[ IMM + 1 ];
                 ISBR = 2;
@@ -1116,7 +1124,10 @@ ad82:
 
                     if(IGIST > IMGS) { IGIST = IMGS; }
                     k22 = IGIST;
-                    IGST[sk, k22] = IGST[sk, k22] + (KOEFF[ISM] * (TMAX/TMAX2));
+                    if (fastCalc == 1)
+                        IGST[sk, k22] = IGST[sk, k22] + (KOEFF[ISM] * (TMAX/TMAX2));
+                    else
+                        IGST[sk, k22]++;
 
                 };
                 goto ad90;
