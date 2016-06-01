@@ -67,7 +67,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 500000;//500000
+        const int NRP = 100000;//500000
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -121,7 +121,7 @@ namespace East_CSharp
 
         double[,] IGST = new double[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-        double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, 100000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD, LCAT, DEAG = 0;
         long[] KPNT = new long[7];
@@ -1329,12 +1329,11 @@ al82:
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
 
 
-                    if(R3D >= RBALL3)
-                        continue;
+                  //  if(R3D >= RBALL3)
+                   //     continue;
 
-
-                   // RR = Math.Sqrt( RR );
-                   // if(RR < 1.0e-5) { RR += .01; }
+                    RR = Math.Sqrt( RR );
+                    if(RR < 1.0e-5) { RR += .01; }
 
 
                     MACRR3();
