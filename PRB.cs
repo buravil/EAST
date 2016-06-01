@@ -107,7 +107,7 @@ namespace East_CSharp
         double CC, RA, RB, DR, SB, XX, YY, R3D, DENOM, DIDA, DIDMW, R35, R36, R37, R38, R39;
         double GI0, AN1, AN2, DL, DW, HB, PHIB, RNLB, FCORB, CBET, SBET;
         double ALB, AWB, RNWB, CMAG, AIBAS, ALBYWB, DIST, CONTRIB, RSWITCH;
-        double RQ1, RQ2, CMW1, CMW2, CLW1, CLW2, DISTMIN, RBAS, AMLHBAS, AMW;
+        double RQ1, RQ2, CMW1, CMW2, CLW1, CLW2, DISTMIN, RBAS, AMLHBAS, AMW, ML;
         double PI, PHI0, AL0, X1, X2, X3, Y1, Y2, Y3, X, Y, AZ0;
         double NLB, NWB, NL, NL2, NW, NW2;
         long IMW, LLOOP;
@@ -466,7 +466,7 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
+                    str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
                     ctl.WriteLine( str );
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
@@ -906,8 +906,8 @@ ad82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                       // ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));//t{1:.0}
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ML = MwToMl(AMW);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -1292,9 +1292,11 @@ al82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ]);
+                        ML = MwToMl(AMW);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW, ML,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ]);
                     }
                 }
+
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
                 if(emexit == 1)
                     goto a306;//критическая остановка
@@ -2271,6 +2273,11 @@ a2:
             }
             if(smg > bsm3[ im3 ])
                 r3m = dst3[ im3 ];
+        }
+
+        private double MwToMl(double mw)
+        {
+            return Math.Round(((-0.0295* mw* mw* mw) + (0.5014* mw* mw) + (-1.5317* mw) + 3.2564),1);
         }
 
         private void NORMRND(ref double S1,ref double S2)
