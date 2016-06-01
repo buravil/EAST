@@ -466,8 +466,8 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
-                    ctl.WriteLine( str );
+                   // str = "INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\tDISTMIN[]";
+                    ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
             }
@@ -528,13 +528,11 @@ a308:
                 balldeagr5 = new double[200];
                 balldeagr6 = new double[200];
                 balldeagr7 = new double[200];
-         
-            while(BALLDEAGREG.EndOfStream != true)
-            {
-                aaa = BALLDEAGREG.ReadLine();
-
-                String[] nums = aaa.Split('\t');
-                /*заполнение массивов значениями из файла*/
+                while (BALLDEAGREG.EndOfStream != true)
+                {
+                    aaa = BALLDEAGREG.ReadLine();
+                    String[] nums = aaa.Split('\t');
+                    /*заполнение массивов значениями из файла*/
                 balldeagrx[iii] = Convert.ToDouble(nums[0]);
                 balldeagry[iii] = Convert.ToDouble(nums[1]);
                 balldeagr1[iii] = Convert.ToDouble(nums[2]);
@@ -560,15 +558,25 @@ a308:
                 XNET[ ii ] = Convert.ToDouble( aa.Substring( 0,aa.IndexOf( " " ) ).Trim() );
                 YNET[ ii ] = Convert.ToDouble( aa.Substring( aa.IndexOf( " " ) ).Trim() );
 
-                if(aa.StartsWith( "9999.0" ))
+                if(aa.StartsWith( "9999.0"))
+                {
+                    for (int k = 0; k < ii-1; k++)
+                    {
+                        ctl.Write("R_{0}\t",k);
+                    }
+                    ctl.Write("\n");
                     goto a305;
+                }
                 if(aa.StartsWith( "-9999.0" ))
                     goto a306;
 
                 ii++;
                 if(ii > NRP)
+
                     goto a305;
             }
+
+            
 
 
 a305:
@@ -907,7 +915,7 @@ ad82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -1293,7 +1301,7 @@ al82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t",IND,AMW, ML,SPAR[ 2 ],SPAR[ 3 ],SPR4,SPR5,SPR6,SPR7,SPAR[ 8 ]);
+                        ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
                     }
                 }
 
