@@ -58,7 +58,8 @@ namespace East_CSharp
         public int i_gst1, i_gst2 = 0, i_gst3;
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
-        public int fastCalc;
+        public int fastCalc, LCAT, DEAG;
+        
 
         int day;
         int hours;
@@ -123,7 +124,7 @@ namespace East_CSharp
         double[,] DEAGREG = new double[10, 77001];
         double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
-        long KMOD, LCAT, DEAG = 0;
+        long KMOD;
         long[] KPNT = new long[7];
         long[] NSEG = new long[IMM + 1], L0 = new long[IMM + 1];
         long[,] ISOS = new long[IMM + 1, 101];
@@ -430,8 +431,8 @@ a307:
                 rbb70 = Convert.ToDouble(rsDT.Rows[0]["rb70"]); 
                 rbb75 = Convert.ToDouble(rsDT.Rows[0]["rb75"]); 
                 rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]); 
-                LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
-                DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
+               // LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
+              //  DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
             }
             
             rsDT.Clear();

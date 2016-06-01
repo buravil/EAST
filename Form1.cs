@@ -41,10 +41,23 @@ namespace East_CSharp
             prb.i_bz = 1;
             prb.i_cz = 1;
 
+            //если выбран быстрый счет
             if (checkBox1.Checked)
                 prb.fastCalc = 1;
             else
                 prb.fastCalc = 0;
+
+            //если выбрано сохранение каталога
+            if (checkBoxSaveKatalog.Checked)
+                prb.LCAT = 1;
+            else
+                prb.LCAT = 0;
+
+            //если выбрано сохранение каталога
+            if (checkBoxDeagreg.Checked)
+                prb.DEAG = 1;
+            else
+                prb.DEAG = 0;
 
             checkBox1.Enabled = false;
             prb.OpenData();
