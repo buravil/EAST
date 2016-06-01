@@ -26,9 +26,7 @@ namespace East_CSharp
         public int m_e_int_voz_ot, m_e_int_voz_do;
         public double m_e_int_mag_do, m_e_int_mag_ot;
         double[,] mass_gist_lat_lon = new double[500000, 2];
-
         
-
         public double m_e_tmax = 0.1;
         public int m_e_iter = 1;
         private int position_rdom = 0;
