@@ -468,8 +468,8 @@ a307:
                         EmExit( "Невозможно создать выходной файл " + NAMCTL );
                         goto a306;
                     }
-                    // ctl.Write("INDZ\tMW\tML\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1\t");
-                    ctl.Write("ML\t");
+                    str = "INDZ\tMAG\tL\tW\tAZ\tDIP\tPHI1\tLMD1\tH1";
+                    ctl.WriteLine(str);
 
                 }
                 KPCAT = 2;// флаг о том что подготовлен файл и надо сохранять каталог в этом цикле 
@@ -553,36 +553,29 @@ a308:
             
             XNET = new double[ NRP + 1 ];
             YNET = new double[ NRP + 1 ];
-            
-            while(net.EndOfStream != true)
+
+
+            while (net.EndOfStream != true)
             {
                 aa = net.ReadLine();
 
-                XNET[ ii ] = Convert.ToDouble( aa.Substring( 0,aa.IndexOf( " " ) ).Trim() );
-                YNET[ ii ] = Convert.ToDouble( aa.Substring( aa.IndexOf( " " ) ).Trim() );
+                XNET[ii] = Convert.ToDouble(aa.Substring(0, aa.IndexOf(" ")).Trim());
+                YNET[ii] = Convert.ToDouble(aa.Substring(aa.IndexOf(" ")).Trim());
 
-                if(aa.StartsWith( "9999.0"))
-                {
-                    for (int k = 0; k < ii-1; k++)
-                    {
-                        ctl.Write("R_{0}\t",k);
-                    }
-                    ctl.Write("\n");
+                if (aa.StartsWith("9999.0"))
                     goto a305;
-                }
-                if(aa.StartsWith( "-9999.0" ))
+                if (aa.StartsWith("-9999.0"))
                     goto a306;
 
                 ii++;
-                if(ii > NRP)
-
+                if (ii > NRP)
                     goto a305;
             }
 
-            
 
 
-a305:
+
+        a305:
             
 
 
@@ -923,8 +916,8 @@ ad82:
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
                         ML = MwToMl(AMW);
-                        // ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
-                        ctl.Write("{0}\t", ML);
+                        ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));//t{1:.0}
+
                     }
                 }
                 CLCRB3( IM3,AMW,BSM3,DST3,ref RBALL3 );
@@ -968,15 +961,8 @@ ad82:
 
                     MACRR3();
 
-                    //сохраняем расстояние от точки сетки до ближайшей точки очага
-                    if (sk == NETPNT)
-                    {
-                        ctl.Write("{0}\n", DISTMIN);
-                    }
-                    else
-                    {
-                        ctl.Write("{0}\t", DISTMIN);
-                    }
+                    //Считается спектр реакций
+                   
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1309,9 +1295,7 @@ al82:
                         SPR5 = SPAR[ 5 ] * RAD;
                         SPR6 = SPR6 * RAD;
                         SPR7 = SPR7 * RAD;
-                        ML = MwToMl(AMW);
-                        //ctl.Write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t", IND, AMW, ML, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]);
-                        ctl.Write("{0}\t", ML);
+                        ctl.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t", IND, AMW, SPAR[2], SPAR[3], SPR4, SPR5, SPR6, SPR7, SPAR[8]));
                     }
                 }
 
@@ -1358,15 +1342,8 @@ al82:
 
                     MACRR3();
 
-                    //сохраняем расстояние от точки сетки до ближайшей точки очага
-                    if (sk == NETPNT)
-                    {
-                        ctl.Write("{0}\n", DISTMIN);
-                    }
-                    else
-                    {
-                        ctl.Write("{0}\t", DISTMIN);
-                    }
+                    //считается спектр реакций
+
 
 
                     if (emexit == 1)
