@@ -577,11 +577,6 @@ a308:
 
         a305:
             
-
-
-            
-            
-            
             /*
             while (net.EndOfStream != true)
             {
@@ -777,8 +772,16 @@ a308:
             posi = 0;
             double T;
 
-                ///pMainWnd->m_progress.SetRange(0,100);
-add321:
+            //задание массива спектров реакций
+            ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
+            for (int sk = 1; sk <= NETPNT; sk++)//
+            {
+                RS[sk] = new ResponseSpectra(1, 2, TMAX);
+            }
+            
+
+            ///pMainWnd->m_progress.SetRange(0,100);
+            add321:
             // начало доменов
             rdomDT = FillTable( "select * from Домены ORDER BY ind ASC" );
             
@@ -929,7 +932,7 @@ ad82:
 
                 GLBVI = SDEVM * VI;
                 int sk;
-
+                //цикл расчета по точекам сетки
                 for (sk = 1; sk <= NETPNT; sk++)//
                 {
                     double zz = 0.0;
@@ -961,8 +964,9 @@ ad82:
 
                     MACRR3();
 
-                    //Считается спектр реакций
-                   
+                    //считается спектр реакций
+                    ML = MwToMl(AMW);
+                    RS[sk].Calculat(ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1308,7 +1312,8 @@ al82:
 
                 GLBVI = SDEVM * VI;
                 int sk;
-                for(sk = 1; sk <= NETPNT; sk++)
+                // цикл расчета по точекам сетки
+                for (sk = 1; sk <= NETPNT; sk++)
                 {
                     double zz = 0.0;
                     DSTPRG( XNET[ sk ],YNET[ sk ],zz,US1,US2,US3,US4,ref RMI );
@@ -1343,8 +1348,8 @@ al82:
                     MACRR3();
 
                     //считается спектр реакций
-
-
+                    ML = MwToMl(AMW);
+                    RS[sk].Calculat(ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1597,7 +1602,7 @@ al2:
                     return;
                 }
             }
-            GSTPRC( NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX );
+            GSTPRC( NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
             if(emexit == 1)
                 goto a306;//критическая остановка
             Debug.Print( "IY = " + IY.ToString() );
@@ -4067,9 +4072,14 @@ a10:
             }
         }
 
-        private void GSTPRC(long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX)
+        private void GSTPRC(long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX, ResponseSpectra[] RS)
         {
             double gs1 = 0.0,gs2 = 0.0;
+
+            for (int i_rs=1; i_rs<= NETPNT; i_rs++)
+            {
+                RS[i_rs].SAItogCalculation();
+            }
 
             double[] IGS = new double[ IMGS + 1 ];
             long J,k,K1;
@@ -4090,7 +4100,7 @@ a10:
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
 
-            fla.WriteLine("lat\tlon\tT100\tT500\tT1000\tT2000\tT5000\tT10000\tT100000\tVI\tVII\tVIII\tIX");
+            fla.WriteLine("lat\tlon\tT100\tT500\tT1000\tT2000\tT5000\tT10000\tT100000\tVI\tVII\tVIII\tIX\t100PGA\t100SA_0.2\t100SA_1\t500PGA\t500SA_0.2\t500SA_1\t1000PGA\t1000SA_0.2\t1000SA_1\t2000PGA\t2000SA_0.2\t2000SA_1\t5000PGA\t5000SA_0.2\t5000SA_1\t10000PGA\t10000SA_0.2\t10000SA_1");
 
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
@@ -4146,7 +4156,9 @@ a21:
                     //gst.WriteLine( str );///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(m_main_base_ok)
                     {
-                        str = String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", gs1, gs2, GJ, IGS[J], CAM[J - 1], CAMN[J - 1], DEV1[J - 1], DEV2[J - 1]);
+                        
+                        str = String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}",
+                            gs1, gs2, GJ, IGS[J], CAM[J - 1], CAMN[J - 1], DEV1[J - 1], DEV2[J - 1]);
                         InsertCommand( str );///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     }
                     if (GJ==6) 
@@ -4242,7 +4254,7 @@ a12:
 
 
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                fla.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}",
+                fla.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}",
                     massiv_ABCD[0,k], 
                     massiv_ABCD[1,k],
                     massiv_ABCD[13,k],
@@ -4255,7 +4267,25 @@ a12:
                     POVTOR[2,k],
                     POVTOR[3,k],
                     POVTOR[4,k],
-                    POVTOR[5,k]
+                    POVTOR[5,k],
+                    RS[k].PGASACalculation(0.01, 39.347),
+                    RS[k].PGASACalculation(0.2, 39.347), 
+                    RS[k].PGASACalculation(1, 39.347),
+                    RS[k].PGASACalculation(0.01, 9.516),
+                    RS[k].PGASACalculation(0.2, 9.516),
+                    RS[k].PGASACalculation(1, 9.516),
+                    RS[k].PGASACalculation(0.01, 4.877),
+                    RS[k].PGASACalculation(0.2, 4.877),
+                    RS[k].PGASACalculation(1, 4.877),
+                    RS[k].PGASACalculation(0.01, 2.469),
+                    RS[k].PGASACalculation(0.2, 2.469),
+                    RS[k].PGASACalculation(1, 2.469),
+                    RS[k].PGASACalculation(0.01, 0.995),
+                    RS[k].PGASACalculation(0.2, 0.995),
+                    RS[k].PGASACalculation(1, 0.995),
+                    RS[k].PGASACalculation(0.01, 0.499),
+                    RS[k].PGASACalculation(0.2, 0.499),
+                    RS[k].PGASACalculation(1, 0.499)
                     ));
 
                // POVTOR_BALL.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", POVTOR[0,k], POVTOR[1,k], POVTOR[2,k], POVTOR[3,k], POVTOR[4,k], POVTOR[5,k]));

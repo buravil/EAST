@@ -27,8 +27,11 @@ namespace East_CSharp
         //шаг
         double lg_D;
 
+       //количество итераций
+        int Iter;
+
         //Период повторяемости
-        int T, Iter;
+        double T;
 
         //Количество периодов в единичном спектре реакций
         int NN;
@@ -49,7 +52,7 @@ namespace East_CSharp
 
 
         //Конструктор
-        public ResponseSpectra(int typeOfGrunt, int kinematika)
+        public ResponseSpectra(int typeOfGrunt, int kinematika, double Tmax )
         {
             //Задаем коэффициенты
             C2 = C2array[typeOfGrunt];
@@ -64,8 +67,9 @@ namespace East_CSharp
 
             NN = Convert.ToInt32(Math.Round(2 * Math.Pow(lg_D, -1)));
 
-            Iter = 100;
-            T = 5000 * Iter;
+            //Iter = 100;
+            //T = 5000 * Iter;
+            T = Tmax;
 
             Njsa = 33;
             Nisa = 62;
@@ -265,7 +269,7 @@ namespace East_CSharp
             {
                 for (int i = 1; i <= 50; i++)
                 {
-                    double pow = (-50 * (SAkum[i, j] / Convert.ToDouble(T)));
+                    double pow = (-50 * (SAkum[i, j] / T));
                     SAitog[i, j] = Math.Round((1 - Math.Pow(Math.E, pow)) * 1000) * 0.1;
                 }
             }

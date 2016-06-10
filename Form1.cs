@@ -60,8 +60,14 @@ namespace East_CSharp
                 prb.DEAG = 0;
 
             checkBox1.Enabled = false;
+            checkBoxSaveKatalog.Enabled = false;
+            checkBoxDeagreg.Enabled = false;
+
             prb.OpenData();
+
             checkBox1.Enabled = true;
+            checkBoxSaveKatalog.Enabled = true;
+            checkBoxDeagreg.Enabled = true;
 
             TimeSpan TS = DateTime.Now - DT;
 

@@ -89,8 +89,6 @@
             // checkBoxSaveKatalog
             // 
             this.checkBoxSaveKatalog.AutoSize = true;
-            this.checkBoxSaveKatalog.Checked = true;
-            this.checkBoxSaveKatalog.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSaveKatalog.Location = new System.Drawing.Point(316, 69);
             this.checkBoxSaveKatalog.Name = "checkBoxSaveKatalog";
             this.checkBoxSaveKatalog.Size = new System.Drawing.Size(122, 17);
