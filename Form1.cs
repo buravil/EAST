@@ -62,7 +62,6 @@ namespace East_CSharp
             checkBox1.Enabled = false;
             checkBoxSaveKatalog.Enabled = false;
             checkBoxDeagreg.Enabled = false;
-
             prb.OpenData();
 
             checkBox1.Enabled = true;
@@ -114,5 +113,8 @@ namespace East_CSharp
 
 
         }
+
+ 
+
     }
 }

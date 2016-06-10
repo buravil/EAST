@@ -788,6 +788,7 @@ a308:
             iw = 1;
             for(int j = 0; j < rdomDT.Rows.Count; j++)//начало доменов
             {
+                               
                 posi = (iw * 100) / dom_kol;
                 position_rdom = j;
                 ///pMainWnd->m_progress.SetPos(posi);
@@ -956,8 +957,8 @@ ad82:
                     //			RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
-                   // if (R3D >= RBALL3)
-                  //     continue;
+                    if (R3D >= RBALL3)
+                        continue;
                     RR = Math.Sqrt( RR );
 
                     if(RR < 1.0E-5) { RR += .01; }
@@ -1338,8 +1339,8 @@ al82:
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
 
 
-                  //  if(R3D >= RBALL3)
-                   //     continue;
+                    if (R3D >= RBALL3)
+                        continue;
 
                     RR = Math.Sqrt( RR );
                     if(RR < 1.0e-5) { RR += .01; }

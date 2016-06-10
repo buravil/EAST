@@ -298,7 +298,7 @@ namespace East_CSharp
                         Y1 = SAitog[j - 1, 0];
                         Y2 = SAitog[j, 0];
 
-                        YY3[1, i] = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(P) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : 0;
+                        YY3[1, i] = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(P) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : ((Y2 + Y1)/2);
                     }
                 }
             }
@@ -325,7 +325,7 @@ namespace East_CSharp
                     Y1 = YY3[1, i - 1];
                     Y2 = YY3[1, i];
 
-                    outPGA = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(t) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : 0;
+                    outPGA = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(t) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : ((Y2 + Y1) / 2);
                 }
             }
 
@@ -340,18 +340,18 @@ namespace East_CSharp
 
             NameDIR = Application.StartupPath;
             Dir = Directory.CreateDirectory(NameDIR + "\\Out");
-            StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");
+         //   StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");
 
             StreamWriter SAwriterProbabil = new StreamWriter(Dir.FullName + "\\" + "Probability" + str + ".txt");
 
-            for (int i = 0; i < Nisa; i++)
-            {
-                for (int j = 0; j < Njsa; j++)
-                {
-                    SAwriter.Write("{0}\t", SAitog[i, j]);
-                }
-                SAwriter.Write("\n");
-            }
+           // for (int i = 0; i < Nisa; i++)
+           // {
+           //     for (int j = 0; j < Njsa; j++)
+          //      {
+         //           SAwriter.Write("{0}\t", SAitog[i, j]);
+         //       }
+         //       SAwriter.Write("\n");
+         //   }
 
             for (int i = 0; i < 2; i++)
             {
@@ -363,7 +363,7 @@ namespace East_CSharp
             }
 
 
-            SAwriter.Close();
+        //    SAwriter.Close();
             SAwriterProbabil.Close();
 
 
