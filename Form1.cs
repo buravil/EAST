@@ -11,7 +11,8 @@ namespace East_CSharp
     public partial class Form1 : Form
     {
         PRB prb;
-        
+        DateTime DT;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,9 +25,15 @@ namespace East_CSharp
 
         private void buttonRun_Click(object sender,EventArgs e)
         {
-            DateTime DT = DateTime.Now;
+            StartThread();
+        }
 
-            prb = new PRB( textBox_mdbPath.Text );
+
+        private void StartThread()
+        {
+            DT = DateTime.Now;
+
+            prb = new PRB(textBox_mdbPath.Text);
 
             prb.m_ch_make_katalog = false;
             //prb.m_e_iter = Convert.ToInt32( textBox_iter.Text );
@@ -53,24 +60,34 @@ namespace East_CSharp
             else
                 prb.LCAT = 0;
 
-            //если выбрано сохранение каталога
+            //если выбрана деагрегация
             if (checkBoxDeagreg.Checked)
                 prb.DEAG = 1;
             else
                 prb.DEAG = 0;
 
+            if (radioButton1.Checked)
+                prb.typeOfGrunt = 0;
+            if (radioButton2.Checked)
+                prb.typeOfGrunt = 1;
+            if (radioButton3.Checked)
+                prb.typeOfGrunt = 2;
+
             checkBox1.Enabled = false;
             checkBoxSaveKatalog.Enabled = false;
             checkBoxDeagreg.Enabled = false;
-            prb.OpenData();
+            buttonRun.Enabled = false;
+            radioButton1.Enabled = false;
+            radioButton2.Enabled = false;
+            radioButton3.Enabled = false;
 
-            checkBox1.Enabled = true;
-            checkBoxSaveKatalog.Enabled = true;
-            checkBoxDeagreg.Enabled = true;
+            //запуск расчета
 
-            TimeSpan TS = DateTime.Now - DT;
+            // Start the asynchronous operation.
+            backgroundWorker1.RunWorkerAsync(prb);
 
-            MessageBox.Show( "Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString() );
+
+            
         }
 
         private void buttonOpen_Click(object sender,EventArgs e)
@@ -114,7 +131,41 @@ namespace East_CSharp
 
         }
 
- 
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
 
+            label3.Text = (string)e.UserState;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            checkBox1.Enabled = true;
+            checkBoxSaveKatalog.Enabled = true;
+            checkBoxDeagreg.Enabled = true;
+            buttonRun.Enabled = true;
+            radioButton1.Enabled = true;
+            radioButton2.Enabled = true;
+            radioButton3.Enabled = true;
+
+            TimeSpan TS = DateTime.Now - DT;
+
+            MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
+
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            System.ComponentModel.BackgroundWorker worker;
+            worker = (System.ComponentModel.BackgroundWorker)sender;
+
+            PRB prb = (PRB)e.Argument;
+            prb.OpenData(worker, e);
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

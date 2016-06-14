@@ -50,17 +50,20 @@ namespace East_CSharp
         //расчитанная вероятностная функция
         double[,] YY3;
 
+        //сохранение 
+        private String NameDIR;
+        private DirectoryInfo Dir;
+
+
 
         //Конструктор
-        public ResponseSpectra(int typeOfGrunt, int kinematika, double Tmax )
+        public ResponseSpectra(int typeOfGrunt, double Tmax )
         {
             //Задаем коэффициенты
             C2 = C2array[typeOfGrunt];
-            C1 = C1array[kinematika];
+           
             C3 = C3array[typeOfGrunt];
-            C4 = C4array[kinematika];
-            C5 = C5array[kinematika];
-            C6 = C6array[kinematika];
+
             C7 = C7array[typeOfGrunt];
             C8 = C8array[typeOfGrunt];
             lg_D = 0.1;
@@ -79,6 +82,10 @@ namespace East_CSharp
             YY3 = new double[2, 61];
             double test = Math.Pow(10, (-1.5 + (1.0 / 10)));
 
+
+            NameDIR = Application.StartupPath;
+            Dir = Directory.CreateDirectory(NameDIR + "\\Out");
+
             for (int i = 0; i < Njsa - 2; i++)
             {
                 SA[0, i + 2] = Math.Pow(10, (-1.5 + (Convert.ToDouble(i) / 10.0)));
@@ -90,8 +97,12 @@ namespace East_CSharp
             }
         }
 
-        public void Calculat(double M, double R)
+        public void Calculat(int kinematika, double M, double R)
         {
+            C1 = C1array[kinematika];
+            C4 = C4array[kinematika];
+            C5 = C5array[kinematika];
+            C6 = C6array[kinematika];
 
             SAcalculation(M, R);
 
@@ -335,14 +346,11 @@ namespace East_CSharp
         //Сохранение результатов в текстовый файл
         public void SAsave(string str)
         {
-            String NameDIR;
-            DirectoryInfo Dir;
 
-            NameDIR = Application.StartupPath;
-            Dir = Directory.CreateDirectory(NameDIR + "\\Out");
+
          //   StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");
 
-            StreamWriter SAwriterProbabil = new StreamWriter(Dir.FullName + "\\" + "Probability" + str + ".txt");
+            StreamWriter SAwriterProbabil = new StreamWriter(Dir.FullName + "\\" + "RS_" + str + ".txt");
 
            // for (int i = 0; i < Nisa; i++)
            // {

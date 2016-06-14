@@ -46,6 +46,9 @@ namespace East_CSharp
         
 
         long posi;//позиция прогресс бара
+        int total;//общее количество значений в прогрессбаре
+        int k_progress;
+        int percents;//позиция прогресс бара, вторая реализация
         int emexit;
         int dom_kol;
         int lin_kol;
@@ -53,13 +56,14 @@ namespace East_CSharp
         int inet1;
         int NETKOL;
 
-
+        //переменный, задающиеся из главной формы
         public int flag_9999 = 0;
         public int i_gst1, i_gst2 = 0, i_gst3;
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
         public int fastCalc, LCAT, DEAG;
-        
+        public int typeOfGrunt;
+
 
         int day;
         int hours;
@@ -171,10 +175,14 @@ namespace East_CSharp
         string[] PRBL = new string[500000];
         string applicationDir = "";
 
+        public string NameOfCurrentCalculation="пипа";
+       
+
+
         #endregion
 
 
-         
+
         public PRB(string SQLitePath)
         {
             applicationDir = Application.StartupPath;//System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().GetModules()[ 0 ].FullyQualifiedName.ToString() );
@@ -307,8 +315,11 @@ for(int i = 0; i < 500; i++)
 
         ///----------------------- METHODS ------------------------
 
-        public void OpenData()
+        public void OpenData(System.ComponentModel.BackgroundWorker worker,
+        System.ComponentModel.DoWorkEventArgs e)
         {
+            
+
             i_gst2 = 0;
             emexit = 0;
             PrefixName = applicationDir + "EAST_2003_";
@@ -369,8 +380,11 @@ for(int i = 0; i < 500; i++)
 
             OpenBase();
 
+            NameOfCurrentCalculation = "Расчет доменов";
+            worker.ReportProgress(0, NameOfCurrentCalculation);
+
             ClearZony();
-            PreWork();
+            PreWork(worker,e);
             FillOtherTables();///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Close();
         }
@@ -380,7 +394,8 @@ for(int i = 0; i < 500; i++)
             InsertCommand( "delete * from Зоны_ВОЗ" );
         }
 
-        private void PreWork() //главная фенкция
+        private void PreWork(System.ComponentModel.BackgroundWorker worker,
+        System.ComponentModel.DoWorkEventArgs e)
         {
             //CStringFile net,mto;
             StreamReader net = null, mto = null, BALLDEAGREG = null;
@@ -776,19 +791,35 @@ a308:
             ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
-                RS[sk] = new ResponseSpectra(1, 2, TMAX);
+                RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
             }
             
 
             ///pMainWnd->m_progress.SetRange(0,100);
             add321:
-            // начало доменов
-            rdomDT = FillTable( "select * from Домены ORDER BY ind ASC" );
             
+            rdomDT = FillTable( "select * from Домены ORDER BY ind ASC" );
+            rlinDT = FillTable("select * from Линеаменты ORDER BY ind ASC");
+
+            NameOfCurrentCalculation = "Расчет по доменам";
+
+            //расчет прогрессбара
+            total = rdomDT.Rows.Count + rlinDT.Rows.Count;
+            k_progress = 0;
+            percents = (k_progress * 100) / total;
+            worker.ReportProgress(percents, NameOfCurrentCalculation);
+
+
+            // начало доменов
             iw = 1;
             for(int j = 0; j < rdomDT.Rows.Count; j++)//начало доменов
             {
-                               
+                NameOfCurrentCalculation = "Расчет по доменам (" + Convert.ToString(j + 1) + " из " + Convert.ToString(rdomDT.Rows.Count) + " )";
+                //изменение положения прогрессбара
+                k_progress++;
+                percents = (k_progress * 100) / total;
+                worker.ReportProgress(percents, NameOfCurrentCalculation);
+
                 posi = (iw * 100) / dom_kol;
                 position_rdom = j;
                 ///pMainWnd->m_progress.SetPos(posi);
@@ -965,9 +996,10 @@ ad82:
 
                     MACRR3();
 
+
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(ML, DISTMIN);
+                    RS[sk].Calculat(2, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1108,11 +1140,7 @@ ad82:
 
                     }
 
-
-
-
-
-
+                    
                     if(IGIST > IMGS) { IGIST = IMGS; }
                     k22 = IGIST;
                     if (fastCalc == 1)
@@ -1138,6 +1166,8 @@ ad90:
                 T += (float)DT;
                 goto ad82;
 ad83:
+
+
                 IGRFM[ INMAX + 1 ] = 0.0;
                 for(Jf = INMAX; Jf >= 1; Jf--)
                     IGRFM[ Jf ] += IGRFM[ Jf + 1 ];
@@ -1171,17 +1201,24 @@ ad2:
                     ///rdom.MoveNext();
                     continue;
                 }
+                int asdf = 0;
             };
             rdomDT.Clear();
 
             ///	pMainWnd->m_progress.SetPos(0);
 
             //начало линеаментов
-            rlinDT = FillTable( "select * from Линеаменты ORDER BY ind ASC" );
+            
 
             iw = 1;
             for(li = 0; li < rlinDT.Rows.Count; li++)
             {
+                //изменение положения прогрессбара
+                NameOfCurrentCalculation = "Расчет по линеаментам (" + Convert.ToString(li + 1) + " из " + Convert.ToString(rlinDT.Rows.Count) + " )";
+                k_progress++;
+                percents = (k_progress * 100) / total;
+                worker.ReportProgress(percents, NameOfCurrentCalculation);
+
                 posi = (iw * 100) / lin_kol;
                 ///		pMainWnd->m_progress.SetPos(posi);
 
@@ -1348,9 +1385,10 @@ al82:
 
                     MACRR3();
 
+
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(ML, DISTMIN);
+                    RS[sk].Calculat(2, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1511,6 +1549,8 @@ al90:
                 T += (float)DT;
                 goto al82;
 al83:
+
+
                 IGRFM[ INMAX + 1 ] = 0.0;
                 for(Jf = INMAX; Jf >= 1; Jf--)
                     IGRFM[ Jf ] += IGRFM[ Jf + 1 ];
@@ -4080,6 +4120,9 @@ a10:
             for (int i_rs=1; i_rs<= NETPNT; i_rs++)
             {
                 RS[i_rs].SAItogCalculation();
+
+                RS[i_rs].ProbabilityCalculation(5);
+                RS[i_rs].SAsave(Convert.ToString(i_rs));
             }
 
             double[] IGS = new double[ IMGS + 1 ];
