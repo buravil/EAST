@@ -14,11 +14,6 @@ namespace East_CSharp
 {
     class PRB
     {
-
-        //тест
-
-        //тест ветви
-
         #region members___
 
         StreamWriter ///id5,res,im2,
