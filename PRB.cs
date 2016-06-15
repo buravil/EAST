@@ -165,7 +165,7 @@ namespace East_CSharp
         double[] balldeagr7 = new double[200];
         double[] balldeagrx = new double[200];
         double[] balldeagry = new double[200];
-        String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEPROC;
+        String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEDEAGDOMLIN, NAMEPROC;
         ///	char NAME[4],NAME1[11],NAME2[16],NAME3[16],NAME4[16];
         String NAME6, NAME_NET_GEG, NAMGRP, NAME_Warning, NAMCTL, NAMEA;
         ///    char NAME5[16],NAME6[16],NAME7[11],NAME8[16],NAMGRP[16],NAME9[16],NAMCTL[16];
@@ -179,8 +179,9 @@ namespace East_CSharp
         string applicationDir = "";
 
         public string NameOfCurrentCalculation="пипа";
-       
 
+        double[,] DeargLineamDoman = new double[20000, 9];//Массив для деагрегации, запись ид даменов
+        int iiIND = 0;//индекс массива деагрегации доменов
 
         #endregion
 
@@ -846,6 +847,8 @@ a308:
                 LLOOP = 1;
                 MACRR3(); 
                 IND = Convert.ToInt32( rdomDT.Rows[ position_rdom ][ "ind" ] );
+                DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
+                iiIND++;
                 KMAG = Convert.ToInt32( rdomDT.Rows[ position_rdom ][ "kmag" ] );
                 PARFLN = Convert.ToString(rdomDT.Rows[position_rdom]["parfln"]);
                 kszon = Convert.ToDouble(rdomDT.Rows[position_rdom]["kszon"]);// площадь домена в км2
@@ -1083,6 +1086,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 1]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1094,6 +1098,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 2]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1105,6 +1110,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 3]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1116,6 +1122,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 4]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1127,6 +1134,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 5]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1139,6 +1147,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 6]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1150,6 +1159,7 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 7]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1255,6 +1265,8 @@ ad2:
 
                 IGRFM = new double[ IMM + 1 ];
                 IND = Convert.ToInt64( rlinDT.Rows[ li ][ "ind" ] );
+                DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
+                iiIND++;
                 KMAG = Convert.ToInt64( rlinDT.Rows[ li ][ "kmag" ] );
                 PARFLN = Convert.ToString(rlinDT.Rows[li]["parfln"]);
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
@@ -1472,6 +1484,7 @@ al82:
                             if (jdeg < 71) ////////////////////деагрег
                             {
                                 DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 1]++;
                             }
                         };
 
@@ -1483,6 +1496,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 2]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1494,6 +1508,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 3]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1505,6 +1520,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 4]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1516,6 +1532,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 5]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1528,6 +1545,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 6]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -1539,6 +1557,7 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                                DeargLineamDoman[iiIND, 7]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                             }
                         }
@@ -4462,6 +4481,36 @@ a12:
                     DEAGREGA.Close();
                     jjj++;
                 }
+
+                jjj = 0;//запись деагрегации для доменов и линеаментов
+                while (jjj < NETPNT)
+                {
+                    double[] SUMDEAGREGDOMLIN = new double[10];
+
+                    NAMEDEAGDOMLIN = "deagregDomLin_" + (jjj + 1) + ".TXT";
+
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    DEAGREGA2 = new StreamWriter(NAMEDEAGDOMLIN, false, Encoding.GetEncoding(1251));
+                    // DEAGREGA.WriteLine("Mlh\tR\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");.
+
+
+
+
+
+                    for (jdeg = 0; jdeg < 20000; jdeg++)//запись в файл
+                    {
+                        /*вывод в процентах*/
+                        DEAGREGA2.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", DeargLineamDoman[jdeg, 0], DeargLineamDoman[jdeg, 1], DeargLineamDoman[jdeg, 2], DeargLineamDoman[jdeg, 3], DeargLineamDoman[jdeg, 4], DeargLineamDoman[jdeg, 5], DeargLineamDoman[jdeg, 6], DeargLineamDoman[jdeg, 7]));
+                        // DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], DEAGREG[3, jdeg + (770 * jjj)], DEAGREG[4, jdeg + (770 * jjj)], DEAGREG[5, jdeg + (770 * jjj)], DEAGREG[6, jdeg + (770 * jjj)], DEAGREG[7, jdeg + (770 * jjj)], DEAGREG[8, jdeg + (770 * jjj)], DEAGREG[9, jdeg + (770 * jjj)]));
+
+                    }
+                    DEAGREGA2.Close();
+                    jjj++;
+                }
+
+
+                DeargLineamDoman[iiIND, 2]++;
+
             }            
 
 
