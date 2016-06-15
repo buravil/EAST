@@ -14,6 +14,7 @@ namespace East_CSharp
 {
     class PRB
     {
+        //ветвь RspSpectr
 
         #region members___
 
