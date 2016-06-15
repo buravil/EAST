@@ -52,7 +52,7 @@ namespace East_CSharp
 
         //сохранение 
         private String NameDIR;
-        private DirectoryInfo Dir;
+private DirectoryInfo Dir;
 
 
 
@@ -84,7 +84,7 @@ namespace East_CSharp
 
 
             NameDIR = Application.StartupPath;
-            Dir = Directory.CreateDirectory(NameDIR + "\\Out");
+           // Dir = Directory.CreateDirectory(NameDIR + "\\Out");
 
             for (int i = 0; i < Njsa - 2; i++)
             {
