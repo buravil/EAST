@@ -20,6 +20,7 @@ namespace East_CSharp
             fla, wrng_out, ctl, grp, outFile, gst, fls, DEAGREGA, DEAGREGA2;
 
         public static Random random = new Random(DateTime.Now.Millisecond * DateTime.Now.Minute);
+        Random rnd = new Random();
 
         public bool m_ch_make_katalog = false;
         public int m_e_int_voz_ot, m_e_int_voz_do;
@@ -106,7 +107,10 @@ namespace East_CSharp
         double SDEVA, SDEVM, TPR, TPR1, AMWBAS, DX1, UX, DEVL, UY, DEVC, DX2;
         double[] ATTPAR = new double[6];
         double CROT, SROT, FCOR, XRC, YRC, CP, SP, SUM, SUMW, XS, YS, ZS;
-        
+
+        //тип подвижки
+        int typeOfMovement;
+
         double CC, RA, RB, DR, SB, XX, YY, R3D, DENOM, DIDA, DIDMW, R35, R36, R37, R38, R39;
         double GI0, AN1, AN2, DL, DW, HB, PHIB, RNLB, FCORB, CBET, SBET;
         double ALB, AWB, RNWB, CMAG, AIBAS, ALBYWB, DIST, CONTRIB, RSWITCH;
@@ -379,7 +383,7 @@ for(int i = 0; i < 500; i++)
 
             OpenBase();
 
-            NameOfCurrentCalculation = "Расчет доменов";
+            NameOfCurrentCalculation = "Начало расчета";
             worker.ReportProgress(0, NameOfCurrentCalculation);
 
             ClearZony();
@@ -848,10 +852,23 @@ a308:
                 SDEVA = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdeva"]);
                 SDEVM = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdevm"]);
                 SDEVI = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdevi"]);///////////////////////////////////////////////////////////////////////////////////////
+                try
+                {
+                    typeOfMovement = Convert.ToInt16(rdomDT.Rows[position_rdom]["tip_podv"]);
+                }
+                
+                catch
+                {
+                    MessageBox.Show("В базе данных не задана подвижка");
+                }
 
+                if (typeOfMovement == 5)
+                {
+                    typeOfMovement = rnd.Next(0,5);
+                }
                 //ITY - здесь = 2
 
-                
+
                 ITY = 2;
                 Debug.Print( String.Format( "ZNUMB,TIP,KMAG={0} {1} {2}",IND,ITY,KMAG ) );
                 ISBR = 1;
@@ -998,7 +1015,7 @@ ad82:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(2, ML, DISTMIN);
+                    RS[sk].Calculat(typeOfMovement, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1243,7 +1260,12 @@ ad2:
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
                 SDEVM = Convert.ToDouble(rlinDT.Rows[li]["sdevm"]);
                 SDEVI = Convert.ToDouble(rlinDT.Rows[li]["sdevi"]);
+                typeOfMovement = Convert.ToInt16(rlinDT.Rows[position_rdom]["tip_podv"]);
 
+                if (typeOfMovement == 5)
+                {
+                    typeOfMovement = rnd.Next(0, 5);
+                }
 
                 //ITY - здесь = 1
                 ITY = 1;
@@ -1387,7 +1409,7 @@ al82:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(2, ML, DISTMIN);
+                    RS[sk].Calculat(typeOfMovement, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -4120,8 +4142,8 @@ a10:
             {
                 RS[i_rs].SAItogCalculation();
 
-                RS[i_rs].ProbabilityCalculation(5);
-                RS[i_rs].SAsave(Convert.ToString(i_rs));
+              //  RS[i_rs].ProbabilityCalculation(5);
+              //RS[i_rs].SAsave(Convert.ToString(i_rs));
             }
 
             double[] IGS = new double[ IMGS + 1 ];
@@ -4143,7 +4165,13 @@ a10:
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
 
-            fla.WriteLine("lat\tlon\tT100\tT500\tT1000\tT2000\tT5000\tT10000\tT100000\tVI\tVII\tVIII\tIX\t100PGA\t100SA_0.2\t100SA_1\t500PGA\t500SA_0.2\t500SA_1\t1000PGA\t1000SA_0.2\t1000SA_1\t2000PGA\t2000SA_0.2\t2000SA_1\t5000PGA\t5000SA_0.2\t5000SA_1\t10000PGA\t10000SA_0.2\t10000SA_1");
+            fla.Write("lat\tlon\tT100\tT500\tT1000\tT2000\tT5000\tT10000\tT100000\tVI\tVII\tVIII\tIX\t");
+            fla.Write("PGA_100\tSA_0_1_100\tSA_0_2_100\tSA_0_3_100\tSA_0_4_100\tSA_0_5_100\tSA_0_7_100\tSA_1_100\tSA_2_100\tSA_3_100\tSA_5_100\t");
+            fla.Write("PGA_500\tSA_0_1_500\tSA_0_2_500\tSA_0_3_500\tSA_0_4_500\tSA_0_5_500\tSA_0_7_500\tSA_1_500\tSA_2_500\tSA_3_500\tSA_5_500\t");
+            fla.Write("PGA_1000\tSA_0_1_1000\tSA_0_2_1000\tSA_0_3_1000\tSA_0_4_1000\tSA_0_5_1000\tSA_0_7_1000\tSA_1_1000\tSA_2_1000\tSA_3_1000\tSA_5_1000\t");
+            fla.Write("PGA_2000\tSA_0_1_2000\tSA_0_2_2000\tSA_0_3_2000\tSA_0_4_2000\tSA_0_5_2000\tSA_0_7_2000\tSA_1_2000\tSA_2_2000\tSA_3_2000\tSA_5_2000\t");
+            fla.Write("PGA_5000\tSA_0_1_5000\tSA_0_2_5000\tSA_0_3_5000\tSA_0_4_5000\tSA_0_5_5000\tSA_0_7_5000\tSA_1_5000\tSA_2_5000\tSA_3_5000\tSA_5_5000\t");
+            fla.Write("PGA_10000\tSA_0_1_10000\tSA_0_2_10000\tSA_0_3_10000\tSA_0_4_10000\tSA_0_5_10000\tSA_0_7_10000\tSA_1_10000\tSA_2_10000\tSA_3_10000\tSA_5_10000\n");
 
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
@@ -4297,7 +4325,7 @@ a12:
 
 
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                fla.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}",
+                fla.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}\t{31}\t{32}\t{33}\t{34}\t{35}\t{36}\t{37}\t{38}\t{39}\t{40}\t{41}\t{42}\t{43}\t{44}\t{45}\t{46}\t{47}\t{48}\t{49}\t{50}\t{51}\t{52}\t{53}\t{54}\t{55}\t{56}\t{57}\t{58}\t{59}\t{60}\t{61}\t{62}\t{63}\t{64}\t{65}\t{66}\t{67}\t{68}\t{69}\t{70}\t{71}\t{72}\t{73}\t{74}\t{75}\t{76}\t{77}\t{78}",
                     massiv_ABCD[0,k], 
                     massiv_ABCD[1,k],
                     massiv_ABCD[13,k],
@@ -4312,23 +4340,76 @@ a12:
                     POVTOR[4,k],
                     POVTOR[5,k],
                     RS[k].PGASACalculation(0.01, 39.347),
-                    RS[k].PGASACalculation(0.2, 39.347), 
+                    RS[k].PGASACalculation(0.1, 39.347),
+                    RS[k].PGASACalculation(0.2, 39.347),
+                    RS[k].PGASACalculation(0.3, 39.347),
+                    RS[k].PGASACalculation(0.4, 39.347),
+                    RS[k].PGASACalculation(0.5, 39.347),
+                    RS[k].PGASACalculation(0.7, 39.347),
                     RS[k].PGASACalculation(1, 39.347),
+                    RS[k].PGASACalculation(2, 39.347),
+                    RS[k].PGASACalculation(3, 39.347),
+                    RS[k].PGASACalculation(5, 39.347),
+
                     RS[k].PGASACalculation(0.01, 9.516),
+                    RS[k].PGASACalculation(0.1, 9.516),
                     RS[k].PGASACalculation(0.2, 9.516),
+                    RS[k].PGASACalculation(0.3, 9.516),
+                    RS[k].PGASACalculation(0.4, 9.516),
+                    RS[k].PGASACalculation(0.5, 9.516),
+                    RS[k].PGASACalculation(0.7, 9.516),
                     RS[k].PGASACalculation(1, 9.516),
+                    RS[k].PGASACalculation(2, 9.516),
+                    RS[k].PGASACalculation(3, 9.516),
+                    RS[k].PGASACalculation(5, 9.516),
+
                     RS[k].PGASACalculation(0.01, 4.877),
+                    RS[k].PGASACalculation(0.1, 4.877),
                     RS[k].PGASACalculation(0.2, 4.877),
+                    RS[k].PGASACalculation(0.3, 4.877),
+                    RS[k].PGASACalculation(0.4, 4.877),
+                    RS[k].PGASACalculation(0.5, 4.877),
+                    RS[k].PGASACalculation(0.7, 4.877),
                     RS[k].PGASACalculation(1, 4.877),
+                    RS[k].PGASACalculation(2, 4.877),
+                    RS[k].PGASACalculation(3, 4.877),
+                    RS[k].PGASACalculation(5, 4.877),
+
                     RS[k].PGASACalculation(0.01, 2.469),
+                    RS[k].PGASACalculation(0.1, 2.469),
                     RS[k].PGASACalculation(0.2, 2.469),
+                    RS[k].PGASACalculation(0.3, 2.469),
+                    RS[k].PGASACalculation(0.4, 2.469),
+                    RS[k].PGASACalculation(0.5, 2.469),
+                    RS[k].PGASACalculation(0.7, 2.469),
                     RS[k].PGASACalculation(1, 2.469),
+                    RS[k].PGASACalculation(2, 2.469),
+                    RS[k].PGASACalculation(3, 2.469),
+                    RS[k].PGASACalculation(5, 2.469),
+
                     RS[k].PGASACalculation(0.01, 0.995),
+                    RS[k].PGASACalculation(0.1, 0.995),
                     RS[k].PGASACalculation(0.2, 0.995),
+                    RS[k].PGASACalculation(0.3, 0.995),
+                    RS[k].PGASACalculation(0.4, 0.995),
+                    RS[k].PGASACalculation(0.5, 0.995),
+                    RS[k].PGASACalculation(0.7, 0.995),
                     RS[k].PGASACalculation(1, 0.995),
+                    RS[k].PGASACalculation(2, 0.995),
+                    RS[k].PGASACalculation(3, 0.995),
+                    RS[k].PGASACalculation(5, 0.995),
+
                     RS[k].PGASACalculation(0.01, 0.499),
+                    RS[k].PGASACalculation(0.1, 0.499),
                     RS[k].PGASACalculation(0.2, 0.499),
-                    RS[k].PGASACalculation(1, 0.499)
+                    RS[k].PGASACalculation(0.3, 0.499),
+                    RS[k].PGASACalculation(0.4, 0.499),
+                    RS[k].PGASACalculation(0.5, 0.499),
+                    RS[k].PGASACalculation(0.7, 0.499),
+                    RS[k].PGASACalculation(1, 0.499),
+                    RS[k].PGASACalculation(2, 0.499),
+                    RS[k].PGASACalculation(3, 0.499),
+                    RS[k].PGASACalculation(5, 0.499)
                     ));
 
                // POVTOR_BALL.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", POVTOR[0,k], POVTOR[1,k], POVTOR[2,k], POVTOR[3,k], POVTOR[4,k], POVTOR[5,k]));
