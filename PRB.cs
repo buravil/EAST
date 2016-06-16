@@ -4451,10 +4451,7 @@ a12:
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     DEAGREGA = new StreamWriter(NAME5, false, Encoding.GetEncoding(1251));
                     DEAGREGA.WriteLine("Mlh\tR\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");
-
-
-                  
-
+                    
                   //  for (jdeg = 1; jdeg <= 770 * NETPNT; jdeg++)//
                     for (int i = 1; i <= 9; i++)
                     {
@@ -4482,6 +4479,7 @@ a12:
                     jjj++;
                 }
 
+
                 jjj = 0;//запись деагрегации для доменов и линеаментов
                 while (jjj < NETPNT)
                 {
@@ -4491,16 +4489,30 @@ a12:
 
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     DEAGREGA2 = new StreamWriter(NAMEDEAGDOMLIN, false, Encoding.GetEncoding(1251));
-                    // DEAGREGA.WriteLine("Mlh\tR\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");.
+                    DEAGREGA2.WriteLine("N\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");
 
 
+                    for (int i = 1; i < 8; i++)
+                    {
+                        for (jdeg = 0; jdeg < 20000; jdeg++)
+                        {
+                            SUMDEAGREGDOMLIN[i] = DeargLineamDoman[jdeg, i] + SUMDEAGREGDOMLIN[i];//считаем сумму по столбцам
 
-
+                        }
+                    }
 
                     for (jdeg = 0; jdeg < 20000; jdeg++)//запись в файл
                     {
                         /*вывод в процентах*/
-                        DEAGREGA2.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", DeargLineamDoman[jdeg, 0], DeargLineamDoman[jdeg, 1], DeargLineamDoman[jdeg, 2], DeargLineamDoman[jdeg, 3], DeargLineamDoman[jdeg, 4], DeargLineamDoman[jdeg, 5], DeargLineamDoman[jdeg, 6], DeargLineamDoman[jdeg, 7]));
+                        DEAGREGA2.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", 
+                            DeargLineamDoman[jdeg, 0],
+                            DeargLineamDoman[jdeg, 1]/ SUMDEAGREGDOMLIN[1],
+                            DeargLineamDoman[jdeg, 2]/ SUMDEAGREGDOMLIN[2],
+                            DeargLineamDoman[jdeg, 3]/ SUMDEAGREGDOMLIN[3],
+                            DeargLineamDoman[jdeg, 4]/ SUMDEAGREGDOMLIN[4],
+                            DeargLineamDoman[jdeg, 5]/ SUMDEAGREGDOMLIN[5],
+                            DeargLineamDoman[jdeg, 6]/ SUMDEAGREGDOMLIN[6],
+                            DeargLineamDoman[jdeg, 7]/ SUMDEAGREGDOMLIN[7] ));
                         // DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], DEAGREG[3, jdeg + (770 * jjj)], DEAGREG[4, jdeg + (770 * jjj)], DEAGREG[5, jdeg + (770 * jjj)], DEAGREG[6, jdeg + (770 * jjj)], DEAGREG[7, jdeg + (770 * jjj)], DEAGREG[8, jdeg + (770 * jjj)], DEAGREG[9, jdeg + (770 * jjj)]));
 
                     }
