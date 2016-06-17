@@ -134,6 +134,7 @@ namespace East_CSharp
         double[,] IGST = new double[NRP + 1, 7];
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
+        double[,] DEAGREGRespSpectr = new double[100, 77001];
         double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
@@ -641,6 +642,9 @@ a308:
                         {
                             DEAGREG[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
                             DEAGREG[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
+
+                            DEAGREGRespSpectr[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
+                            DEAGREGRespSpectr[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
                         }
                     }
                 }
@@ -1184,6 +1188,11 @@ ad82:
                             }
                             
                         }
+
+
+                    //Деагрегация по спектрам реакций
+
+
 
                     }
 

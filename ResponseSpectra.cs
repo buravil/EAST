@@ -42,6 +42,9 @@ namespace East_CSharp
         //Количество значений PGA в матрице SA
         int Nisa;
 
+        //текущий расчитанный спектр реакций
+        double[,] Bitog;
+
         //Матрица
         double[,] SA;
         double[,] SAkum;
@@ -52,7 +55,10 @@ namespace East_CSharp
 
         //сохранение 
         private String NameDIR;
-private DirectoryInfo Dir;
+        private DirectoryInfo Dir;
+
+        //переменная-флаг, истина - если расчитался текущий спектр реакций
+        public bool fl;
 
 
 
@@ -76,10 +82,13 @@ private DirectoryInfo Dir;
 
             Njsa = 33;
             Nisa = 62;
+            Bitog = new double[NN + 1, 2];
             SA = new double[Nisa, Njsa];
             SAitog = new double[Nisa, Njsa];
             SAkum = new double[Nisa, Njsa];
             YY3 = new double[2, 61];
+
+
             double test = Math.Pow(10, (-1.5 + (1.0 / 10)));
 
 
@@ -215,13 +224,14 @@ private DirectoryInfo Dir;
         {
             double deltaA, deltaB, deltaT;
             double PGA;
-            double[,] Bitog = new double[NN + 1, 2];
+            Array.Clear(Bitog, 0, Bitog.Length);
             int isa, jsa, ipga;
-
+            fl = false;
             double logInIsa, doubleIsa, doubleIpga;
 
             if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
             {
+                fl = true;
                 deltaA = normRand.NextDouble() * 0.18;
                 deltaB = normRand.NextDouble() * 0.07;
                 deltaT = normRand.NextDouble() * 0.2;
@@ -320,6 +330,7 @@ private DirectoryInfo Dir;
             }
             YY3[0, 1] = 0.01;
         }
+
         //Функция, возвращающая значение с вероятностной кривой для любого значения периода
         public double PGASACalculation(double t, double P)
         {
