@@ -16,6 +16,11 @@ namespace East_CSharp
     {
         #region members___
 
+        //массивы с периодами и вероятностью для расчета
+        public int[] periodsOfRepeating = new int[7];
+        public double[] probabilityOfExceedance = new double[7];
+
+
         StreamWriter ///id5,res,im2,
             fla, wrng_out, ctl, grp, outFile, gst, fls, DEAGREGA, DEAGREGA2;
 
@@ -450,8 +455,6 @@ a307:
                 rbb70 = Convert.ToDouble(rsDT.Rows[0]["rb70"]); 
                 rbb75 = Convert.ToDouble(rsDT.Rows[0]["rb75"]); 
                 rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]); 
-               // LCAT = Convert.ToInt32(rsDT.Rows[0]["cat"]); ; //сохранять каталог 1 или 0
-              //  DEAG = Convert.ToInt32(rsDT.Rows[0]["deag"]); ; //запускать деагрегацию 1 или 0
             }
             
             rsDT.Clear();
@@ -578,8 +581,21 @@ a308:
             {
                 aa = net.ReadLine();
 
-                XNET[ii] = Convert.ToDouble(aa.Substring(0, aa.IndexOf(" ")).Trim());
-                YNET[ii] = Convert.ToDouble(aa.Substring(aa.IndexOf(" ")).Trim());
+                int SEP1 = aa.IndexOf(" ");
+                int SEP2 = aa.IndexOf("\t");
+                string[] stringSeparators = new string[1] { " " };
+                if (SEP1 >= 0)
+                    stringSeparators[0] = " ";
+                if (SEP2 >= 0)
+                    stringSeparators[0] = "\t";
+
+                String[] nums = aa.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                XNET[ii] = Convert.ToDouble(nums[0]);
+                YNET[ii] = Convert.ToDouble(nums[1]);
+
+                //XNET[ii] = Convert.ToDouble(aa.Substring(0, aa.IndexOf(" ")).Trim());
+                //YNET[ii] = Convert.ToDouble(aa.Substring(aa.IndexOf(" ")).Trim());
 
                 if (aa.StartsWith("9999.0"))
                     goto a305;
@@ -1086,9 +1102,10 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 1]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 1]++;
                             }
+                                                        
                         }
 
                         if (RESI < balldeagr2[sk]) { }
@@ -1098,9 +1115,10 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 2]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 2]++;
                             }
+                                                        
                         }
 
                         if (RESI < balldeagr3[sk]) { }
@@ -1110,8 +1128,8 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 3]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 3]++;
                             }
                         }
 
@@ -1122,8 +1140,8 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 4]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 4]++;
                             }
                         }
 
@@ -1134,9 +1152,10 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 5]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 5]++;
                             }
+                            
                         }
 
 
@@ -1147,9 +1166,10 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 6]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 6]++;
                             }
+                            
                         }
 
                         if (RESI < balldeagr7[sk]) { }
@@ -1159,9 +1179,10 @@ ad82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 7]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 7]++;
                             }
+                            
                         }
 
                     }
@@ -1486,6 +1507,7 @@ al82:
                                 DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 DeargLineamDoman[iiIND, 1]++;
                             }
+                            
                         };
 
                         if (RESI < balldeagr2[sk]) { }
@@ -1496,9 +1518,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 2]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 2]++;
                             }
+                            
                         }
 
                         if (RESI < balldeagr3[sk]) { }
@@ -1508,9 +1531,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 3]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 3]++;
                             }
+                            
                         }
 
                         if (RESI < balldeagr4[sk]) { }
@@ -1520,9 +1544,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 4]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 4]++;
                             }
+                            
                         }
 
                         if (RESI < balldeagr5[sk]) { }
@@ -1532,9 +1557,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 5]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 5]++;
                             }
+                            
                         }
 
 
@@ -1545,9 +1571,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 6]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 6]++;
                             }
+                            
                         }
 
                         if (RESI < balldeagr7[sk]) { }
@@ -1557,9 +1584,10 @@ al82:
                             if (jdeg < 71)
                             {
                                 DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                                DeargLineamDoman[iiIND, 7]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
+                                DeargLineamDoman[iiIND, 7]++;
                             }
+                            
                         }
 
                     }
@@ -4184,13 +4212,21 @@ a10:
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
 
-            fla.Write("lat\tlon\tT100\tT500\tT1000\tT2000\tT5000\tT10000\tT100000\tVI\tVII\tVIII\tIX\t");
-            fla.Write("PGA_100\tSA_0_1_100\tSA_0_2_100\tSA_0_3_100\tSA_0_4_100\tSA_0_5_100\tSA_0_7_100\tSA_1_100\tSA_2_100\tSA_3_100\tSA_5_100\t");
-            fla.Write("PGA_500\tSA_0_1_500\tSA_0_2_500\tSA_0_3_500\tSA_0_4_500\tSA_0_5_500\tSA_0_7_500\tSA_1_500\tSA_2_500\tSA_3_500\tSA_5_500\t");
-            fla.Write("PGA_1000\tSA_0_1_1000\tSA_0_2_1000\tSA_0_3_1000\tSA_0_4_1000\tSA_0_5_1000\tSA_0_7_1000\tSA_1_1000\tSA_2_1000\tSA_3_1000\tSA_5_1000\t");
-            fla.Write("PGA_2000\tSA_0_1_2000\tSA_0_2_2000\tSA_0_3_2000\tSA_0_4_2000\tSA_0_5_2000\tSA_0_7_2000\tSA_1_2000\tSA_2_2000\tSA_3_2000\tSA_5_2000\t");
-            fla.Write("PGA_5000\tSA_0_1_5000\tSA_0_2_5000\tSA_0_3_5000\tSA_0_4_5000\tSA_0_5_5000\tSA_0_7_5000\tSA_1_5000\tSA_2_5000\tSA_3_5000\tSA_5_5000\t");
-            fla.Write("PGA_10000\tSA_0_1_10000\tSA_0_2_10000\tSA_0_3_10000\tSA_0_4_10000\tSA_0_5_10000\tSA_0_7_10000\tSA_1_10000\tSA_2_10000\tSA_3_10000\tSA_5_10000\n");
+            fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
+                periodsOfRepeating[0],
+                periodsOfRepeating[1],
+                periodsOfRepeating[2],
+                periodsOfRepeating[3],
+                periodsOfRepeating[4],
+                periodsOfRepeating[5],
+                periodsOfRepeating[6]);
+            for (int i = 0; i < 6; i++)
+            {
+                fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
+    periodsOfRepeating[i]);
+            }
+            fla.Write("\n");
+
 
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
@@ -4276,6 +4312,10 @@ a21:
 a12:
                 massiv_ABCD[ 0,k ] = X[ 1 ];
                 massiv_ABCD[ 1,k ] = X[ 2 ];
+
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[4]); //5000
+                RSKVN(PNUM1, CAM, CAMN, ref X[3]);
+
                 massiv_ABCD[ 8,k ] = X[ 3 ];
                 massiv_ABCD[ 9,k ] = Y1;
                 massiv_ABCD[ 10,k ] = Y2;
@@ -4288,7 +4328,7 @@ a12:
                 }
 
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * 10.0; //500 лет
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[1]); //2 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4304,7 +4344,7 @@ a12:
                     //	i_bz++;
                 }
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * 5.0; //1000 лет
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[2]); //3 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4320,19 +4360,22 @@ a12:
                     i_bz++;
                 }
 
-                PNUM1 = PNUM / 2.0;//10000 лет
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[5]);//10000 лет
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
-                PNUM1 = PNUM * 2.5;//2500 лет
+
+
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[3]);//2500 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y1);
-                PNUM1 = PNUM * 50.0;//100 лет
+
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[0]);//1 значение
                 RSKVN(PNUM1, CAM, CAMN, ref Y2);
-                PNUM1 = PNUM / 2.0;
+                
                 massiv_ABCD[ 11,k ] = X[ 3 ];
                 massiv_ABCD[ 12,k ] = Y1;
                 massiv_ABCD[ 13,k ] = Y2;
-                PNUM1 = PNUM / 20;//100000 лет
+
+                PNUM1 = PNUM * (500.0 / periodsOfRepeating[6]);//100000 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y3);
-                PNUM1 = PNUM / 2.0;
                 massiv_ABCD[14, k] = Y3;
 
                 if(m_main_base_ok)
@@ -4344,92 +4387,37 @@ a12:
 
 
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-                fla.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}\t{31}\t{32}\t{33}\t{34}\t{35}\t{36}\t{37}\t{38}\t{39}\t{40}\t{41}\t{42}\t{43}\t{44}\t{45}\t{46}\t{47}\t{48}\t{49}\t{50}\t{51}\t{52}\t{53}\t{54}\t{55}\t{56}\t{57}\t{58}\t{59}\t{60}\t{61}\t{62}\t{63}\t{64}\t{65}\t{66}\t{67}\t{68}\t{69}\t{70}\t{71}\t{72}\t{73}\t{74}\t{75}\t{76}\t{77}\t{78}",
-                    massiv_ABCD[0,k], 
-                    massiv_ABCD[1,k],
-                    massiv_ABCD[13,k],
-                    massiv_ABCD[2,k], 
-                    massiv_ABCD[5,k],
-                    massiv_ABCD[12,k],
-                    massiv_ABCD[8,k], 
-                    massiv_ABCD[11,k],
+                fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t",
+                    massiv_ABCD[0, k],
+                    massiv_ABCD[1, k],
+                    massiv_ABCD[13, k],
+                    massiv_ABCD[2, k],
+                    massiv_ABCD[5, k],
+                    massiv_ABCD[12, k],
+                    massiv_ABCD[8, k],
+                    massiv_ABCD[11, k],
                     massiv_ABCD[14, k],
-                    POVTOR[2,k],
-                    POVTOR[3,k],
-                    POVTOR[4,k],
-                    POVTOR[5,k],
-                    RS[k].PGASACalculation(0.01, 39.347),
-                    RS[k].PGASACalculation(0.1, 39.347),
-                    RS[k].PGASACalculation(0.2, 39.347),
-                    RS[k].PGASACalculation(0.3, 39.347),
-                    RS[k].PGASACalculation(0.4, 39.347),
-                    RS[k].PGASACalculation(0.5, 39.347),
-                    RS[k].PGASACalculation(0.7, 39.347),
-                    RS[k].PGASACalculation(1, 39.347),
-                    RS[k].PGASACalculation(2, 39.347),
-                    RS[k].PGASACalculation(3, 39.347),
-                    RS[k].PGASACalculation(5, 39.347),
+                    POVTOR[2, k],
+                    POVTOR[3, k],
+                    POVTOR[4, k],
+                    POVTOR[5, k]));
+                for (int i = 0; i < 6; i++)
+                {
+                    fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t",
+                        RS[k].PGASACalculation(0.01, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.1, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.2, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.3, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.4, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.5, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(0.7, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(1, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(2, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(3, probabilityOfExceedance[i]),
+                        RS[k].PGASACalculation(5, probabilityOfExceedance[i])));
+                }
 
-                    RS[k].PGASACalculation(0.01, 9.516),
-                    RS[k].PGASACalculation(0.1, 9.516),
-                    RS[k].PGASACalculation(0.2, 9.516),
-                    RS[k].PGASACalculation(0.3, 9.516),
-                    RS[k].PGASACalculation(0.4, 9.516),
-                    RS[k].PGASACalculation(0.5, 9.516),
-                    RS[k].PGASACalculation(0.7, 9.516),
-                    RS[k].PGASACalculation(1, 9.516),
-                    RS[k].PGASACalculation(2, 9.516),
-                    RS[k].PGASACalculation(3, 9.516),
-                    RS[k].PGASACalculation(5, 9.516),
-
-                    RS[k].PGASACalculation(0.01, 4.877),
-                    RS[k].PGASACalculation(0.1, 4.877),
-                    RS[k].PGASACalculation(0.2, 4.877),
-                    RS[k].PGASACalculation(0.3, 4.877),
-                    RS[k].PGASACalculation(0.4, 4.877),
-                    RS[k].PGASACalculation(0.5, 4.877),
-                    RS[k].PGASACalculation(0.7, 4.877),
-                    RS[k].PGASACalculation(1, 4.877),
-                    RS[k].PGASACalculation(2, 4.877),
-                    RS[k].PGASACalculation(3, 4.877),
-                    RS[k].PGASACalculation(5, 4.877),
-
-                    RS[k].PGASACalculation(0.01, 2.469),
-                    RS[k].PGASACalculation(0.1, 2.469),
-                    RS[k].PGASACalculation(0.2, 2.469),
-                    RS[k].PGASACalculation(0.3, 2.469),
-                    RS[k].PGASACalculation(0.4, 2.469),
-                    RS[k].PGASACalculation(0.5, 2.469),
-                    RS[k].PGASACalculation(0.7, 2.469),
-                    RS[k].PGASACalculation(1, 2.469),
-                    RS[k].PGASACalculation(2, 2.469),
-                    RS[k].PGASACalculation(3, 2.469),
-                    RS[k].PGASACalculation(5, 2.469),
-
-                    RS[k].PGASACalculation(0.01, 0.995),
-                    RS[k].PGASACalculation(0.1, 0.995),
-                    RS[k].PGASACalculation(0.2, 0.995),
-                    RS[k].PGASACalculation(0.3, 0.995),
-                    RS[k].PGASACalculation(0.4, 0.995),
-                    RS[k].PGASACalculation(0.5, 0.995),
-                    RS[k].PGASACalculation(0.7, 0.995),
-                    RS[k].PGASACalculation(1, 0.995),
-                    RS[k].PGASACalculation(2, 0.995),
-                    RS[k].PGASACalculation(3, 0.995),
-                    RS[k].PGASACalculation(5, 0.995),
-
-                    RS[k].PGASACalculation(0.01, 0.499),
-                    RS[k].PGASACalculation(0.1, 0.499),
-                    RS[k].PGASACalculation(0.2, 0.499),
-                    RS[k].PGASACalculation(0.3, 0.499),
-                    RS[k].PGASACalculation(0.4, 0.499),
-                    RS[k].PGASACalculation(0.5, 0.499),
-                    RS[k].PGASACalculation(0.7, 0.499),
-                    RS[k].PGASACalculation(1, 0.499),
-                    RS[k].PGASACalculation(2, 0.499),
-                    RS[k].PGASACalculation(3, 0.499),
-                    RS[k].PGASACalculation(5, 0.499)
-                    ));
+                fla.Write("\n");
 
                // POVTOR_BALL.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", POVTOR[0,k], POVTOR[1,k], POVTOR[2,k], POVTOR[3,k], POVTOR[4,k], POVTOR[5,k]));
 
@@ -4450,7 +4438,15 @@ a12:
                     
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     DEAGREGA = new StreamWriter(NAME5, false, Encoding.GetEncoding(1251));
-                    DEAGREGA.WriteLine("Mlh\tR\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");
+                    DEAGREGA.WriteLine("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
+                        periodsOfRepeating[0],
+                        periodsOfRepeating[1],
+                        periodsOfRepeating[2],
+                        periodsOfRepeating[3],
+                        periodsOfRepeating[4],
+                        periodsOfRepeating[5],
+                        periodsOfRepeating[6]
+                        );
                     
                   //  for (jdeg = 1; jdeg <= 770 * NETPNT; jdeg++)//
                     for (int i = 1; i <= 9; i++)
@@ -4489,7 +4485,15 @@ a12:
 
                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     DEAGREGA2 = new StreamWriter(NAMEDEAGDOMLIN, false, Encoding.GetEncoding(1251));
-                    DEAGREGA2.WriteLine("N\tT100\tT500\tT1000\tT2500\tT5000\tT10000\tT2000");
+                    DEAGREGA2.WriteLine("N\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
+                        periodsOfRepeating[0],
+                        periodsOfRepeating[1],
+                        periodsOfRepeating[2],
+                        periodsOfRepeating[3],
+                        periodsOfRepeating[4],
+                        periodsOfRepeating[5],
+                        periodsOfRepeating[6]
+                        );
 
 
                     for (int i = 1; i < 8; i++)

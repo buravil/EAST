@@ -16,6 +16,14 @@ namespace East_CSharp
         public Form1()
         {
             InitializeComponent();
+
+            textBox8.Text = TtoP(Convert.ToInt32(textBox1.Text)).ToString("F3");
+            textBox9.Text = TtoP(Convert.ToInt32(textBox2.Text)).ToString("F3");
+            textBox10.Text = TtoP(Convert.ToInt32(textBox3.Text)).ToString("F3");
+            textBox11.Text = TtoP(Convert.ToInt32(textBox4.Text)).ToString("F3");
+            textBox12.Text = TtoP(Convert.ToInt32(textBox5.Text)).ToString("F3");
+            textBox13.Text = TtoP(Convert.ToInt32(textBox6.Text)).ToString("F3");
+            textBox14.Text = TtoP(Convert.ToInt32(textBox7.Text)).ToString("F3");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -47,6 +55,23 @@ namespace East_CSharp
             prb.i_az = 1;
             prb.i_bz = 1;
             prb.i_cz = 1;
+
+            prb.probabilityOfExceedance[0] = Convert.ToDouble(textBox8.Text);
+            prb.probabilityOfExceedance[1] = Convert.ToDouble(textBox9.Text);
+            prb.probabilityOfExceedance[2] = Convert.ToDouble(textBox10.Text);
+            prb.probabilityOfExceedance[3] = Convert.ToDouble(textBox11.Text);
+            prb.probabilityOfExceedance[4] = Convert.ToDouble(textBox12.Text);
+            prb.probabilityOfExceedance[5] = Convert.ToDouble(textBox13.Text);
+            prb.probabilityOfExceedance[6] = Convert.ToDouble(textBox14.Text);
+
+            prb.periodsOfRepeating[0] = Convert.ToInt32(textBox1.Text);
+            prb.periodsOfRepeating[1] = Convert.ToInt32(textBox2.Text);
+            prb.periodsOfRepeating[2] = Convert.ToInt32(textBox3.Text);
+            prb.periodsOfRepeating[3] = Convert.ToInt32(textBox4.Text);
+            prb.periodsOfRepeating[4] = Convert.ToInt32(textBox5.Text);
+            prb.periodsOfRepeating[5] = Convert.ToInt32(textBox6.Text);
+            prb.periodsOfRepeating[6] = Convert.ToInt32(textBox7.Text);
+
 
             //если выбран быстрый счет
             if (checkBox1.Checked)
@@ -166,6 +191,51 @@ namespace East_CSharp
         private void progressBar1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private double TtoP(int T)
+        {
+            return (1 - Math.Pow(Math.E, (-50.0 / Convert.ToDouble(T))))*100;
+        }
+
+        private void textBox1_Leave(object sender, EventArgs e)
+        {
+            textBox8.Text = TtoP(Convert.ToInt32(textBox1.Text)).ToString("F3");
+        }
+
+        private void textBox2_Leave(object sender, EventArgs e)
+        {
+            textBox9.Text = TtoP(Convert.ToInt32(textBox2.Text)).ToString("F3");
+        }
+
+        private void textBox3_Leave(object sender, EventArgs e)
+        {
+            textBox10.Text = TtoP(Convert.ToInt32(textBox3.Text)).ToString("F3");
+        }
+
+        private void textBox4_Leave(object sender, EventArgs e)
+        {
+            textBox11.Text = TtoP(Convert.ToInt32(textBox4.Text)).ToString("F3");
+        }
+
+        private void textBox5_Leave(object sender, EventArgs e)
+        {
+            textBox12.Text = TtoP(Convert.ToInt32(textBox5.Text)).ToString("F3");
+        }
+
+        private void textBox6_Leave(object sender, EventArgs e)
+        {
+            textBox13.Text = TtoP(Convert.ToInt32(textBox6.Text)).ToString("F3");
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox7_Leave(object sender, EventArgs e)
+        {
+            textBox14.Text = TtoP(Convert.ToInt32(textBox7.Text)).ToString("F3");
         }
     }
 }
