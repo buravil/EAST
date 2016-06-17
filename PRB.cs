@@ -134,6 +134,7 @@ namespace East_CSharp
         double[,] IGST = new double[NRP + 1, 7];
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
+        double[,] DEAGREGRespSpectr = new double[100, 77001];
         double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
@@ -641,6 +642,9 @@ a308:
                         {
                             DEAGREG[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
                             DEAGREG[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
+
+                            DEAGREGRespSpectr[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
+                            DEAGREGRespSpectr[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
                         }
                     }
                 }
@@ -1184,6 +1188,11 @@ ad82:
                             }
                             
                         }
+
+
+                    //Деагрегация по спектрам реакций
+
+
 
                     }
 
@@ -4313,7 +4322,7 @@ a12:
                 massiv_ABCD[ 0,k ] = X[ 1 ];
                 massiv_ABCD[ 1,k ] = X[ 2 ];
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[4]); //5000
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[4]); //5000
                 RSKVN(PNUM1, CAM, CAMN, ref X[3]);
 
                 massiv_ABCD[ 8,k ] = X[ 3 ];
@@ -4328,7 +4337,7 @@ a12:
                 }
 
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[1]); //2 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[1]); //2 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4344,7 +4353,7 @@ a12:
                     //	i_bz++;
                 }
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[2]); //3 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[2]); //3 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4360,21 +4369,21 @@ a12:
                     i_bz++;
                 }
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[5]);//10000 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[5]);//10000 лет
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
 
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[3]);//2500 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[3]);//2500 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y1);
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[0]);//1 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[0]);//1 значение
                 RSKVN(PNUM1, CAM, CAMN, ref Y2);
                 
                 massiv_ABCD[ 11,k ] = X[ 3 ];
                 massiv_ABCD[ 12,k ] = Y1;
                 massiv_ABCD[ 13,k ] = Y2;
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[6]);//100000 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[6]);//100000 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y3);
                 massiv_ABCD[14, k] = Y3;
 
