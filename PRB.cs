@@ -171,6 +171,8 @@ namespace East_CSharp
         double[] balldeagr7 = new double[200];
         double[] balldeagrx = new double[200];
         double[] balldeagry = new double[200];
+
+        double[,] PGA_SA_deagreg = new double[100, 200];
         String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEDEAGDOMLIN, NAMEPROC;
         ///	char NAME[4],NAME1[11],NAME2[16],NAME3[16],NAME4[16];
         String NAME6, NAME_NET_GEG, NAMGRP, NAME_Warning, NAMCTL, NAMEA;
@@ -554,23 +556,33 @@ a308:
                 balldeagr5 = new double[200];
                 balldeagr6 = new double[200];
                 balldeagr7 = new double[200];
+
+                PGA_SA_deagreg = new double[100, 7];
                 while (BALLDEAGREG.EndOfStream != true)
                 {
                     aaa = BALLDEAGREG.ReadLine();
                     String[] nums = aaa.Split('\t');
                     /*заполнение массивов значениями из файла*/
-                balldeagrx[iii] = Convert.ToDouble(nums[0]);
-                balldeagry[iii] = Convert.ToDouble(nums[1]);
-                balldeagr1[iii] = Convert.ToDouble(nums[2]);
-                balldeagr2[iii] = Convert.ToDouble(nums[3]);
-                balldeagr3[iii] = Convert.ToDouble(nums[4]);
-                balldeagr4[iii] = Convert.ToDouble(nums[5]);
-                balldeagr5[iii] = Convert.ToDouble(nums[6]);
-                balldeagr6[iii] = Convert.ToDouble(nums[7]);
-                balldeagr7[iii] = Convert.ToDouble(nums[8]);
-                iii++;
-            }
-             }  
+                    balldeagrx[iii] = Convert.ToDouble(nums[0]);
+                    balldeagry[iii] = Convert.ToDouble(nums[1]);
+                    balldeagr1[iii] = Convert.ToDouble(nums[2]);
+                    balldeagr2[iii] = Convert.ToDouble(nums[3]);
+                    balldeagr3[iii] = Convert.ToDouble(nums[4]);
+                    balldeagr4[iii] = Convert.ToDouble(nums[5]);
+                    balldeagr5[iii] = Convert.ToDouble(nums[6]);
+                    balldeagr6[iii] = Convert.ToDouble(nums[7]);
+                    balldeagr7[iii] = Convert.ToDouble(nums[8]);
+
+                    //входные значения для PGA
+                    for (int i = 0; i < 7; i++)
+                    {
+                        PGA_SA_deagreg[iii, i] = Convert.ToDouble(nums[13 + (i * 11)]);
+                    }
+                    
+
+                    iii++;
+                }
+            }  
             ii = 1;
             aa = "";
             
@@ -1191,7 +1203,15 @@ ad82:
 
 
                     //Деагрегация по спектрам реакций
+                    if (RS[sk].fl)
+                        {
+                            //считаем для PGA
+                            double freq = 0;
+                            //входные 
+                            DeagregForRS(RS[sk].Bitog, freq, PGA_SA_deagreg);
 
+
+                        }
 
 
                     }
@@ -4322,7 +4342,7 @@ a12:
                 massiv_ABCD[ 0,k ] = X[ 1 ];
                 massiv_ABCD[ 1,k ] = X[ 2 ];
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[4]); //5000
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[4]); //5000
                 RSKVN(PNUM1, CAM, CAMN, ref X[3]);
 
                 massiv_ABCD[ 8,k ] = X[ 3 ];
@@ -4337,7 +4357,7 @@ a12:
                 }
 
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[1]); //2 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[1]); //2 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4353,7 +4373,7 @@ a12:
                     //	i_bz++;
                 }
                 //a101:	  FORMAT(1X,5(2X,F8.4))//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[2]); //3 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[2]); //3 значение
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
                 RSKVN( PNUM1,V1,DEV1,ref Y1 );
                 RSKVN( PNUM1,V2,DEV2,ref Y2 );
@@ -4369,14 +4389,14 @@ a12:
                     i_bz++;
                 }
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[5]);//10000 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[5]);//10000 лет
                 RSKVN( PNUM1,CAM,CAMN,ref X[ 3 ] );
 
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[3]);//2500 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[3]);//2500 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y1);
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[0]);//1 значение
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[0]);//1 значение
                 RSKVN(PNUM1, CAM, CAMN, ref Y2);
                 
                 massiv_ABCD[ 11,k ] = X[ 3 ];
@@ -5048,6 +5068,11 @@ a3:
                 { X1 = 2.0; return; } else
                     X1 = GI0 + DI * (ie1 - 2) + DI * (S1[ ie1 - 1 ] - 1.0) / (S1[ ie1 - 1 ] - S1[ ie1 ]);
             }
+        }
+
+        private void DeagregForRS(double[,] Bitog, double freq,  double[,] PGA_SA_deagreg)
+        {
+
         }
     }
 }

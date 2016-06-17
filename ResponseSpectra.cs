@@ -43,7 +43,7 @@ namespace East_CSharp
         int Nisa;
 
         //текущий расчитанный спектр реакций
-        double[,] Bitog;
+        public double[,] Bitog;
 
         //Матрица
         double[,] SA;
