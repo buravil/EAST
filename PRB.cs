@@ -4410,7 +4410,7 @@ a12:
                     POVTOR[3, k],
                     POVTOR[4, k],
                     POVTOR[5, k]));
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 7; i++)
                 {
                     fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t",
                         RS[k].PGASACalculation(0.01, probabilityOfExceedance[i]),
