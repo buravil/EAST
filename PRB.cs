@@ -22,7 +22,7 @@ namespace East_CSharp
 
 
         StreamWriter ///id5,res,im2,
-            fla, wrng_out, ctl, grp, outFile, gst, fls, DEAGREGA, DEAGREGA2;
+            fla, wrng_out, ctl, grp, outFile, gst, fls, DEAGREGA, DEAGREGA_RS, DEAGREGA2;
 
         public static Random random = new Random(DateTime.Now.Millisecond * DateTime.Now.Minute);
         Random rnd = new Random();
@@ -172,8 +172,9 @@ namespace East_CSharp
         double[] balldeagrx = new double[200];
         double[] balldeagry = new double[200];
 
-        double[,] PGA_SA_deagreg = new double[100, 200];
-        String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEDEAGDOMLIN, NAMEPROC;
+        double[,] PGA_deagreg = new double[200, 7];
+        double[,] SA_0_1_deagreg = new double[200, 7];
+        String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEDEAG_RS, NAMEDEAGDOMLIN, NAMEPROC;
         ///	char NAME[4],NAME1[11],NAME2[16],NAME3[16],NAME4[16];
         String NAME6, NAME_NET_GEG, NAMGRP, NAME_Warning, NAMCTL, NAMEA;
         ///    char NAME5[16],NAME6[16],NAME7[11],NAME8[16],NAMGRP[16],NAME9[16],NAMCTL[16];
@@ -520,8 +521,7 @@ a307:
             }
 
             //rs.SelectCommand = new OleDbCommand("select * from _Входные_параметры");
-
-
+            
             try
             {
                 ct = new DateTime( IYR,IMON,IDAY );
@@ -557,7 +557,8 @@ a308:
                 balldeagr6 = new double[200];
                 balldeagr7 = new double[200];
 
-                PGA_SA_deagreg = new double[100, 7];
+                PGA_deagreg = new double[200, 7];
+                SA_0_1_deagreg = new double[200, 7];
                 while (BALLDEAGREG.EndOfStream != true)
                 {
                     aaa = BALLDEAGREG.ReadLine();
@@ -576,7 +577,8 @@ a308:
                     //входные значения для PGA
                     for (int i = 0; i < 7; i++)
                     {
-                        PGA_SA_deagreg[iii, i] = Convert.ToDouble(nums[13 + (i * 11)]);
+                        PGA_deagreg[iii, i] = Convert.ToDouble(nums[13 + (i * 11)]);
+                        SA_0_1_deagreg[iii, i] = Convert.ToDouble(nums[14 + (i * 11)]);
                     }
                     
 
@@ -1208,9 +1210,7 @@ ad82:
                             //считаем для PGA
                             double freq = 0;
                             //входные 
-                            DeagregForRS(RS[sk].Bitog, freq, PGA_SA_deagreg);
-
-
+                            DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
                         }
 
 
@@ -1618,6 +1618,17 @@ al82:
                             }
                             
                         }
+
+                        //Деагрегация по спектрам реакций
+                        if (RS[sk].fl)
+                        {
+                            //считаем для PGA
+                            double freq = 0;
+                            //входные 
+                            DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+                        }
+
+
 
                     }
                     if(IGIST > IMGS)
@@ -4249,7 +4260,7 @@ a10:
                 periodsOfRepeating[4],
                 periodsOfRepeating[5],
                 periodsOfRepeating[6]);
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
     periodsOfRepeating[i]);
@@ -4430,7 +4441,7 @@ a12:
                     POVTOR[3, k],
                     POVTOR[4, k],
                     POVTOR[5, k]));
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 7; i++)
                 {
                     fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t",
                         RS[k].PGASACalculation(0.01, probabilityOfExceedance[i]),
@@ -4447,20 +4458,33 @@ a12:
                 }
 
                 fla.Write("\n");
-
+               
                // POVTOR_BALL.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", POVTOR[0,k], POVTOR[1,k], POVTOR[2,k], POVTOR[3,k], POVTOR[4,k], POVTOR[5,k]));
 
 
             }
+            fla.Close();
+
+            if (DEAG == 2)
+            {
+                if (File.Exists(NAMEA))
+                {
+                    File.Copy(NAMEA, Path.GetDirectoryName(NAMEA) + "\\" + Path.GetFileNameWithoutExtension(NAMEA) + "_.TXT");
+                }
+            }
+                
+
+
+
             flag_9999 = 1;
 
-            if (DEAG == 1)//Проводить деагрегацию
+            if (DEAG == 1)//Запись в файлы результаты деагрегации
             {
-              
-
                 int jjj = 0;
                 while (jjj < NETPNT)
                 {
+
+                    //Запись в файл деагрегации по баллам М-R
                     double[] SUMDEAGREG = new double[10];
 
                     NAME5 = "deagreg_"+ (jjj+1) + ".TXT";
@@ -4477,13 +4501,11 @@ a12:
                         periodsOfRepeating[6]
                         );
                     
-                  //  for (jdeg = 1; jdeg <= 770 * NETPNT; jdeg++)//
+                  
                     for (int i = 1; i <= 9; i++)
                     {
                         SUMDEAGREG[i] = 0 ;//считаем сумму по столбцам
-
                     }
-
 
                     for (int i = 3; i <= 9; i++)
                     {
@@ -4505,7 +4527,66 @@ a12:
                 }
 
 
-                jjj = 0;//запись деагрегации для доменов и линеаментов
+
+
+                //Запись деагрегации для спектров реакций M-R
+                jjj = 0;
+                while (jjj < NETPNT)
+                {
+                    double[] SUMDEAGREG_RS = new double[10];
+
+                    NAMEDEAG_RS = "deagregResponseSpectra_" + (jjj + 1) + ".TXT";
+
+                    DEAGREGA_RS = new StreamWriter(NAMEDEAG_RS, false, Encoding.GetEncoding(1251));
+                    DEAGREGA_RS.WriteLine("Mlh\tR\tPGA_T{0}\tPGA_T{1}\tPGA_T{2}\tPGA_T{3}\tPGA_T{4}\tPGA_T{5}\tPGA_T{6}",
+                        periodsOfRepeating[0],
+                        periodsOfRepeating[1],
+                        periodsOfRepeating[2],
+                        periodsOfRepeating[3],
+                        periodsOfRepeating[4],
+                        periodsOfRepeating[5],
+                        periodsOfRepeating[6]
+                        );
+
+                    for (int i = 1; i <= 9; i++)
+                    {
+                        SUMDEAGREG_RS[i] = 0;//считаем сумму по столбцам
+                    }
+                    
+                    for (int i = 3; i <= 9; i++)
+                    {
+                        for (jdeg = 1; jdeg <= 770; jdeg++)
+                        {
+                            SUMDEAGREG_RS[i] = DEAGREGRespSpectr[i, jdeg + (770 * jjj)] + SUMDEAGREG_RS[i];//считаем сумму по столбцам
+
+                        }
+                    }
+
+                    for (jdeg = 1; jdeg <= 770; jdeg++)//запись в файл
+                    {
+                        /*вывод в процентах*/
+                        DEAGREGA_RS.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}",
+                            DEAGREGRespSpectr[1, jdeg + (770 * jjj)],
+                            DEAGREGRespSpectr[2, jdeg + (770 * jjj)],
+                            (DEAGREGRespSpectr[3, jdeg + (770 * jjj)] / SUMDEAGREG_RS[3]) * 100,
+                            DEAGREGRespSpectr[4, jdeg + (770 * jjj)] / SUMDEAGREG_RS[4] * 100,
+                            DEAGREGRespSpectr[5, jdeg + (770 * jjj)] / SUMDEAGREG_RS[5] * 100,
+                            DEAGREGRespSpectr[6, jdeg + (770 * jjj)] / SUMDEAGREG_RS[6] * 100,
+                            DEAGREGRespSpectr[7, jdeg + (770 * jjj)] / SUMDEAGREG_RS[7] * 100,
+                            DEAGREGRespSpectr[8, jdeg + (770 * jjj)] / SUMDEAGREG_RS[8] * 100,
+                            DEAGREGRespSpectr[9, jdeg + (770 * jjj)] / SUMDEAGREG_RS[9] * 100));
+                       
+
+                    }
+                    DEAGREGA_RS.Close();
+                    jjj++;
+                }
+
+
+
+
+
+                    jjj = 0;//запись деагрегации для доменов и линеаментов
                 while (jjj < NETPNT)
                 {
                     double[] SUMDEAGREGDOMLIN = new double[10];
@@ -4527,14 +4608,14 @@ a12:
 
                     for (int i = 1; i < 8; i++)
                     {
-                        for (jdeg = 0; jdeg < 20000; jdeg++)
+                        for (jdeg = 0; jdeg < total; jdeg++)
                         {
                             SUMDEAGREGDOMLIN[i] = DeargLineamDoman[jdeg, i] + SUMDEAGREGDOMLIN[i];//считаем сумму по столбцам
 
                         }
                     }
 
-                    for (jdeg = 0; jdeg < 20000; jdeg++)//запись в файл
+                    for (jdeg = 0; jdeg < total; jdeg++)//запись в файл
                     {
                         /*вывод в процентах*/
                         DEAGREGA2.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", 
@@ -5070,9 +5151,77 @@ a3:
             }
         }
 
-        private void DeagregForRS(double[,] Bitog, double freq,  double[,] PGA_SA_deagreg)
+        private void DeagregForRS(double PGA_SA,  double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
         {
+            if (PGA_SA < PGA_SA_deagreg[sk,0]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[Num, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
 
+            if (PGA_SA < PGA_SA_deagreg[sk, 1]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num+1), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
+
+            if (PGA_SA < PGA_SA_deagreg[sk, 2]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num + 2), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
+
+            if (PGA_SA < PGA_SA_deagreg[sk, 3]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num + 3), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
+
+            if (PGA_SA < PGA_SA_deagreg[sk, 4]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num + 4), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
+
+            if (PGA_SA < PGA_SA_deagreg[sk, 5]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num + 5), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
+
+            if (PGA_SA < PGA_SA_deagreg[sk, 6]) { }
+            else  ////////////////////деагрегация
+            {
+                jdeg = (int)(R3D / 5);
+                if (jdeg < 71)
+                {
+                    DEAGREGRespSpectr[(Num + 6), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                }
+            }
         }
     }
 }

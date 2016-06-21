@@ -45,6 +45,9 @@ namespace East_CSharp
         //текущий расчитанный спектр реакций
         public double[,] Bitog;
 
+        //
+        public double PGA;
+
         //Матрица
         double[,] SA;
         double[,] SAkum;
@@ -223,8 +226,9 @@ namespace East_CSharp
         public void SAcalculation(double M, double R)
         {
             double deltaA, deltaB, deltaT;
-            double PGA;
+            ;
             Array.Clear(Bitog, 0, Bitog.Length);
+            PGA = 0;
             int isa, jsa, ipga;
             fl = false;
             double logInIsa, doubleIsa, doubleIpga;

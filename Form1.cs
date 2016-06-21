@@ -12,6 +12,7 @@ namespace East_CSharp
     {
         PRB prb;
         DateTime DT;
+        int flagOfDeag = 0;
 
         public Form1()
         {
@@ -72,31 +73,41 @@ namespace East_CSharp
             prb.periodsOfRepeating[5] = Convert.ToInt32(textBox6.Text);
             prb.periodsOfRepeating[6] = Convert.ToInt32(textBox7.Text);
 
+            
+                //если выбран быстрый счет
+                if (checkBox1.Checked)
+                    prb.fastCalc = 1;
+                else
+                    prb.fastCalc = 0;
 
-            //если выбран быстрый счет
-            if (checkBox1.Checked)
-                prb.fastCalc = 1;
+                //если выбрано сохранение каталога
+                if (checkBoxSaveKatalog.Checked)
+                    prb.LCAT = 1;
+                else
+                    prb.LCAT = 0;
+
+            if (flagOfDeag == 0)
+            {
+                label6.Text = "Расчет сейсмического эффекта";
+                //если выбрана деагрегация
+                if (checkBoxDeagreg.Checked)
+                    prb.DEAG = 2;
+                else
+                    prb.DEAG = 0;
+            }
             else
-                prb.fastCalc = 0;
-
-            //если выбрано сохранение каталога
-            if (checkBoxSaveKatalog.Checked)
-                prb.LCAT = 1;
-            else
-                prb.LCAT = 0;
-
-            //если выбрана деагрегация
-            if (checkBoxDeagreg.Checked)
+            {
+                label6.Text = "Деагрегация";
                 prb.DEAG = 1;
-            else
-                prb.DEAG = 0;
-
-            if (radioButton1.Checked)
-                prb.typeOfGrunt = 0;
-            if (radioButton2.Checked)
-                prb.typeOfGrunt = 1;
-            if (radioButton3.Checked)
-                prb.typeOfGrunt = 2;
+            }
+                if (radioButton1.Checked)
+                    prb.typeOfGrunt = 0;
+                if (radioButton2.Checked)
+                    prb.typeOfGrunt = 1;
+                if (radioButton3.Checked)
+                    prb.typeOfGrunt = 2;
+            
+            
 
             checkBox1.Enabled = false;
             checkBoxSaveKatalog.Enabled = false;
@@ -176,6 +187,13 @@ namespace East_CSharp
             TimeSpan TS = DateTime.Now - DT;
 
             MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
+
+            if (prb.DEAG == 2)
+            {
+                flagOfDeag = 1;
+                StartThread();
+            }
+           
 
         }
 
