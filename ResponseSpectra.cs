@@ -96,7 +96,7 @@ namespace East_CSharp
 
 
             NameDIR = Application.StartupPath;
-           // Dir = Directory.CreateDirectory(NameDIR + "\\Out");
+            //Dir = Directory.CreateDirectory(NameDIR + "\\Out");
 
             for (int i = 0; i < Njsa - 2; i++)
             {

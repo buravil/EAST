@@ -34,16 +34,16 @@ namespace East_CSharp
 
         private void buttonRun_Click(object sender,EventArgs e)
         {
+            DT = DateTime.Now;
             StartThread();
         }
 
 
         private void StartThread()
         {
-            DT = DateTime.Now;
+           
 
             prb = new PRB(textBox_mdbPath.Text);
-
             prb.m_ch_make_katalog = false;
             //prb.m_e_iter = Convert.ToInt32( textBox_iter.Text );
             prb.m_e_tmax = 5000;
@@ -117,6 +117,14 @@ namespace East_CSharp
             radioButton2.Enabled = false;
             radioButton3.Enabled = false;
 
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
+            textBox5.Enabled = false;
+            textBox6.Enabled = false;
+            textBox7.Enabled = false;
+
             //запуск расчета
 
             // Start the asynchronous operation.
@@ -184,14 +192,26 @@ namespace East_CSharp
             radioButton2.Enabled = true;
             radioButton3.Enabled = true;
 
-            TimeSpan TS = DateTime.Now - DT;
+            textBox1.Enabled = true;
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
+            textBox5.Enabled = true;
+            textBox6.Enabled = true;
+            textBox7.Enabled = true;
 
-            MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
 
+            label6.Text = "";
             if (prb.DEAG == 2)
             {
                 flagOfDeag = 1;
                 StartThread();
+            }
+            else
+            {
+                TimeSpan TS = DateTime.Now - DT;
+
+                MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
             }
            
 
