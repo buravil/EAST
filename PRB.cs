@@ -192,6 +192,8 @@ namespace East_CSharp
         double[,] DeargLineamDoman = new double[20000, 9];//Массив для деагрегации, запись ид даменов
         int iiIND = 0;//индекс массива деагрегации доменов
 
+        Deaggregation currentDeag;
+
         #endregion
 
 
@@ -540,6 +542,7 @@ a308:
             if (DEAG == 1)//Проводить деагрегацию
             {
                 BALLDEAGREG = new StreamReader(applicationDir + "EAST_2003__ABCD_.TXT");
+                
             }
             iii = 1;
             aaa = "";
@@ -673,9 +676,13 @@ a308:
             PHI0 = 0.0;
             AL0 = 0.0;
 
+            if(DEAG == 1)
+            {
+                currentDeag = new Deaggregation(applicationDir + "EAST_2003__ABCD_.TXT", NETPNT);
+           }
+            
 
-
-            for(ii = 1; ii <= NETPNT; ii++)
+            for (ii = 1; ii <= NETPNT; ii++)
             {
                 PHI0 = PHI0 + XNET[ ii ];
                 AL0 = AL0 + YNET[ ii ];
@@ -831,7 +838,7 @@ a308:
             {
                 RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
             }
-            
+                        
 
             ///pMainWnd->m_progress.SetRange(0,100);
             add321:
@@ -1038,7 +1045,7 @@ ad82:
                     XX = XNET[ sk ] - SPAR[ 9 ];
                     YY = YNET[ sk ] - SPAR[ 10 ];
                     RR = Math.Pow( XX,2.0 ) + Math.Pow( YY,2.0 );
-                    //			RR=XX*XX+YY*YY;
+                    //RR=XX*XX+YY*YY;
                     R3D = Math.Sqrt( RR + SPAR[ 11 ] * SPAR[ 11 ] );
                     if(R3D < R3DMIN) { R3D = R3DMIN; }
                     if (R3D >= RBALL3)
@@ -1049,11 +1056,13 @@ ad82:
 
                     MACRR3();
 
-
+              
                     //считается спектр реакций
                     ML = MwToMl(AMW);
                     RS[sk].Calculat(typeOfMovement, ML, DISTMIN);
 
+                    
+                    
                     if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND( ref UI,ref VI );
@@ -1211,6 +1220,9 @@ ad82:
                             double freq = 0;
                             //входные 
                             DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+
+                            //Деагрегация для всех периодов
+                            currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
                         }
 
 
@@ -1626,6 +1638,9 @@ al82:
                             double freq = 0;
                             //входные 
                             DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+
+                            //Деагрегация для всех периодов
+                            currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
                         }
 
 
@@ -2426,7 +2441,8 @@ a2:
 
         private double MwToMl(double mw)
         {
-            return Math.Round(((-0.0295* mw* mw* mw) + (0.5014* mw* mw) + (-1.5317* mw) + 3.2564),1);
+            //return Math.Round(((-0.0295* mw* mw* mw) + (0.5014* mw* mw) + (-1.5317* mw) + 3.2564),1);
+            return Math.Round(2 * (-0.0078 * mw * mw * mw * mw + 0.1758 * mw * mw * mw - 1.4755 * mw * mw + 6.7409 * mw - 9.4293)) * 0.5;
         }
 
         private void NORMRND(ref double S1,ref double S2)
@@ -4633,6 +4649,8 @@ a12:
                     DEAGREGA2.Close();
                     jjj++;
                 }
+
+                currentDeag.SaveGeagreg();
 
 
                 DeargLineamDoman[iiIND, 2]++;

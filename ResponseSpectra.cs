@@ -358,9 +358,12 @@ namespace East_CSharp
             return outPGA;
         }
 
+
+
         //Сохранение результатов в текстовый файл
         public void SAsave(string str)
         {
+        
 
 
          //   StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");
