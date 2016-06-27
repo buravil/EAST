@@ -42,6 +42,12 @@ namespace East_CSharp
         //Количество значений PGA в матрице SA
         int Nisa;
 
+        //текущий расчитанный спектр реакций
+        public double[,] Bitog;
+
+        //
+        public double PGA;
+
         //Матрица
         double[,] SA;
         double[,] SAkum;
@@ -52,7 +58,10 @@ namespace East_CSharp
 
         //сохранение 
         private String NameDIR;
-private DirectoryInfo Dir;
+        private DirectoryInfo Dir;
+
+        //переменная-флаг, истина - если расчитался текущий спектр реакций
+        public bool fl;
 
 
 
@@ -76,15 +85,18 @@ private DirectoryInfo Dir;
 
             Njsa = 33;
             Nisa = 62;
+            Bitog = new double[NN + 1, 2];
             SA = new double[Nisa, Njsa];
             SAitog = new double[Nisa, Njsa];
             SAkum = new double[Nisa, Njsa];
             YY3 = new double[2, 61];
+
+
             double test = Math.Pow(10, (-1.5 + (1.0 / 10)));
 
 
             NameDIR = Application.StartupPath;
-           // Dir = Directory.CreateDirectory(NameDIR + "\\Out");
+            //Dir = Directory.CreateDirectory(NameDIR + "\\Out");
 
             for (int i = 0; i < Njsa - 2; i++)
             {
@@ -214,14 +226,16 @@ private DirectoryInfo Dir;
         public void SAcalculation(double M, double R)
         {
             double deltaA, deltaB, deltaT;
-            double PGA;
-            double[,] Bitog = new double[NN + 1, 2];
+            ;
+            Array.Clear(Bitog, 0, Bitog.Length);
+            PGA = 0;
             int isa, jsa, ipga;
-
+            fl = false;
             double logInIsa, doubleIsa, doubleIpga;
 
             if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
             {
+               
                 deltaA = normRand.NextDouble() * 0.18;
                 deltaB = normRand.NextDouble() * 0.07;
                 deltaT = normRand.NextDouble() * 0.2;
@@ -230,14 +244,14 @@ private DirectoryInfo Dir;
 
                 if (PGA > 0.01)
                 {
-
+                    fl = true;
                     Bitog = BettaCalculation(M, R, deltaB, deltaT);
                     for (int i = 0; i <= NN; i++)
                     {
                         //находим номер столбца
                         jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(Bitog[i, 0])) * 10 + 2));
 
-                        logInIsa = Math.Log10(0.001 * Math.Pow(10, PGA) * Bitog[i, 1]);
+                        logInIsa = Math.Log10((Math.Pow(10, PGA)/981) * Bitog[i, 1]);
 
                         doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(lg_D, -1)) * lg_D) * 10 + 1;
                         //находим номер строки
@@ -250,7 +264,7 @@ private DirectoryInfo Dir;
                     }
 
                     //заполняем значения для второго столбца - PGA
-                    doubleIpga = ((3 + Math.Round(Math.Log10(0.001 * Math.Pow(10, PGA)) * Math.Pow(lg_D, -1)) * lg_D) * 10) + 1;
+                    doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, PGA))/981) * Math.Pow(lg_D, -1)) * lg_D) * 10) + 1;
                     ipga = Convert.ToInt32(doubleIpga);
 
                     if (ipga > 1 && ipga < 30)
@@ -320,6 +334,7 @@ private DirectoryInfo Dir;
             }
             YY3[0, 1] = 0.01;
         }
+
         //Функция, возвращающая значение с вероятностной кривой для любого значения периода
         public double PGASACalculation(double t, double P)
         {
@@ -343,9 +358,12 @@ private DirectoryInfo Dir;
             return outPGA;
         }
 
+
+
         //Сохранение результатов в текстовый файл
         public void SAsave(string str)
         {
+        
 
 
          //   StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");

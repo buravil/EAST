@@ -12,6 +12,7 @@ namespace East_CSharp
     {
         PRB prb;
         DateTime DT;
+        int flagOfDeag = 0;
 
         public Form1()
         {
@@ -33,16 +34,16 @@ namespace East_CSharp
 
         private void buttonRun_Click(object sender,EventArgs e)
         {
+            DT = DateTime.Now;
             StartThread();
         }
 
 
         private void StartThread()
         {
-            DT = DateTime.Now;
+           
 
             prb = new PRB(textBox_mdbPath.Text);
-
             prb.m_ch_make_katalog = false;
             //prb.m_e_iter = Convert.ToInt32( textBox_iter.Text );
             prb.m_e_tmax = 5000;
@@ -72,31 +73,41 @@ namespace East_CSharp
             prb.periodsOfRepeating[5] = Convert.ToInt32(textBox6.Text);
             prb.periodsOfRepeating[6] = Convert.ToInt32(textBox7.Text);
 
+            
+                //если выбран быстрый счет
+                if (checkBox1.Checked)
+                    prb.fastCalc = 1;
+                else
+                    prb.fastCalc = 0;
 
-            //если выбран быстрый счет
-            if (checkBox1.Checked)
-                prb.fastCalc = 1;
+                //если выбрано сохранение каталога
+                if (checkBoxSaveKatalog.Checked)
+                    prb.LCAT = 1;
+                else
+                    prb.LCAT = 0;
+
+            if (flagOfDeag == 0)
+            {
+                label6.Text = "Расчет сейсмического эффекта";
+                //если выбрана деагрегация
+                if (checkBoxDeagreg.Checked)
+                    prb.DEAG = 2;
+                else
+                    prb.DEAG = 0;
+            }
             else
-                prb.fastCalc = 0;
-
-            //если выбрано сохранение каталога
-            if (checkBoxSaveKatalog.Checked)
-                prb.LCAT = 1;
-            else
-                prb.LCAT = 0;
-
-            //если выбрана деагрегация
-            if (checkBoxDeagreg.Checked)
+            {
+                label6.Text = "Деагрегация";
                 prb.DEAG = 1;
-            else
-                prb.DEAG = 0;
-
-            if (radioButton1.Checked)
-                prb.typeOfGrunt = 0;
-            if (radioButton2.Checked)
-                prb.typeOfGrunt = 1;
-            if (radioButton3.Checked)
-                prb.typeOfGrunt = 2;
+            }
+                if (radioButton1.Checked)
+                    prb.typeOfGrunt = 0;
+                if (radioButton2.Checked)
+                    prb.typeOfGrunt = 1;
+                if (radioButton3.Checked)
+                    prb.typeOfGrunt = 2;
+            
+            
 
             checkBox1.Enabled = false;
             checkBoxSaveKatalog.Enabled = false;
@@ -105,6 +116,14 @@ namespace East_CSharp
             radioButton1.Enabled = false;
             radioButton2.Enabled = false;
             radioButton3.Enabled = false;
+
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
+            textBox5.Enabled = false;
+            textBox6.Enabled = false;
+            textBox7.Enabled = false;
 
             //запуск расчета
 
@@ -173,9 +192,28 @@ namespace East_CSharp
             radioButton2.Enabled = true;
             radioButton3.Enabled = true;
 
-            TimeSpan TS = DateTime.Now - DT;
+            textBox1.Enabled = true;
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
+            textBox5.Enabled = true;
+            textBox6.Enabled = true;
+            textBox7.Enabled = true;
 
-            MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
+
+            label6.Text = "";
+            if (prb.DEAG == 2)
+            {
+                flagOfDeag = 1;
+                StartThread();
+            }
+            else
+            {
+                TimeSpan TS = DateTime.Now - DT;
+
+                MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
+            }
+           
 
         }
 
