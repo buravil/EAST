@@ -1108,6 +1108,7 @@ ad82:
 
                     if (DEAG == 1)
                     {
+
                         if (AMW == 3.82) { ideg = 1; }
                         if (AMW == 4.25) { ideg = 2; }
                         if (AMW == 4.62) { ideg = 3; }
@@ -1212,9 +1213,10 @@ ad82:
                             
                         }
 
+                        currentDeag.RESI_deag(ML, DISTMIN, RESI, sk-1);
 
                     //Деагрегация по спектрам реакций
-                    if (RS[sk].fl)
+                        if (RS[sk].fl)
                         {
                             //считаем для PGA
                             double freq = 0;
@@ -1223,6 +1225,7 @@ ad82:
 
                             //Деагрегация для всех периодов
                             currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
+                            RS[sk].fl = false;
                         }
 
 
@@ -1631,6 +1634,8 @@ al82:
                             
                         }
 
+                        currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
+
                         //Деагрегация по спектрам реакций
                         if (RS[sk].fl)
                         {
@@ -1641,6 +1646,7 @@ al82:
 
                             //Деагрегация для всех периодов
                             currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
+                            RS[sk].fl = false;
                         }
 
 
@@ -4650,7 +4656,8 @@ a12:
                     jjj++;
                 }
 
-                currentDeag.SaveGeagreg();
+                //Сохранение деагрегации
+                currentDeag.SaveGeagreg(periodsOfRepeating);
 
 
                 DeargLineamDoman[iiIND, 2]++;

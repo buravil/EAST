@@ -235,7 +235,7 @@ namespace East_CSharp
 
             if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
             {
-                fl = true;
+               
                 deltaA = normRand.NextDouble() * 0.18;
                 deltaB = normRand.NextDouble() * 0.07;
                 deltaT = normRand.NextDouble() * 0.2;
@@ -244,14 +244,14 @@ namespace East_CSharp
 
                 if (PGA > 0.01)
                 {
-
+                    fl = true;
                     Bitog = BettaCalculation(M, R, deltaB, deltaT);
                     for (int i = 0; i <= NN; i++)
                     {
                         //находим номер столбца
                         jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(Bitog[i, 0])) * 10 + 2));
 
-                        logInIsa = Math.Log10(0.001 * Math.Pow(10, PGA) * Bitog[i, 1]);
+                        logInIsa = Math.Log10((Math.Pow(10, PGA)/981) * Bitog[i, 1]);
 
                         doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(lg_D, -1)) * lg_D) * 10 + 1;
                         //находим номер строки
@@ -264,7 +264,7 @@ namespace East_CSharp
                     }
 
                     //заполняем значения для второго столбца - PGA
-                    doubleIpga = ((3 + Math.Round(Math.Log10(0.001 * Math.Pow(10, PGA)) * Math.Pow(lg_D, -1)) * lg_D) * 10) + 1;
+                    doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, PGA))/981) * Math.Pow(lg_D, -1)) * lg_D) * 10) + 1;
                     ipga = Convert.ToInt32(doubleIpga);
 
                     if (ipga > 1 && ipga < 30)

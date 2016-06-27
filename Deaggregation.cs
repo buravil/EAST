@@ -100,7 +100,7 @@ namespace East_CSharp
             for (int i = 0; i <= Convert.ToInt16(Math.Round(2 * Math.Pow(lg_D, -1))); i++)
             {
                 X[i] = Math.Log10(Bitog[i, 0]);
-                Y[i] = Math.Log10(Math.Pow(10, -3) * Math.Pow(10, PGA) * Bitog[i, 1]);
+                Y[i] = Math.Log10((Math.Pow(10, PGA)/981) * Bitog[i, 1]);
             }
 
             for (int i = 1; i <= Convert.ToInt16(Math.Round(2 * Math.Pow(lg_D, -1))); i++)
@@ -113,6 +113,7 @@ namespace East_CSharp
             return YY3;
         }
 
+        
         public void SA_deag(double Mlh, double R, double[,] Bitog, double PGA, int tochka)
         {
             double[,] Saa = new double[10, 2];
@@ -124,17 +125,19 @@ namespace East_CSharp
             }
             
             int Round = Convert.ToInt16(Mlh * 2 - 4 + Math.Round(R*0.2, MidpointRounding.AwayFromZero) * 15 + 1215 * tochka);
+
+
             
             for (int i = 14; i <= 23; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 14, 1])
+                if (ABCD[tochka, i] <= Saa[i - 14, 1])
                 {
                     MR[Round, i]++;
                 }
             }
             for (int i = 25; i <= 34; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 25, 1])
+                if (ABCD[tochka, i] <= Saa[i - 25, 1])
                 {
                     MR[Round, i]++;
                 }
@@ -142,7 +145,7 @@ namespace East_CSharp
 
             for (int i = 36; i <= 45; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 36, 1])
+                if (ABCD[tochka, i] <= Saa[i - 36, 1])
                 {
                     MR[Round, i]++;
                 }
@@ -150,7 +153,7 @@ namespace East_CSharp
 
             for (int i = 47; i <= 56; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 47, 1])
+                if (ABCD[tochka, i] <= Saa[i - 47, 1])
                 {
                     MR[Round, i]++;
                 }
@@ -158,7 +161,7 @@ namespace East_CSharp
 
             for (int i = 58; i <= 67; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 58, 1])
+                if (ABCD[tochka, i] <= Saa[i - 58, 1])
                 {
                     MR[Round, i]++;
                 }
@@ -166,7 +169,7 @@ namespace East_CSharp
 
             for (int i = 69; i <= 78; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 69, 1])
+                if (ABCD[tochka, i] <= Saa[i - 69, 1])
                 {
                     MR[Round, i]++;
                 }
@@ -174,23 +177,116 @@ namespace East_CSharp
 
             for (int i = 80; i <= 89; i++)
             {
-                if (ABCD[0, i] <= Saa[i - 80, 1])
+                if (ABCD[tochka, i] <= Saa[i - 80, 1])
                 {
                     MR[Round, i]++;
                 }
             }
+
+            // for (int i = 0; i < 7; i++)
+            //  {
+            //      if (ABCD[0, 13 + (i * 11)] <= PGA)
+            //      {
+            //           MR[Round, 13 + (i * 11)]++;
+            //       }
+            //   }
+            if (ABCD[tochka, 13] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 13]++;
+            }
+
+            if (ABCD[tochka, 24] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 24]++;
+            }
+
+            if (ABCD[tochka, 35] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 35]++;
+            }
+
+            if (ABCD[tochka, 46] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 46]++;
+            }
+            if (ABCD[tochka, 57] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 57]++;
+            }
+
+            if (ABCD[tochka, 68] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 68]++;
+            }
+
+            if (ABCD[tochka, 79] <= Math.Pow(10, PGA) / 981)
+            {
+                MR[Round, 79]++;
+            }
+        }
+
+        public void RESI_deag(double Mlh, double R, double RESI, int tochka)
+        {
+            int Round = Convert.ToInt16(Mlh * 2 - 4 + Math.Round(R * 0.2, MidpointRounding.AwayFromZero) * 15 + 1215 * tochka);
+
+            for (int i = 2; i <= 12; i++)
+            {
+                if (ABCD[tochka, i] <= RESI)
+                {
+                    MR[Round, i]++;
+                }
+            }
+
         }
 
 
-        public void SaveGeagreg()
+        public void SaveGeagreg(int[] periodsOfRepeating)
         {
-            StreamWriter SAwriter = new StreamWriter(NameDIR + "\\" + "Geadgreg_SA_.txt");
+            double[] SUMDEAGREG = new double[90];
+
+            StreamWriter SAwriter = new StreamWriter(NameDIR + "\\" + "Deadgreg_SA.txt");
+
+            SAwriter.Write("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
+                periodsOfRepeating[0],
+                periodsOfRepeating[1],
+                periodsOfRepeating[2],
+                periodsOfRepeating[3],
+                periodsOfRepeating[4],
+                periodsOfRepeating[5],
+                periodsOfRepeating[6]
+                );
+
+            for (int i = 0; i < 7; i++)
+            {
+                SAwriter.Write("\tPGA_T{0}\tSA_0_1_T{0}\tSA_0_2_T{0}\tSA_0_3_T{0}\tSA_0_4_T{0}\tSA_0_5_T{0}\tSA_0_7_T{0}\tSA_1_T{0}\tSA_2_T{0}\tSA_3_T{0}\tSA_5_T{0}", periodsOfRepeating[i]);
+            }
+
+            SAwriter.Write("\n");
+
+            for (int i = 2; i < 90; i++)
+            {
+                for (int j=0;j< 1215 * NumberOfPoint; j++)
+                {
+                    SUMDEAGREG[i] = SUMDEAGREG[i] + MR[j, i];
+                }
+            }
+            
+
+
 
             for (int i = 0; i< 1215 * NumberOfPoint; i++)
             {
-                for (int j = 0; j < 90; j++)
+                SAwriter.Write("{0}\t", MR[i, 1]);
+                SAwriter.Write("{0}\t", MR[i, 2]);
+
+                for (int j = 2; j < 9; j++)
                 {
-                    SAwriter.Write("{0}\t", MR[i, j]);
+                    SAwriter.Write("{0}\t", MR[i, j]/ SUMDEAGREG[j]*100);
+                }
+
+                for (int j = 13; j < 90; j++)
+                {
+                    SAwriter.Write("{0}\t", MR[i, j] / SUMDEAGREG[j] * 100);
                 }
                 SAwriter.Write("\n");
             }
