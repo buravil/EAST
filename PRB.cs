@@ -1224,7 +1224,8 @@ ad82:
                             DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
-                            currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
+                            if (DISTMIN<=350)
+                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
                             RS[sk].fl = false;
                         }
 
@@ -1645,7 +1646,8 @@ al82:
                             DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
-                            currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
+                            if (DISTMIN <= 350)
+                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
                             RS[sk].fl = false;
                         }
 
@@ -4436,7 +4438,7 @@ a12:
                 massiv_ABCD[ 12,k ] = Y1;
                 massiv_ABCD[ 13,k ] = Y2;
 
-                PNUM1 = PNUM * (500.0 / periodsOfRepeating[6]);//100000 лет
+                PNUM1 = PNUM * (5000.0 / periodsOfRepeating[6]);//100000 лет
                 RSKVN(PNUM1, CAM, CAMN, ref Y3);
                 massiv_ABCD[14, k] = Y3;
 
