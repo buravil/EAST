@@ -276,8 +276,8 @@ namespace East_CSharp
 
             for (int i = 0; i< 1215 * NumberOfPoint; i++)
             {
+                SAwriter.Write("{0}\t", MR[i, 0]);
                 SAwriter.Write("{0}\t", MR[i, 1]);
-                SAwriter.Write("{0}\t", MR[i, 2]);
 
                 for (int j = 2; j < 9; j++)
                 {
