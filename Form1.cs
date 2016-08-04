@@ -73,9 +73,14 @@ namespace East_CSharp
             prb.periodsOfRepeating[5] = Convert.ToInt32(textBox6.Text);
             prb.periodsOfRepeating[6] = Convert.ToInt32(textBox7.Text);
 
-            
-                //если выбран быстрый счет
-                if (checkBox1.Checked)
+            if (checkBoxSaveDuration.Checked)
+                prb.calculateDuraion = true;
+            else
+                prb.calculateDuraion = false;
+
+
+            //если выбран быстрый счет
+            if (checkBox1.Checked)
                     prb.fastCalc = 1;
                 else
                     prb.fastCalc = 0;

@@ -240,7 +240,7 @@ namespace East_CSharp
         }
 
 
-        public void SaveGeagreg(int[] periodsOfRepeating)
+        public void SaveDeagreg(int[] periodsOfRepeating)
         {
             double[] SUMDEAGREG = new double[90];
 

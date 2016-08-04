@@ -24,6 +24,8 @@ namespace East_CSharp
         //Массив со значениями: S-ширина спектра, d-длительность, t-период, b-бетта
         // double[] SDTB;
 
+        public double Duration;
+
         //шаг
         double lg_D;
 
@@ -149,7 +151,8 @@ namespace East_CSharp
             double h;
             double[] sdtb = new double[4];
             sdtb[0] = 0.6 + C8 + C1;
-            sdtb[1] = Math.Pow(10, 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3);
+            //sdtb[1] = Math.Pow(10, 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3);
+            sdtb[1] = 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3;
             h = (R < Math.Pow(10, 0.33 * M - 1.51)) ? Math.Pow(10, 0.33 * M - 1.51) : R;
             sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9 + C5) * Math.Pow(lg_D, -1), 0) * lg_D);
             sdtb[3] = 0.72 - 0.28 * sdtb[0] + 0.07 * Math.Log10(sdtb[1]);
@@ -157,8 +160,9 @@ namespace East_CSharp
             return sdtb;
         }
 
+ 
         //Расчет кривой бэтта с определенной магнитудой и расстоянием
-        public double[,] BettaCalculation(double M, double R, double deltaB, double deltaT)
+        public double[,] BettaCalculation(double M, double R, double deltaB, double deltaT, double deltaD)
         {
             //случайные величины
             double tg_alfa;
@@ -174,9 +178,9 @@ namespace East_CSharp
 
             //S-ширина спектра
             double S = SDTBcalculation(M, R)[0];
-
-            //D - длительность
-            double D = SDTBcalculation(M, R)[1];
+            
+            //Расчитываем длительность
+            Duration = Math.Pow(10,(SDTBcalculation(M, R)[1] + deltaD));
 
             //T-период
             double T = SDTBcalculation(M, R)[2] + deltaT;
@@ -225,8 +229,8 @@ namespace East_CSharp
 
         public void SAcalculation(double M, double R)
         {
-            double deltaA, deltaB, deltaT;
-            ;
+            double deltaA, deltaB, deltaT, deltaD;
+            
             Array.Clear(Bitog, 0, Bitog.Length);
             PGA = 0;
             int isa, jsa, ipga;
@@ -239,13 +243,14 @@ namespace East_CSharp
                 deltaA = normRand.NextDouble() * 0.18;
                 deltaB = normRand.NextDouble() * 0.07;
                 deltaT = normRand.NextDouble() * 0.2;
+                deltaD = normRand.NextDouble() * 0.3;
 
                 PGA = PGAcalculation(M, R) + deltaA;
 
                 if (PGA > 0.01)
                 {
                     fl = true;
-                    Bitog = BettaCalculation(M, R, deltaB, deltaT);
+                    Bitog = BettaCalculation(M, R, deltaB, deltaT, deltaD);
                     for (int i = 0; i <= NN; i++)
                     {
                         //находим номер столбца

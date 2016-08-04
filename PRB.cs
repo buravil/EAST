@@ -194,6 +194,11 @@ namespace East_CSharp
 
         Deaggregation currentDeag;
 
+
+        //Массив с длительностями
+        double[,,] DurrationMassive;
+
+        public bool calculateDuraion;
         #endregion
 
 
@@ -242,6 +247,7 @@ for(int i = 0; i < 500; i++)
             m_e_int_voz_do = 1000000000;
             m_e_int_voz_ot = 0;
             DBcount = 0;
+            
         }
 
         public bool Close()
@@ -834,9 +840,20 @@ a308:
 
             //задание массива спектров реакций
             ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
+            DurrationMassive = new double[NETPNT, 62, 62];
+
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
                 RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
+
+
+                //Инициализация массива с длительностями
+
+                for (int i = 0; i <= 60; i++)
+                {
+                    DurrationMassive[sk-1,0, i + 1] = 5.5 + (double)i / 10;
+                    DurrationMassive[sk-1,i + 1, 0] = i;
+                }
             }
                         
 
@@ -1093,7 +1110,18 @@ ad82:
                     }
 
 */
-                    RESI = BALL + UI * SDEVI + GLBVI;                    
+                    //Конечный расчет балла
+                    RESI = BALL + UI * SDEVI + GLBVI;
+                    
+                    //считаем длительность
+
+                        if (calculateDuraion && RESI >= 5.5 && RS[sk].Duration < 60)
+                        {
+                            FillingDuration(RESI, RS[sk].Duration, sk - 1);
+                        }
+
+
+                                       
                     
                     
                     
@@ -1520,8 +1548,13 @@ al82:
 
 */
                     RESI = BALL + UI * SDEVI + GLBVI;
-                   
-                    if(RESI < GI0)
+
+                    if (calculateDuraion && RESI >= 5.5 && RS[sk].Duration < 60)
+                    {
+                        FillingDuration(RESI, RS[sk].Duration, sk - 1);
+                    }
+
+                    if (RESI < GI0)
                         IGIST = 1;
                     else
                         IGIST = (int)((RESI - GI0) / DI) + 2;
@@ -1812,6 +1845,82 @@ a306:
                     wrng_out.Close();
 
             //POVTOR_BALL.Close();
+        }
+
+        private void FillingDuration(double rESI, double duration,int pointNumber)
+        {
+            try
+            {
+                
+                if (duration > 30)
+                {
+                    int lalalala = 0;
+                }
+                int round_i = Convert.ToInt16( Math.Round(duration, MidpointRounding.AwayFromZero))+1;
+                int round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
+
+                DurrationMassive[pointNumber, round_i, round_j]++;
+
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка в функции заполнения длительности");
+            }
+            
+        }
+
+        private void SaveDurationMassive()
+        {
+            String NameDIR;
+            NameDIR = Application.StartupPath;
+
+            //Если директория существует - удалить её
+            if (Directory.Exists(NameDIR + "\\duration"))
+            {
+                try
+                {
+                    Directory.Delete(NameDIR + "\\duration");
+                    System.Threading.Thread.Sleep(1000);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Невозможно удалить папку с длительностями\nОписание:\n"+ex.Message, "Ошибка");
+                }
+            }
+
+            try
+            {
+                Directory.CreateDirectory(NameDIR + "\\duration");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Невозможно создать папку с длительностями\nОписание:\n" + ex.Message, "Ошибка");
+            }
+            
+            for (int num = 0;num< NETPNT; num++)
+            {
+                try
+                {
+                    StreamWriter Filewriter = new StreamWriter(NameDIR + "\\duration\\" + (num + 1) + "_point.txt");
+                    for (int i = 0; i <= 61; i++)
+                    {
+                        for (int j = 0; j <= 61; j++)
+                        {
+                            Filewriter.Write("{0}\t", DurrationMassive[num, i, j]);
+                        }
+                        Filewriter.Write("\n");
+                    }
+
+                    Filewriter.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Невозможно сохранить файлы с длительностями\nОписание:\n" + ex.Message, "Ошибка");
+                }
+
+            }
+
+ 
         }
 
         private void FillOtherTables()
@@ -4496,8 +4605,10 @@ a12:
                     File.Copy(NAMEA, Path.GetDirectoryName(NAMEA) + "\\" + Path.GetFileNameWithoutExtension(NAMEA) + "_.TXT");
                 }
             }
-                
 
+            //сохранение массивов с длительностями
+            if (calculateDuraion)
+                SaveDurationMassive();
 
 
             flag_9999 = 1;
@@ -4659,9 +4770,8 @@ a12:
                 }
 
                 //Сохранение деагрегации
-                currentDeag.SaveGeagreg(periodsOfRepeating);
-
-
+                currentDeag.SaveDeagreg(periodsOfRepeating);
+                
                 DeargLineamDoman[iiIND, 2]++;
 
             }            
