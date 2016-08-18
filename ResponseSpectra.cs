@@ -155,7 +155,7 @@ namespace East_CSharp
             sdtb[1] = 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3;
             h = (R < Math.Pow(10, 0.33 * M - 1.51)) ? Math.Pow(10, 0.33 * M - 1.51) : R;
             sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9 + C5) * Math.Pow(lg_D, -1), 0) * lg_D);
-            sdtb[3] = 0.72 - 0.28 * sdtb[0] + 0.07 * Math.Log10(sdtb[1]);
+            sdtb[3] = 0.72 - 0.28 * sdtb[0] + 0.07 * sdtb[1];
 
             return sdtb;
         }
