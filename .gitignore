@@ -5,3 +5,4 @@
 *.mdb
 *.ldb
 /mathcad/
+*.geg

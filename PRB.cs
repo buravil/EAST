@@ -902,8 +902,7 @@ a308:
                 NFAI = 0;
                 NGE = 0;
                 IGRFM = new double[ IMM + 1 ];
-                LLOOP = 1;
-                MACRR3(); 
+
                 IND = Convert.ToInt32( rdomDT.Rows[ position_rdom ][ "ind" ] );
                 DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
                 iiIND++;
@@ -927,9 +926,13 @@ a308:
                 {
                     typeOfMovement = rnd.Next(0,5);
                 }
+
+            //проверка
+                LLOOP = 1;
+                MACRR3();
+
                 //ITY - здесь = 2
-
-
+                
                 ITY = 2;
                 Debug.Print( String.Format( "ZNUMB,TIP,KMAG={0} {1} {2}",IND,ITY,KMAG ) );
                 ISBR = 1;
@@ -1071,6 +1074,7 @@ ad82:
 
                     if(RR < 1.0E-5) { RR += .01; }
 
+                   // LLOOP = 1;
                     MACRR3();
 
               
@@ -1366,7 +1370,7 @@ ad2:
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
                 SDEVM = Convert.ToDouble(rlinDT.Rows[li]["sdevm"]);
                 SDEVI = Convert.ToDouble(rlinDT.Rows[li]["sdevi"]);
-                typeOfMovement = Convert.ToInt16(rlinDT.Rows[position_rdom]["tip_podv"]);
+                typeOfMovement = Convert.ToInt16(rlinDT.Rows[li]["tip_podv"]);
 
                 if (typeOfMovement == 5)
                 {
@@ -1508,7 +1512,6 @@ al82:
 
                     RR = Math.Sqrt( RR );
                     if(RR < 1.0e-5) { RR += .01; }
-
 
                     MACRR3();
 
