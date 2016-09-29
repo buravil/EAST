@@ -15,7 +15,7 @@ namespace East_CSharp
     class PRB
     {
         #region members___
-
+        int asdf = 0;
         //массивы с периодами и вероятностью для расчета
         public int[] periodsOfRepeating = new int[7];
         public double[] probabilityOfExceedance = new double[7];
@@ -905,7 +905,7 @@ a308:
 
                 IND = Convert.ToInt32( rdomDT.Rows[ position_rdom ][ "ind" ] );
                 DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
-                iiIND++;
+                
                 KMAG = Convert.ToInt32( rdomDT.Rows[ position_rdom ][ "kmag" ] );
                 PARFLN = Convert.ToString(rdomDT.Rows[position_rdom]["parfln"]);
                 kszon = Convert.ToDouble(rdomDT.Rows[position_rdom]["kszon"]);// площадь домена в км2
@@ -1314,6 +1314,7 @@ ad83:
                 NZ++;
                 iw++;
 
+                iiIND++;
                 ///rdom.MoveNext();
                 continue;
 
@@ -1322,10 +1323,11 @@ ad2:
                 {
                     NZ++;
                     iw++;
+                    iiIND++;
                     ///rdom.MoveNext();
                     continue;
                 }
-                int asdf = 0;
+                
             };
             rdomDT.Clear();
 
@@ -1364,7 +1366,7 @@ ad2:
                 IGRFM = new double[ IMM + 1 ];
                 IND = Convert.ToInt64( rlinDT.Rows[ li ][ "ind" ] );
                 DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
-                iiIND++;
+
                 KMAG = Convert.ToInt64( rlinDT.Rows[ li ][ "kmag" ] );
                 PARFLN = Convert.ToString(rlinDT.Rows[li]["parfln"]);
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
@@ -1739,13 +1741,14 @@ al83:
                 Debug.Print( String.Format( "NGEN,NEQS,NFAIL = {0}\t{1}\t{2}",NGE,NEQ,NFAI ) );
                 NZ++;
                 iw++;
-
+                iiIND++;
                 ///rlin.MoveNext();
                 continue;
 al2:
                 if(IGER == 1)
                 {
                     NZ++; iw++;
+                    iiIND++;
                     ///rlin.MoveNext();
                     continue;
                 }
