@@ -919,7 +919,7 @@ a308:
                 
                 catch
                 {
-                    MessageBox.Show("В базе данных не задана подвижка");
+                    MessageBox.Show("У домена " + Convert.ToString(IND) + " не задана подвижка");
                 }
 
                 if (typeOfMovement == 5)
@@ -1364,6 +1364,7 @@ ad2:
                 NGE = 0;
 
                 IGRFM = new double[ IMM + 1 ];
+                
                 IND = Convert.ToInt64( rlinDT.Rows[ li ][ "ind" ] );
                 DeargLineamDoman[iiIND, 0] = IND;//для деагрегации
 
@@ -1372,7 +1373,14 @@ ad2:
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
                 SDEVM = Convert.ToDouble(rlinDT.Rows[li]["sdevm"]);
                 SDEVI = Convert.ToDouble(rlinDT.Rows[li]["sdevi"]);
-                typeOfMovement = Convert.ToInt16(rlinDT.Rows[li]["tip_podv"]);
+                try
+                {
+                    typeOfMovement = Convert.ToInt16(rlinDT.Rows[li]["tip_podv"]);
+                }                
+                 catch
+                {
+                    MessageBox.Show("У линеамента " + Convert.ToString(IND) + " не задана подвижка");
+                }
 
                 if (typeOfMovement == 5)
                 {
