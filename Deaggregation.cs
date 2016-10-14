@@ -226,7 +226,10 @@ namespace East_CSharp
         }
 
         public void RESI_deag(double Mlh, double R, double RESI, int tochka)
-        {
+        {try
+            {
+
+            
             int Round = Convert.ToInt16(Mlh * 2 - 4 + Math.Round(R * 0.2, MidpointRounding.AwayFromZero) * 15 + 1215 * tochka);
 
             for (int i = 2; i <= 12; i++)
@@ -236,7 +239,12 @@ namespace East_CSharp
                     MR[Round, i]++;
                 }
             }
-
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка в расчете деагрегации по баллу: " + ex.Message);
+                return;
+            }
         }
 
 

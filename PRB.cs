@@ -1244,8 +1244,8 @@ ad82:
                             }
                             
                         }
-
-                        currentDeag.RESI_deag(ML, DISTMIN, RESI, sk-1);
+                        if (DISTMIN <= 350)
+                            currentDeag.RESI_deag(ML, DISTMIN, RESI, sk-1);
 
                     //Деагрегация по спектрам реакций
                         if (RS[sk].fl)
@@ -1680,8 +1680,8 @@ al82:
                             }
                             
                         }
-
-                        currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
+                        if (DISTMIN <= 350)
+                            currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
 
                         //Деагрегация по спектрам реакций
                         if (RS[sk].fl)
@@ -4621,7 +4621,7 @@ a12:
             }
 
             //сохранение массивов с длительностями
-            if (calculateDuraion)
+            if (calculateDuraion && DEAG != 1)
                 SaveDurationMassive();
 
 
