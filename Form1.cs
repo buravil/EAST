@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Media;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace East_CSharp
@@ -34,8 +36,23 @@ namespace East_CSharp
 
         private void buttonRun_Click(object sender,EventArgs e)
         {
-            DT = DateTime.Now;
-            StartThread();
+            string pattern = "^-?\\d*(\\.\\d+)?$";
+            Regex regex = new Regex(pattern);
+
+           
+            if (radioButton4.Checked && regex.IsMatch(textBox_lon.Text) && regex.IsMatch(textBox_lat.Text))
+            {               
+                StartThread();
+            }
+            else if (radioButton5.Checked && textBox_net.Text != "")
+            {
+                StartThread();
+            }
+            else
+            {
+                MessageBox.Show("Не корректно заданы координаты точки либо либо файл с сеткой");
+            }
+            
         }
 
 
@@ -44,6 +61,23 @@ namespace East_CSharp
            
 
             prb = new PRB(textBox_mdbPath.Text);
+
+            DT = DateTime.Now;
+
+            if (radioButton4.Checked == true)
+            {
+                prb.Lat = Convert.ToDouble(textBox_lat.Text);
+                prb.Lon = Convert.ToDouble(textBox_lon.Text);
+                prb.NetIsFile = false;
+            }
+            if (radioButton5.Checked == true)
+            {
+                prb.NetIsFile = true;
+                prb.NetFilePath = openFileDialog1.FileName;
+            }
+
+
+
             prb.m_ch_make_katalog = false;
             //prb.m_e_iter = Convert.ToInt32( textBox_iter.Text );
             prb.m_e_tmax = 5000;
@@ -279,6 +313,56 @@ namespace East_CSharp
         private void textBox7_Leave(object sender, EventArgs e)
         {
             textBox14.Text = TtoP(Convert.ToInt32(textBox7.Text)).ToString("F3");
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        {
+            button_net.Enabled = true;
+            textBox_net.Enabled = true;
+            textBox_lat.Enabled = false;
+            textBox_lon.Enabled = false;
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            button_net.Enabled = false;
+            textBox_net.Enabled = false;
+            textBox_lat.Enabled = true;
+            textBox_lon.Enabled = true;
+        }
+
+        private void button_net_Click(object sender, EventArgs e)
+        {
+            
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBox_net.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void textBox_lat_Leave(object sender, EventArgs e)
+        {
+ 
+        }
+
+        private void textBox_lat_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox_lon_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox_lon_Leave(object sender, EventArgs e)
+        {
+
         }
     }
 }
