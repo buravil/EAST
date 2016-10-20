@@ -61,6 +61,18 @@
             this.textBox14 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxSaveDuration = new System.Windows.Forms.CheckBox();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.textBox_net = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.button_net = new System.Windows.Forms.Button();
+            this.textBox_lat = new System.Windows.Forms.TextBox();
+            this.textBox_lon = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -141,7 +153,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 317);
+            this.progressBar1.Location = new System.Drawing.Point(15, 402);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(602, 19);
             this.progressBar1.TabIndex = 7;
@@ -150,7 +162,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 290);
+            this.label3.Location = new System.Drawing.Point(18, 383);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(0, 13);
             this.label3.TabIndex = 9;
@@ -336,7 +348,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(283, 251);
+            this.label6.Location = new System.Drawing.Point(445, 386);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 13);
             this.label6.TabIndex = 30;
@@ -351,11 +363,122 @@
             this.checkBoxSaveDuration.Text = "Сохранять длительности";
             this.checkBoxSaveDuration.UseVisualStyleBackColor = true;
             // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Checked = true;
+            this.radioButton4.Location = new System.Drawing.Point(14, 41);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(110, 17);
+            this.radioButton4.TabIndex = 32;
+            this.radioButton4.TabStop = true;
+            this.radioButton4.Text = "Для одной точки";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Location = new System.Drawing.Point(14, 76);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(100, 17);
+            this.radioButton5.TabIndex = 33;
+            this.radioButton5.Text = "Выбрать сетку";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            this.radioButton5.CheckedChanged += new System.EventHandler(this.radioButton5_CheckedChanged);
+            // 
+            // textBox_net
+            // 
+            this.textBox_net.Enabled = false;
+            this.textBox_net.Location = new System.Drawing.Point(198, 73);
+            this.textBox_net.Name = "textBox_net";
+            this.textBox_net.Size = new System.Drawing.Size(370, 20);
+            this.textBox_net.TabIndex = 34;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(268, 6);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(72, 13);
+            this.label7.TabIndex = 35;
+            this.label7.Text = "Выбор сетки";
+            // 
+            // button_net
+            // 
+            this.button_net.Enabled = false;
+            this.button_net.Location = new System.Drawing.Point(120, 73);
+            this.button_net.Name = "button_net";
+            this.button_net.Size = new System.Drawing.Size(67, 23);
+            this.button_net.TabIndex = 36;
+            this.button_net.Text = "Выбрать";
+            this.button_net.UseVisualStyleBackColor = true;
+            this.button_net.Click += new System.EventHandler(this.button_net_Click);
+            // 
+            // textBox_lat
+            // 
+            this.textBox_lat.Location = new System.Drawing.Point(196, 40);
+            this.textBox_lat.Name = "textBox_lat";
+            this.textBox_lat.Size = new System.Drawing.Size(95, 20);
+            this.textBox_lat.TabIndex = 37;
+            this.textBox_lat.TextChanged += new System.EventHandler(this.textBox_lat_TextChanged);
+            this.textBox_lat.Leave += new System.EventHandler(this.textBox_lat_Leave);
+            // 
+            // textBox_lon
+            // 
+            this.textBox_lon.Location = new System.Drawing.Point(346, 40);
+            this.textBox_lon.Name = "textBox_lon";
+            this.textBox_lon.Size = new System.Drawing.Size(92, 20);
+            this.textBox_lon.TabIndex = 38;
+            this.textBox_lon.TextChanged += new System.EventHandler(this.textBox_lon_TextChanged);
+            this.textBox_lon.Leave += new System.EventHandler(this.textBox_lon_Leave);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(159, 43);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(22, 13);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "Lat";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(305, 43);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(25, 13);
+            this.label9.TabIndex = 40;
+            this.label9.Text = "Lon";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Filter = "Файлы сетки (*.geg)|*.geg";
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.radioButton4);
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.Controls.Add(this.radioButton5);
+            this.panel1.Controls.Add(this.label8);
+            this.panel1.Controls.Add(this.textBox_net);
+            this.panel1.Controls.Add(this.textBox_lon);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.textBox_lat);
+            this.panel1.Controls.Add(this.button_net);
+            this.panel1.Location = new System.Drawing.Point(24, 255);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(579, 101);
+            this.panel1.TabIndex = 41;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(627, 348);
+            this.ClientSize = new System.Drawing.Size(630, 435);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBoxSaveDuration);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox8);
@@ -390,9 +513,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "East 2016 v2.5.10";
+            this.Text = "East 2016 v2.5.11";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -432,6 +557,17 @@
         private System.Windows.Forms.TextBox textBox14;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBoxSaveDuration;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton5;
+        private System.Windows.Forms.TextBox textBox_net;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button button_net;
+        private System.Windows.Forms.TextBox textBox_lat;
+        private System.Windows.Forms.TextBox textBox_lon;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

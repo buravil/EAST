@@ -199,6 +199,20 @@ namespace East_CSharp
         double[,,] DurrationMassive;
 
         public bool calculateDuraion;
+
+
+
+        //Сетка
+        string netfilePath = "";
+        double lat, lon;
+        bool netIsFile;
+
+        public string NetFilePath { set { netfilePath = value; } }
+        public double Lat { set { lat = value; } }
+        public double Lon { set { lon = value; } }
+        public bool NetIsFile { set { netIsFile = value; } }
+
+
         #endregion
 
 
@@ -458,6 +472,8 @@ a307:
                 SDEVM = Convert.ToDouble(rsDT.Rows[0]["sdevm"]);
                 SDEVI = Convert.ToDouble(rsDT.Rows[0]["sdevi"]);
                 IY0 = Convert.ToInt64(rsDT.Rows[0]["iy"]);
+                //Проверка задания рандомного значения
+                IY0 = DateTime.Now.Millisecond * DateTime.Now.Minute;
                 PARFLN = Convert.ToString(rsDT.Rows[0]["parfln"]);
                 TPR = Convert.ToDouble(rsDT.Rows[0]["t"]);
                 NCYCL = Convert.ToInt32(rsDT.Rows[0]["ncycl"]);
@@ -512,19 +528,29 @@ a307:
             NAME6 = PrefixName + PRBL[ KPIECE - 1 ] + "_FLS.TXT";
             NAMGRP = PrefixName + PRBL[ KPIECE - 1 ] + "_GRP.TXT";
             KFAIL = 0;
+            XNET = new double[NRP + 1];
+            YNET = new double[NRP + 1];
 
-            if(KPIECE == 1) //если сетка первая
+            if (KPIECE == 1) //если сетка первая
             {
-                try
+
+                if (netIsFile)
                 {
-                    //net.Open("mynet.geg");
-                    net = new StreamReader( applicationDir + "mynet.geg" );
+                    try
+                    {
+                        //net.Open("mynet.geg");
+                        net = new StreamReader(netfilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("ERROR: " + ex.Message);
+                        EmExit("Невозможно прочитать выходной файл 'mynet.geg'");
+                        goto a306;
+                    }
                 }
-                catch(Exception ex)
+                else
                 {
-                    MessageBox.Show( "ERROR: " + ex.Message );
-                    EmExit( "Невозможно создать выходной файл 'mynet.geg'" );
-                    goto a306;
+
                 }
             }
 
@@ -596,14 +622,20 @@ a308:
             }  
             ii = 1;
             aa = "";
-            
-            XNET = new double[ NRP + 1 ];
-            YNET = new double[ NRP + 1 ];
 
 
-            while (net.EndOfStream != true)
+            if (!netIsFile)
             {
-                aa = net.ReadLine();
+                XNET[1] = lat;
+                YNET[1] = lon;
+
+                ii = 2;
+            }
+            else
+            {
+                while (net.EndOfStream != true)
+                {
+                    aa = net.ReadLine();
 
                 int SEP1 = aa.IndexOf(" ");
                 int SEP2 = aa.IndexOf("\t");
@@ -630,7 +662,7 @@ a308:
                 if (ii > NRP)
                     goto a305;
             }
-
+            }
 
 
 
@@ -4629,57 +4661,56 @@ a12:
 
             if (DEAG == 1)//Запись в файлы результаты деагрегации
             {
-                int jjj = 0;
-                while (jjj < NETPNT)
-                {
+                /* int jjj = 0;
+                 while (jjj < NETPNT)
+                 {
 
-                    //Запись в файл деагрегации по баллам М-R
-                    double[] SUMDEAGREG = new double[10];
+                     //Запись в файл деагрегации по баллам М-R
+                     double[] SUMDEAGREG = new double[10];
 
-                    NAME5 = "deagreg_"+ (jjj+1) + ".TXT";
-                    
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    DEAGREGA = new StreamWriter(NAME5, false, Encoding.GetEncoding(1251));
-                    DEAGREGA.WriteLine("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
-                        periodsOfRepeating[0],
-                        periodsOfRepeating[1],
-                        periodsOfRepeating[2],
-                        periodsOfRepeating[3],
-                        periodsOfRepeating[4],
-                        periodsOfRepeating[5],
-                        periodsOfRepeating[6]
-                        );
-                    
-                  
-                    for (int i = 1; i <= 9; i++)
-                    {
-                        SUMDEAGREG[i] = 0 ;//считаем сумму по столбцам
-                    }
+                     NAME5 = "deagreg_"+ (jjj+1) + ".TXT";
 
-                    for (int i = 3; i <= 9; i++)
-                    {
-                        for (jdeg = 1; jdeg <= 770; jdeg++)
-                        {
-                            SUMDEAGREG[i] = DEAGREG[i, jdeg + (770 * jjj)] + SUMDEAGREG[i];//считаем сумму по столбцам
+                     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                     DEAGREGA = new StreamWriter(NAME5, false, Encoding.GetEncoding(1251));
+                     DEAGREGA.WriteLine("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
+                         periodsOfRepeating[0],
+                         periodsOfRepeating[1],
+                         periodsOfRepeating[2],
+                         periodsOfRepeating[3],
+                         periodsOfRepeating[4],
+                         periodsOfRepeating[5],
+                         periodsOfRepeating[6]
+                         );
 
-                        }
-                    }
-                    for (jdeg = 1; jdeg <= 770; jdeg++)//запись в файл
-                    {
-                        /*вывод в процентах*/
-                        DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], (DEAGREG[3, jdeg + (770 * jjj)] / SUMDEAGREG[3]) * 100, DEAGREG[4, jdeg + (770 * jjj)] / SUMDEAGREG[4] * 100, DEAGREG[5, jdeg + (770 * jjj)] / SUMDEAGREG[5] * 100, DEAGREG[6, jdeg + (770 * jjj)] / SUMDEAGREG[6] * 100, DEAGREG[7, jdeg + (770 * jjj)] / SUMDEAGREG[7] * 100, DEAGREG[8, jdeg + (770 * jjj)] / SUMDEAGREG[8]*100, DEAGREG[9, jdeg + (770 * jjj)] / SUMDEAGREG[9]*100));
-                     // DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], DEAGREG[3, jdeg + (770 * jjj)], DEAGREG[4, jdeg + (770 * jjj)], DEAGREG[5, jdeg + (770 * jjj)], DEAGREG[6, jdeg + (770 * jjj)], DEAGREG[7, jdeg + (770 * jjj)], DEAGREG[8, jdeg + (770 * jjj)], DEAGREG[9, jdeg + (770 * jjj)]));
-                       
-                    }
-                    DEAGREGA.Close();
-                    jjj++;
-                }
 
+                     for (int i = 1; i <= 9; i++)
+                     {
+                         SUMDEAGREG[i] = 0 ;//считаем сумму по столбцам
+                     }
+
+                     for (int i = 3; i <= 9; i++)
+                     {
+                         for (jdeg = 1; jdeg <= 770; jdeg++)
+                         {
+                             SUMDEAGREG[i] = DEAGREG[i, jdeg + (770 * jjj)] + SUMDEAGREG[i];//считаем сумму по столбцам
+
+                         }
+                     }
+                     for (jdeg = 1; jdeg <= 770; jdeg++)//запись в файл
+                     {
+                         //вывод в процентах
+                         DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], (DEAGREG[3, jdeg + (770 * jjj)] / SUMDEAGREG[3]) * 100, DEAGREG[4, jdeg + (770 * jjj)] / SUMDEAGREG[4] * 100, DEAGREG[5, jdeg + (770 * jjj)] / SUMDEAGREG[5] * 100, DEAGREG[6, jdeg + (770 * jjj)] / SUMDEAGREG[6] * 100, DEAGREG[7, jdeg + (770 * jjj)] / SUMDEAGREG[7] * 100, DEAGREG[8, jdeg + (770 * jjj)] / SUMDEAGREG[8]*100, DEAGREG[9, jdeg + (770 * jjj)] / SUMDEAGREG[9]*100));
+                      // DEAGREGA.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", DEAGREG[1, jdeg + (770 * jjj)], DEAGREG[2, jdeg + (770 * jjj)], DEAGREG[3, jdeg + (770 * jjj)], DEAGREG[4, jdeg + (770 * jjj)], DEAGREG[5, jdeg + (770 * jjj)], DEAGREG[6, jdeg + (770 * jjj)], DEAGREG[7, jdeg + (770 * jjj)], DEAGREG[8, jdeg + (770 * jjj)], DEAGREG[9, jdeg + (770 * jjj)]));
+
+                     }
+                     DEAGREGA.Close();
+                     jjj++;
+                 }
 
 
 
                 //Запись деагрегации для спектров реакций M-R
-                jjj = 0;
+                int jjj = 0;
                 while (jjj < NETPNT)
                 {
                     double[] SUMDEAGREG_RS = new double[10];
@@ -4713,7 +4744,7 @@ a12:
 
                     for (jdeg = 1; jdeg <= 770; jdeg++)//запись в файл
                     {
-                        /*вывод в процентах*/
+                        //вывод в процентах
                         DEAGREGA_RS.WriteLine(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}",
                             DEAGREGRespSpectr[1, jdeg + (770 * jjj)],
                             DEAGREGRespSpectr[2, jdeg + (770 * jjj)],
@@ -4729,13 +4760,13 @@ a12:
                     }
                     DEAGREGA_RS.Close();
                     jjj++;
-                }
+                }*/
 
 
 
 
 
-                    jjj = 0;//запись деагрегации для доменов и линеаментов
+                   int jjj = 0;//запись деагрегации для доменов и линеаментов
                 while (jjj < NETPNT)
                 {
                     double[] SUMDEAGREGDOMLIN = new double[10];

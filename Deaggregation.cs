@@ -65,30 +65,7 @@ namespace East_CSharp
             int df = 0;
         }
 
-        //тест функции
-        public void calcTest()
-        {
-            double PGAA = 2.771;
-            double[,] bitog = new double[21, 2];
-
-            testStream = new StreamReader("D:\\!Работа2016\\EAST\\bin\\x86\\Debug\\testBitog.txt");
-            int i = 0;
-            while (testStream.EndOfStream != true)
-            {
-                aaa = testStream.ReadLine();
-                String[] nums = aaa.Split('\t');
-
-                bitog[i, 0] = Convert.ToDouble(nums[0]);
-                bitog[i, 1] = Convert.ToDouble(nums[1]);
-                i++;
-            }
-
-            SA_deag(8, 15, bitog, PGAA, 0);
-
-            int tadfasdf = 0;
-        }
-        
-
+      
 
         //расчет значения для любого периода
         public double SA_T(double T, double[,] Bitog, double PGA)
@@ -279,9 +256,6 @@ namespace East_CSharp
                 }
             }
             
-
-
-
             for (int i = 0; i< 1215 * NumberOfPoint; i++)
             {
                 SAwriter.Write("{0}\t", MR[i, 0]);
