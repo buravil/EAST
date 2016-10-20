@@ -199,7 +199,7 @@ namespace East_CSharp
         double[,,] DurrationMassive;
 
         public bool calculateDuraion;
-
+        double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
 
 
         //Сетка
@@ -1898,10 +1898,7 @@ a306:
             try
             {
                 
-                if (duration > 30)
-                {
-                    int lalalala = 0;
-                }
+               
                 int round_i = Convert.ToInt16( Math.Round(duration, MidpointRounding.AwayFromZero))+1;
                 int round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
 
@@ -4604,6 +4601,7 @@ a12:
                     i_cz++;
                 }
 
+                CalculateDuration(k, massiv_ABCD);
 
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                 fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t",
@@ -4821,6 +4819,40 @@ a12:
 
             }            
 
+
+        }
+
+        private void CalculateDuration(long k, double[,] massiv_ABCD)
+        {
+            //DurationInABCDfile
+            double[] NIo = new double[7];
+            int[] temp = new int[7];
+            // massiv_ABCD[13, k],
+            //         massiv_ABCD[2, k],
+            //         massiv_ABCD[5, k],
+            //         massiv_ABCD[12, k],
+            //         massiv_ABCD[8, k],
+            //         massiv_ABCD[11, k],
+            //         massiv_ABCD[14, k],
+            //   DurrationMassive[k-1,i,j]
+
+            NIo[0] = Math.Round(massiv_ABCD[13, k], 1);
+            NIo[1] = Math.Round(massiv_ABCD[2, k], 1);
+            NIo[2] = Math.Round(massiv_ABCD[5, k], 1);
+            NIo[3] = Math.Round(massiv_ABCD[12, k], 1);
+            NIo[4] = Math.Round(massiv_ABCD[8, k], 1);
+            NIo[5] = Math.Round(massiv_ABCD[11, k], 1);
+            NIo[6] = Math.Round(massiv_ABCD[14, k], 1);
+
+            temp[0] = Convert.ToInt32(Math.Round(7.0984126984127, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[1] = Convert.ToInt32(Math.Round(8.18823529411765, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[2] = Convert.ToInt32(Math.Round(8.53636363636364, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[3] = Convert.ToInt32(Math.Round(9.05, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[4] = Convert.ToInt32(Math.Round(9.23333333333333, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[5] = Convert.ToInt32(Math.Round(9.5, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            temp[6] = Convert.ToInt32(Math.Round(9.75, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+
+            int sdf = 0;
 
         }
 
