@@ -60,7 +60,6 @@
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.textBox14 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBoxSaveDuration = new System.Windows.Forms.CheckBox();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.textBox_net = new System.Windows.Forms.TextBox();
@@ -72,6 +71,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.textBox16 = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -353,16 +356,6 @@
             this.label6.Size = new System.Drawing.Size(0, 13);
             this.label6.TabIndex = 30;
             // 
-            // checkBoxSaveDuration
-            // 
-            this.checkBoxSaveDuration.AutoSize = true;
-            this.checkBoxSaveDuration.Location = new System.Drawing.Point(445, 118);
-            this.checkBoxSaveDuration.Name = "checkBoxSaveDuration";
-            this.checkBoxSaveDuration.Size = new System.Drawing.Size(152, 17);
-            this.checkBoxSaveDuration.TabIndex = 31;
-            this.checkBoxSaveDuration.Text = "Сохранять длительности";
-            this.checkBoxSaveDuration.UseVisualStyleBackColor = true;
-            // 
             // radioButton4
             // 
             this.radioButton4.AutoSize = true;
@@ -473,13 +466,52 @@
             this.panel1.Size = new System.Drawing.Size(579, 101);
             this.panel1.TabIndex = 41;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(356, 102);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(151, 13);
+            this.label10.TabIndex = 42;
+            this.label10.Text = "Число реализаций каталога";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(354, 136);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(153, 13);
+            this.label11.TabIndex = 43;
+            this.label11.Text = "Время модельного каталога";
+            this.label11.Visible = false;
+            // 
+            // textBox15
+            // 
+            this.textBox15.Location = new System.Drawing.Point(513, 99);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(45, 20);
+            this.textBox15.TabIndex = 44;
+            this.textBox15.Text = "200";
+            // 
+            // textBox16
+            // 
+            this.textBox16.Enabled = false;
+            this.textBox16.Location = new System.Drawing.Point(514, 136);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(44, 20);
+            this.textBox16.TabIndex = 45;
+            this.textBox16.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(630, 435);
+            this.Controls.Add(this.textBox16);
+            this.Controls.Add(this.textBox15);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.checkBoxSaveDuration);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox8);
             this.Controls.Add(this.textBox9);
@@ -513,7 +545,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "East 2016 v2.5.11";
+            this.Text = "East 2016 v2.5.13";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
@@ -556,7 +588,6 @@
         private System.Windows.Forms.TextBox textBox13;
         private System.Windows.Forms.TextBox textBox14;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBoxSaveDuration;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton5;
         private System.Windows.Forms.TextBox textBox_net;
@@ -568,6 +599,10 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.TextBox textBox16;
     }
 }
 

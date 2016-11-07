@@ -40,7 +40,7 @@ namespace East_CSharp
             Regex regex = new Regex(pattern);
 
            
-            if (radioButton4.Checked && regex.IsMatch(textBox_lon.Text) && regex.IsMatch(textBox_lat.Text))
+            if (radioButton4.Checked && regex.IsMatch(textBox_lon.Text) && regex.IsMatch(textBox_lat.Text) && textBox_lon.Text != "" && textBox_lat.Text != "")
             {               
                 StartThread();
             }
@@ -90,6 +90,7 @@ namespace East_CSharp
             prb.i_az = 1;
             prb.i_bz = 1;
             prb.i_cz = 1;
+            prb.ncycl = Convert.ToInt32(textBox15.Text);
 
             prb.probabilityOfExceedance[0] = Convert.ToDouble(textBox8.Text);
             prb.probabilityOfExceedance[1] = Convert.ToDouble(textBox9.Text);
@@ -107,10 +108,7 @@ namespace East_CSharp
             prb.periodsOfRepeating[5] = Convert.ToInt32(textBox6.Text);
             prb.periodsOfRepeating[6] = Convert.ToInt32(textBox7.Text);
 
-            if (checkBoxSaveDuration.Checked)
-                prb.calculateDuraion = true;
-            else
-                prb.calculateDuraion = false;
+ 
 
 
             //если выбран быстрый счет
@@ -219,6 +217,7 @@ namespace East_CSharp
             progressBar1.Value = e.ProgressPercentage;
 
             label3.Text = (string)e.UserState;
+
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -361,6 +360,11 @@ namespace East_CSharp
         }
 
         private void textBox_lon_Leave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBoxSaveDuration_CheckedChanged(object sender, EventArgs e)
         {
 
         }

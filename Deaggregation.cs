@@ -32,8 +32,15 @@ namespace East_CSharp
             //логарифмический шаг
             lg_D = 0.1;
             //Инициализация массива с деагрегацией
-            MR = new double[1215 * NumberOfPoint, 90];
-            ABCD = new double[NumberOfPoint, 90];
+            try
+            {
+                MR = new double[1215 * NumberOfPoint, 90];
+                ABCD = new double[NumberOfPoint, 90];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message);
+            }
 
             NameDIR = Application.StartupPath;
 

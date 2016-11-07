@@ -15,7 +15,6 @@ namespace East_CSharp
     class PRB
     {
         #region members___
-        int asdf = 0;
         //массивы с периодами и вероятностью для расчета
         public int[] periodsOfRepeating = new int[7];
         public double[] probabilityOfExceedance = new double[7];
@@ -68,6 +67,7 @@ namespace East_CSharp
         public int DBcount = 0;
         public int fastCalc, LCAT, DEAG;
         public int typeOfGrunt;
+        public int ncycl;
 
 
         int day;
@@ -162,18 +162,18 @@ namespace East_CSharp
         double[] PMG = new double[7];
         double[] DST3 = new double[IM3 + 1], BSM3 = new double[IM3 + 1];
         double R3DMIN;
-        double[] balldeagr1 = new double[200];
-        double[] balldeagr2 = new double[200];
-        double[] balldeagr3 = new double[200];
-        double[] balldeagr4 = new double[200];
-        double[] balldeagr5 = new double[200];
-        double[] balldeagr6 = new double[200];
-        double[] balldeagr7 = new double[200];
-        double[] balldeagrx = new double[200];
-        double[] balldeagry = new double[200];
+        double[] balldeagr1;
+        double[] balldeagr2;
+        double[] balldeagr3;
+        double[] balldeagr4;
+        double[] balldeagr5;
+        double[] balldeagr6;
+        double[] balldeagr7;
+        double[] balldeagrx;
+        double[] balldeagry;
 
-        double[,] PGA_deagreg = new double[200, 7];
-        double[,] SA_0_1_deagreg = new double[200, 7];
+        double[,] PGA_deagreg;
+        double[,] SA_0_1_deagreg;
         String PrefixName, NAME_IMP_DAT, NAME2, NAME4, NAME5, NAMEDEAG_RS, NAMEDEAGDOMLIN, NAMEPROC;
         ///	char NAME[4],NAME1[11],NAME2[16],NAME3[16],NAME4[16];
         String NAME6, NAME_NET_GEG, NAMGRP, NAME_Warning, NAMCTL, NAMEA;
@@ -187,7 +187,7 @@ namespace East_CSharp
         string[] PRBL = new string[500000];
         string applicationDir = "";
 
-        public string NameOfCurrentCalculation="пипа";
+        public string NameOfCurrentCalculation="";
 
         double[,] DeargLineamDoman = new double[20000, 9];//Массив для деагрегации, запись ид даменов
         int iiIND = 0;//индекс массива деагрегации доменов
@@ -198,7 +198,7 @@ namespace East_CSharp
         //Массив с длительностями
         double[,,] DurrationMassive;
 
-        public bool calculateDuraion;
+        
         double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
 
 
@@ -212,7 +212,8 @@ namespace East_CSharp
         public double Lon { set { lon = value; } }
         public bool NetIsFile { set { netIsFile = value; } }
 
-
+        int round_i;
+        int round_j;
         #endregion
 
 
@@ -471,12 +472,13 @@ a307:
                 SDEVA = Convert.ToDouble(rsDT.Rows[0]["sdeva"]);
                 SDEVM = Convert.ToDouble(rsDT.Rows[0]["sdevm"]);
                 SDEVI = Convert.ToDouble(rsDT.Rows[0]["sdevi"]);
-                IY0 = Convert.ToInt64(rsDT.Rows[0]["iy"]);
-                //Проверка задания рандомного значения
+                //IY0 = Convert.ToInt64(rsDT.Rows[0]["iy"]);
+                //задания рандомного значения
                 IY0 = DateTime.Now.Millisecond * DateTime.Now.Minute;
                 PARFLN = Convert.ToString(rsDT.Rows[0]["parfln"]);
                 TPR = Convert.ToDouble(rsDT.Rows[0]["t"]);
-                NCYCL = Convert.ToInt32(rsDT.Rows[0]["ncycl"]);
+                //NCYCL = Convert.ToInt32(rsDT.Rows[0]["ncycl"]);
+                NCYCL = ncycl;
                 rbb55 = Convert.ToDouble(rsDT.Rows[0]["rb55"]);
                 rbb60 = Convert.ToDouble(rsDT.Rows[0]["rb60"]);
                 rbb65 = Convert.ToDouble(rsDT.Rows[0]["rb65"]); 
@@ -484,6 +486,7 @@ a307:
                 rbb75 = Convert.ToDouble(rsDT.Rows[0]["rb75"]); 
                 rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]); 
             }
+
             
             rsDT.Clear();
 
@@ -571,55 +574,7 @@ a307:
             AZ0 = 0.0;
 a308:
 
-            if (DEAG == 1)//Проводить деагрегацию
-            {
-                BALLDEAGREG = new StreamReader(applicationDir + "EAST_2003__ABCD_.TXT");
-                
-            }
-            iii = 1;
-            aaa = "";
-            if (DEAG == 1)
-            {
-                aaa = BALLDEAGREG.ReadLine();
-
-                balldeagrx = new double[200];
-                balldeagry = new double[200];
-                balldeagr1 = new double[200];
-                balldeagr2 = new double[200];
-                balldeagr3 = new double[200];
-                balldeagr4 = new double[200];
-                balldeagr5 = new double[200];
-                balldeagr6 = new double[200];
-                balldeagr7 = new double[200];
-
-                PGA_deagreg = new double[200, 7];
-                SA_0_1_deagreg = new double[200, 7];
-                while (BALLDEAGREG.EndOfStream != true)
-                {
-                    aaa = BALLDEAGREG.ReadLine();
-                    String[] nums = aaa.Split('\t');
-                    /*заполнение массивов значениями из файла*/
-                    balldeagrx[iii] = Convert.ToDouble(nums[0]);
-                    balldeagry[iii] = Convert.ToDouble(nums[1]);
-                    balldeagr1[iii] = Convert.ToDouble(nums[2]);
-                    balldeagr2[iii] = Convert.ToDouble(nums[3]);
-                    balldeagr3[iii] = Convert.ToDouble(nums[4]);
-                    balldeagr4[iii] = Convert.ToDouble(nums[5]);
-                    balldeagr5[iii] = Convert.ToDouble(nums[6]);
-                    balldeagr6[iii] = Convert.ToDouble(nums[7]);
-                    balldeagr7[iii] = Convert.ToDouble(nums[8]);
-
-                    //входные значения для PGA
-                    for (int i = 0; i < 7; i++)
-                    {
-                        PGA_deagreg[iii, i] = Convert.ToDouble(nums[13 + (i * 11)]);
-                        SA_0_1_deagreg[iii, i] = Convert.ToDouble(nums[14 + (i * 11)]);
-                    }
-                    
-
-                    iii++;
-                }
-            }  
+              
             ii = 1;
             aa = "";
 
@@ -667,7 +622,7 @@ a308:
 
 
         a305:
-            
+
             /*
             while (net.EndOfStream != true)
             {
@@ -686,30 +641,80 @@ a308:
                     goto a305;
             }
  */
+            /* if (DEAG == 1)
+             {
+                 NETKOL = ii - 1;
+                 for (int inet1 = 1; inet1 <= NETKOL; inet1++)
+                 {
+                     for (int ideg = 1; ideg < 12; ideg++)
+                     {
+                         for (int jdeg = 1; jdeg < 71; jdeg++)
+                         {
+                             DEAGREG[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
+                             DEAGREG[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
+
+                             DEAGREGRespSpectr[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
+                             DEAGREGRespSpectr[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
+                         }
+                     }
+                 }
+             }*/
+
+            NETPNT = ii - 1;//количество точек сетки
+
+            if (DEAG == 1)//Проводить деагрегацию
+            {
+                BALLDEAGREG = new StreamReader(applicationDir + "EAST_2003__ABCD_.TXT");
+                
+            }
+            iii = 1;
+            aaa = "";
             if (DEAG == 1)
             {
-                NETKOL = ii - 1;
-                for (int inet1 = 1; inet1 <= NETKOL; inet1++)
-                {
-                    for (int ideg = 1; ideg < 12; ideg++)
-                    {
-                        for (int jdeg = 1; jdeg < 71; jdeg++)
-                        {
-                            DEAGREG[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
-                            DEAGREG[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
+                aaa = BALLDEAGREG.ReadLine();
 
-                            DEAGREGRespSpectr[1, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = ((double)(ideg)) / 2 + 2.5;
-                            DEAGREGRespSpectr[2, (ideg - 1) * 70 + jdeg + (inet1 - 1) * 770] = (double)(jdeg * 5);
-                        }
+                 balldeagrx = new double[NETPNT + 1];
+                  balldeagry = new double[NETPNT + 1];
+                  balldeagr1 = new double[NETPNT + 1];
+                  balldeagr2 = new double[NETPNT + 1];
+                 balldeagr3 = new double[NETPNT + 1];
+                  balldeagr4 = new double[NETPNT + 1];
+                   balldeagr5 = new double[NETPNT + 1];
+                   balldeagr6 = new double[NETPNT + 1];
+                   balldeagr7 = new double[NETPNT + 1];
+
+                  PGA_deagreg = new double[NETPNT + 1, 7];
+                  SA_0_1_deagreg = new double[NETPNT + 1, 7];
+
+                while (BALLDEAGREG.EndOfStream != true)
+                {
+                    aaa = BALLDEAGREG.ReadLine();
+                    String[] nums = aaa.Split('\t');
+                    /*заполнение массивов значениями из файла*/
+                    balldeagrx[iii] = Convert.ToDouble(nums[0]);
+                    balldeagry[iii] = Convert.ToDouble(nums[1]);
+                    balldeagr1[iii] = Convert.ToDouble(nums[2]);
+                    balldeagr2[iii] = Convert.ToDouble(nums[3]);
+                    balldeagr3[iii] = Convert.ToDouble(nums[4]);
+                    balldeagr4[iii] = Convert.ToDouble(nums[5]);
+                    balldeagr5[iii] = Convert.ToDouble(nums[6]);
+                    balldeagr6[iii] = Convert.ToDouble(nums[7]);
+                    balldeagr7[iii] = Convert.ToDouble(nums[8]);
+
+                    //входные значения для PGA
+                    for (int i = 0; i < 7; i++)
+                    {
+                        PGA_deagreg[iii, i] = Convert.ToDouble(nums[13 + (i * 11)]);
+                        SA_0_1_deagreg[iii, i] = Convert.ToDouble(nums[14 + (i * 11)]);
                     }
+                    
+
+                    iii++;
                 }
             }
 
 
-
-
-
-            NETPNT = ii - 1;
+            
             if(NETPNT == 0) { goto a308; }
             PHI0 = 0.0;
             AL0 = 0.0;
@@ -1151,7 +1156,7 @@ ad82:
                     
                     //считаем длительность
 
-                        if (calculateDuraion && RESI >= 5.5 && RS[sk].Duration < 60)
+                        if (RESI >= 5.5 && RS[sk].Duration < 60)
                         {
                             FillingDuration(RESI, RS[sk].Duration, sk - 1);
                         }
@@ -1193,7 +1198,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                               // DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 1]++;
                             }
@@ -1206,7 +1211,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 2]++;
                             }
@@ -1219,7 +1224,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                               // DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 3]++;
                             }
@@ -1231,7 +1236,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                             //   DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 4]++;
                             }
@@ -1243,7 +1248,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                            //    DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 5]++;
                             }
@@ -1257,7 +1262,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                             //   DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 6]++;
                             }
@@ -1270,7 +1275,7 @@ ad82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 7]++;
                             }
@@ -1285,7 +1290,7 @@ ad82:
                             //считаем для PGA
                             double freq = 0;
                             //входные 
-                            DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+                          //  DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
                             if (DISTMIN<=350)
@@ -1594,7 +1599,7 @@ al82:
 */
                     RESI = BALL + UI * SDEVI + GLBVI;
 
-                    if (calculateDuraion && RESI >= 5.5 && RS[sk].Duration < 60)
+                    if ( RESI >= 5.5 && RS[sk].Duration < 60)
                     {
                         FillingDuration(RESI, RS[sk].Duration, sk - 1);
                     }
@@ -1627,7 +1632,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71) ////////////////////деагрег
                             {
-                                DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[3, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 DeargLineamDoman[iiIND, 1]++;
                             }
                             
@@ -1640,7 +1645,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[4, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 2]++;
                             }
@@ -1653,7 +1658,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[5, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 3]++;
                             }
@@ -1666,7 +1671,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[6, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 4]++;
                             }
@@ -1679,7 +1684,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[7, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 5]++;
                             }
@@ -1693,7 +1698,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                               // DEAGREG[8, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 6]++;
                             }
@@ -1706,7 +1711,7 @@ al82:
                             jdeg = (int)(R3D / 5);
                             if (jdeg < 71)
                             {
-                                DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                              //  DEAGREG[9, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                                 //ideg=(ideg - 1) * 70 + jdeg + 1;
                                 DeargLineamDoman[iiIND, 7]++;
                             }
@@ -1721,7 +1726,7 @@ al82:
                             //считаем для PGA
                             double freq = 0;
                             //входные 
-                            DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+                          //  DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
@@ -1899,10 +1904,13 @@ a306:
             {
                 
                
-                int round_i = Convert.ToInt16( Math.Round(duration, MidpointRounding.AwayFromZero))+1;
-                int round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
-
-                DurrationMassive[pointNumber, round_i, round_j]++;
+                round_i = Convert.ToInt16( Math.Round(duration, MidpointRounding.AwayFromZero))+1;
+                round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
+                if(round_i < 62 && round_j < 62)
+                {
+                    DurrationMassive[pointNumber, round_i, round_j]++;
+                }
+                
 
             }
             catch
@@ -4436,14 +4444,26 @@ a10:
                 periodsOfRepeating[4],
                 periodsOfRepeating[5],
                 periodsOfRepeating[6]);
+
+
+
             for (int i = 0; i < 7; i++)
             {
                 fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
     periodsOfRepeating[i]);
             }
+            fla.Write("d_{0}\td_{1}\td_{2}\td_{3}\td_{4}\td_{5}\td_{6}\t",
+    periodsOfRepeating[0],
+    periodsOfRepeating[1],
+    periodsOfRepeating[2],
+    periodsOfRepeating[3],
+    periodsOfRepeating[4],
+    periodsOfRepeating[5],
+    periodsOfRepeating[6]);
+
             fla.Write("\n");
 
-
+            
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
             for(k = 1; k <= NETPNT; k++)
@@ -4601,7 +4621,7 @@ a12:
                     i_cz++;
                 }
 
-                CalculateDuration(k, massiv_ABCD);
+                double[] TP = CalculateDuration(k, massiv_ABCD);
 
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                 fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t",
@@ -4618,6 +4638,9 @@ a12:
                     POVTOR[3, k],
                     POVTOR[4, k],
                     POVTOR[5, k]));
+
+
+
                 for (int i = 0; i < 7; i++)
                 {
                     fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t",
@@ -4633,6 +4656,15 @@ a12:
                         RS[k].PGASACalculation(3, probabilityOfExceedance[i]),
                         RS[k].PGASACalculation(5, probabilityOfExceedance[i])));
                 }
+
+                fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t",
+    TP[0],
+    TP[1],
+    TP[2],
+    TP[3],
+    TP[4],
+    TP[5],
+    TP[6]));
 
                 fla.Write("\n");
                
@@ -4651,8 +4683,8 @@ a12:
             }
 
             //сохранение массивов с длительностями
-            if (calculateDuraion && DEAG != 1)
-                SaveDurationMassive();
+           // if (calculateDuraion && DEAG != 1)
+          //      SaveDurationMassive();
 
 
             flag_9999 = 1;
@@ -4822,37 +4854,153 @@ a12:
 
         }
 
-        private void CalculateDuration(long k, double[,] massiv_ABCD)
+        private double[] CalculateDuration(long k, double[,] massiv_ABCD)
         {
+            double[] TP = new double[7];
+
             //DurationInABCDfile
-            double[] NIo = new double[7];
-            int[] temp = new int[7];
-            // massiv_ABCD[13, k],
-            //         massiv_ABCD[2, k],
-            //         massiv_ABCD[5, k],
-            //         massiv_ABCD[12, k],
-            //         massiv_ABCD[8, k],
-            //         massiv_ABCD[11, k],
-            //         massiv_ABCD[14, k],
-            //   DurrationMassive[k-1,i,j]
+            int[] NIo = new int[7];
+            double[,] A2 = new double[62, 62];
+            double[,] A3 = new double[62, 62];
+            double[,] A4 = new double[62, 8];
+            //DurrationMassive[num, i, j]
+            double X1, X2, Y1, Y2;
+            
 
-            NIo[0] = Math.Round(massiv_ABCD[13, k], 1);
-            NIo[1] = Math.Round(massiv_ABCD[2, k], 1);
-            NIo[2] = Math.Round(massiv_ABCD[5, k], 1);
-            NIo[3] = Math.Round(massiv_ABCD[12, k], 1);
-            NIo[4] = Math.Round(massiv_ABCD[8, k], 1);
-            NIo[5] = Math.Round(massiv_ABCD[11, k], 1);
-            NIo[6] = Math.Round(massiv_ABCD[14, k], 1);
 
-            temp[0] = Convert.ToInt32(Math.Round(7.0984126984127, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[1] = Convert.ToInt32(Math.Round(8.18823529411765, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[2] = Convert.ToInt32(Math.Round(8.53636363636364, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[3] = Convert.ToInt32(Math.Round(9.05, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[4] = Convert.ToInt32(Math.Round(9.23333333333333, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[5] = Convert.ToInt32(Math.Round(9.5, 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            temp[6] = Convert.ToInt32(Math.Round(9.75, 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[0] = Convert.ToInt32(Math.Round(massiv_ABCD[13, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[1] = Convert.ToInt32(Math.Round(massiv_ABCD[2, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[2] = Convert.ToInt32(Math.Round(massiv_ABCD[5, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[3] = Convert.ToInt32(Math.Round(massiv_ABCD[12, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[4] = Convert.ToInt32(Math.Round(massiv_ABCD[8, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[5] = Convert.ToInt32(Math.Round(massiv_ABCD[11, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            NIo[6] = Convert.ToInt32(Math.Round(massiv_ABCD[14, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
 
-            int sdf = 0;
+            for (int i = 0; i < 62; i++)
+            {
+                A2[i, 0] = DurrationMassive[k-1, i, 0];
+                A3[i, 0] = DurrationMassive[k-1, i, 0];
+            }
+
+            for (int i = 0; i < 62; i++)
+            {
+                A2[0, i] = DurrationMassive[k-1, 0, i];
+                A3[0, i] = DurrationMassive[k-1, 0, i];
+            }
+
+            for (int i = 1; i < 62; i++)
+            {
+               for (int j = 1; j < 62; j++)
+                {
+                    double A = 0;
+                    for (int jj = j; jj < 62; jj++)
+                    {
+                        A += DurrationMassive[k-1, i, jj];
+                    }
+                     A2[i, j] = A;
+                }
+            }
+
+            for (int i = 1; i < 62; i++)
+            {
+                for (int j = 1; j < 62; j++)
+                {
+                    double A_up = 0;
+                    double A_down = 0;
+
+                    for (int ii = 1; ii <= i; ii++)
+                    {
+                        A_up += A2[ii,j];
+                    }
+
+                    for (int ii = 1; ii <= 61; ii++)
+                    {
+                        A_down += A2[ii, j];
+                    }
+
+                    A3[i, j] = Double.IsNaN((A_up * 100) / A_down) ? 0 : (A_up * 100) / A_down;
+                }
+            }
+
+            for (int i = 0; i < 62; i++)
+            {
+                A4[i, 0] = DurrationMassive[k - 1, i, 0];
+            }
+
+            for (int nn = 1; nn < 8; nn++)
+            {
+                A4[0, nn] = DurrationMassive[k - 1, 0, NIo[nn - 1]];
+            }
+
+            for (int i = 1; i < 62; i++)
+            {
+                for (int nn = 1; nn < 8; nn++)
+                {
+                    A4[i, nn] = A3[i, NIo[nn - 1]];
+                }
+            }
+
+
+            for (int i = 1; i <= 7; i++)
+            {
+                X1 = 0;
+                X2 = 0;
+                Y1 = 0;
+                Y2 = 0;
+                for (int j = 1; j <= 61; j++)
+                {
+                    if (((A4[j - 1, i] <= (100 - probabilityOfExceedance[i - 1])) && (A4[j, i] >= (100 - probabilityOfExceedance[i - 1]))) || ((A4[j - 1, i] >= (100 - probabilityOfExceedance[i - 1])) && (A4[j, i] <= (100 - probabilityOfExceedance[i - 1]))))
+                    {
+
+                        X1 = A4[j - 1, i];
+                        X2 = A4[j, i];
+                        Y1 = A4[j - 1, 0];
+                        Y2 = A4[j, 0];
+
+                        if(X1 != X2)
+                        {
+                            TP[i - 1] = ((Y2 - Y1) / (X2 - X1)) * (100 - probabilityOfExceedance[i - 1]) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1;
+                        }
+                        
+                    }
+
+                }
+            }
+            /*
+
+            String NameDIR;
+            NameDIR = Application.StartupPath;
+            StreamWriter Filewriter = new StreamWriter(NameDIR + "\\A3.txt");
+            for (int i = 0; i <= 61; i++)
+            {
+                for (int j = 0; j <= 61; j++)
+                {
+                    Filewriter.Write("{0}\t", A3[i, j]);
+                }
+                Filewriter.Write("\n");
+            }
+
+            StreamWriter Filewriter2 = new StreamWriter(NameDIR + "\\A4.txt");
+            for (int i = 0; i <= 61; i++)
+            {
+                for (int j = 0; j <= 7; j++)
+                {
+                    Filewriter2.Write("{0}\t", A4[i, j]);
+                }
+                Filewriter2.Write("\n");
+            }
+
+            for (int j = 0; j < 7; j++)
+            {
+                Filewriter2.Write("{0}\t", TP[j]);
+            }
+            
+            Filewriter2.Close();
+            Filewriter.Close();
+
+            */
+
+            return TP;
 
         }
 
