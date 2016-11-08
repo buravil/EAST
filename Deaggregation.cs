@@ -60,7 +60,15 @@ namespace East_CSharp
                 }
             }
 
-             for (int i=0; i< 1215 * NumberOfPoint; i++)
+            BALLDEAGREG.Close();
+            BALLDEAGREG.Dispose();
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            for (int i=0; i< 1215 * NumberOfPoint; i++)
             {
                 double x = (i - (Math.Round(i / 1215.0 + 0.5, MidpointRounding.AwayFromZero) - 1) * 1215) / 15.0 + 0.5;
 
@@ -234,52 +242,60 @@ namespace East_CSharp
 
         public void SaveDeagreg(int[] periodsOfRepeating)
         {
-            double[] SUMDEAGREG = new double[90];
-
-            StreamWriter SAwriter = new StreamWriter(NameDIR + "\\" + "Deadgreg_SA.txt");
-
-            SAwriter.Write("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
-                periodsOfRepeating[0],
-                periodsOfRepeating[1],
-                periodsOfRepeating[2],
-                periodsOfRepeating[3],
-                periodsOfRepeating[4],
-                periodsOfRepeating[5],
-                periodsOfRepeating[6]
-                );
-
-            for (int i = 0; i < 7; i++)
+            for (int numOfPoint = 1; numOfPoint <= NumberOfPoint; numOfPoint++)
             {
-                SAwriter.Write("\tPGA_T{0}\tSA_0_1_T{0}\tSA_0_2_T{0}\tSA_0_3_T{0}\tSA_0_4_T{0}\tSA_0_5_T{0}\tSA_0_7_T{0}\tSA_1_T{0}\tSA_2_T{0}\tSA_3_T{0}\tSA_5_T{0}", periodsOfRepeating[i]);
-            }
+                double[] SUMDEAGREG = new double[90];
 
-            SAwriter.Write("\n");
+                StreamWriter SAwriter = new StreamWriter(NameDIR + "\\" + "Deadgreg_SA_" + Convert.ToString(numOfPoint) +".txt");
 
-            for (int i = 2; i < 90; i++)
-            {
-                for (int j=0;j< 1215 * NumberOfPoint; j++)
+                SAwriter.Write("Mlh\tR\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}",
+                    periodsOfRepeating[0],
+                    periodsOfRepeating[1],
+                    periodsOfRepeating[2],
+                    periodsOfRepeating[3],
+                    periodsOfRepeating[4],
+                    periodsOfRepeating[5],
+                    periodsOfRepeating[6]
+                    );
+
+                for (int i = 0; i < 7; i++)
                 {
-                    SUMDEAGREG[i] = SUMDEAGREG[i] + MR[j, i];
+                    SAwriter.Write("\tPGA_T{0}\tSA_0_1_T{0}\tSA_0_2_T{0}\tSA_0_3_T{0}\tSA_0_4_T{0}\tSA_0_5_T{0}\tSA_0_7_T{0}\tSA_1_T{0}\tSA_2_T{0}\tSA_3_T{0}\tSA_5_T{0}", periodsOfRepeating[i]);
                 }
+
+                SAwriter.Write("\n");
+
+                for (int i = 2; i < 90; i++)
+                {
+                    for (int j = 0 + (1215 * (numOfPoint - 1)); j < 1215 * numOfPoint; j++)
+                    {
+                        SUMDEAGREG[i] = SUMDEAGREG[i] + MR[j, i];
+                    }
+                }
+
+                for (int i = 0 + (1215*(numOfPoint-1)); i < 1215 * numOfPoint; i++)
+                {
+                    SAwriter.Write("{0}\t", MR[i, 0]);
+                    SAwriter.Write("{0}\t", MR[i, 1]);
+
+                    for (int j = 2; j < 9; j++)
+                    {
+                        SAwriter.Write("{0}\t", MR[i, j] / SUMDEAGREG[j] * 100);
+                    }
+
+                    for (int j = 13; j < 90; j++)
+                    {
+                        SAwriter.Write("{0}\t", MR[i, j] / SUMDEAGREG[j] * 100);
+                    }
+                    SAwriter.Write("\n");
+                }
+
+                SAwriter.Close();
+
+
             }
             
-            for (int i = 0; i< 1215 * NumberOfPoint; i++)
-            {
-                SAwriter.Write("{0}\t", MR[i, 0]);
-                SAwriter.Write("{0}\t", MR[i, 1]);
-
-                for (int j = 2; j < 9; j++)
-                {
-                    SAwriter.Write("{0}\t", MR[i, j]/ SUMDEAGREG[j]*100);
-                }
-
-                for (int j = 13; j < 90; j++)
-                {
-                    SAwriter.Write("{0}\t", MR[i, j] / SUMDEAGREG[j] * 100);
-                }
-                SAwriter.Write("\n");
-            }
-            SAwriter.Close();
         }
+        
     }
 }

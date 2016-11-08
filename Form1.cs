@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Media;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -162,6 +163,18 @@ namespace East_CSharp
             textBox6.Enabled = false;
             textBox7.Enabled = false;
 
+
+            textBox15.Enabled = false;
+            radioButton4.Enabled = false;
+            radioButton5.Enabled = false;
+            textBox_lat.Enabled = false;
+            textBox_lon.Enabled = false;
+            textBox_net.Enabled = false;
+            button_net.Enabled = false;
+            textBox_mdbPath.Enabled = false;
+            buttonOpen.Enabled = false;
+
+
             //запуск расчета
 
             // Start the asynchronous operation.
@@ -238,6 +251,15 @@ namespace East_CSharp
             textBox6.Enabled = true;
             textBox7.Enabled = true;
 
+            textBox15.Enabled = true;
+            radioButton4.Enabled = true;
+            radioButton5.Enabled = true;
+            textBox_lat.Enabled = true;
+            textBox_lon.Enabled = true;
+            textBox_net.Enabled = true;
+            button_net.Enabled = true;
+            textBox_mdbPath.Enabled = true;
+            buttonOpen.Enabled = true;
 
             label6.Text = "";
             if (prb.DEAG == 2)
@@ -247,6 +269,8 @@ namespace East_CSharp
             }
             else
             {
+
+                
                 TimeSpan TS = DateTime.Now - DT;
 
                 MessageBox.Show("Расчет занял: " + TS.Hours.ToString() + ":" + TS.Minutes.ToString() + ":" + TS.Seconds.ToString() + " (ЧЧ:ММ:СС)\r\nОбращений к БД: " + prb.DBcount.ToString());
@@ -367,6 +391,17 @@ namespace East_CSharp
         private void checkBoxSaveDuration_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox1 AboutBox = new AboutBox1();
+            AboutBox.Show();
         }
     }
 }

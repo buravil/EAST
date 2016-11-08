@@ -75,21 +75,25 @@
             this.label11 = new System.Windows.Forms.Label();
             this.textBox15 = new System.Windows.Forms.TextBox();
             this.textBox16 = new System.Windows.Forms.TextBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(12, 34);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(102, 13);
+            this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Выбери MDB файл";
+            this.label1.Text = "Выбери базу данных, MDB";
             // 
             // textBox_mdbPath
             // 
-            this.textBox_mdbPath.Location = new System.Drawing.Point(15, 25);
+            this.textBox_mdbPath.Location = new System.Drawing.Point(15, 50);
             this.textBox_mdbPath.Name = "textBox_mdbPath";
             this.textBox_mdbPath.Size = new System.Drawing.Size(561, 20);
             this.textBox_mdbPath.TabIndex = 1;
@@ -97,7 +101,7 @@
             // 
             // buttonOpen
             // 
-            this.buttonOpen.Location = new System.Drawing.Point(582, 22);
+            this.buttonOpen.Location = new System.Drawing.Point(582, 47);
             this.buttonOpen.Name = "buttonOpen";
             this.buttonOpen.Size = new System.Drawing.Size(35, 23);
             this.buttonOpen.TabIndex = 2;
@@ -107,18 +111,18 @@
             // 
             // buttonRun
             // 
-            this.buttonRun.Location = new System.Drawing.Point(15, 51);
+            this.buttonRun.Location = new System.Drawing.Point(484, 81);
             this.buttonRun.Name = "buttonRun";
             this.buttonRun.Size = new System.Drawing.Size(133, 50);
             this.buttonRun.TabIndex = 3;
-            this.buttonRun.Text = "ПУСК";
+            this.buttonRun.Text = "НАЧАТЬ РАСЧЕТ";
             this.buttonRun.UseVisualStyleBackColor = true;
             this.buttonRun.Click += new System.EventHandler(this.buttonRun_Click);
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(212, 69);
+            this.checkBox1.Location = new System.Drawing.Point(690, 196);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(97, 17);
             this.checkBox1.TabIndex = 4;
@@ -129,7 +133,7 @@
             // checkBoxSaveKatalog
             // 
             this.checkBoxSaveKatalog.AutoSize = true;
-            this.checkBoxSaveKatalog.Location = new System.Drawing.Point(316, 69);
+            this.checkBoxSaveKatalog.Location = new System.Drawing.Point(15, 76);
             this.checkBoxSaveKatalog.Name = "checkBoxSaveKatalog";
             this.checkBoxSaveKatalog.Size = new System.Drawing.Size(122, 17);
             this.checkBoxSaveKatalog.TabIndex = 5;
@@ -139,7 +143,7 @@
             // checkBoxDeagreg
             // 
             this.checkBoxDeagreg.AutoSize = true;
-            this.checkBoxDeagreg.Location = new System.Drawing.Point(445, 69);
+            this.checkBoxDeagreg.Location = new System.Drawing.Point(15, 99);
             this.checkBoxDeagreg.Name = "checkBoxDeagreg";
             this.checkBoxDeagreg.Size = new System.Drawing.Size(93, 17);
             this.checkBoxDeagreg.TabIndex = 6;
@@ -156,7 +160,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(15, 402);
+            this.progressBar1.Location = new System.Drawing.Point(15, 309);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(602, 19);
             this.progressBar1.TabIndex = 7;
@@ -165,7 +169,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 383);
+            this.label3.Location = new System.Drawing.Point(18, 291);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(0, 13);
             this.label3.TabIndex = 9;
@@ -173,7 +177,7 @@
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(212, 118);
+            this.radioButton1.Location = new System.Drawing.Point(680, 155);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(28, 17);
             this.radioButton1.TabIndex = 10;
@@ -184,7 +188,7 @@
             // 
             this.radioButton2.AutoSize = true;
             this.radioButton2.Checked = true;
-            this.radioButton2.Location = new System.Drawing.Point(256, 118);
+            this.radioButton2.Location = new System.Drawing.Point(724, 155);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(31, 17);
             this.radioButton2.TabIndex = 11;
@@ -195,7 +199,7 @@
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(297, 118);
+            this.radioButton3.Location = new System.Drawing.Point(765, 155);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(34, 17);
             this.radioButton3.TabIndex = 12;
@@ -205,7 +209,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(237, 102);
+            this.label2.Location = new System.Drawing.Point(705, 139);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(62, 13);
             this.label2.TabIndex = 13;
@@ -214,15 +218,15 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 177);
+            this.label4.Location = new System.Drawing.Point(12, 143);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(188, 13);
+            this.label4.Size = new System.Drawing.Size(211, 13);
             this.label4.TabIndex = 14;
-            this.label4.Text = "Период повторяемости сотрясений";
+            this.label4.Text = "Период повторяемости сотрясений, лет";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(206, 174);
+            this.textBox1.Location = new System.Drawing.Point(266, 140);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(43, 20);
             this.textBox1.TabIndex = 15;
@@ -231,7 +235,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(256, 174);
+            this.textBox2.Location = new System.Drawing.Point(316, 140);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(43, 20);
             this.textBox2.TabIndex = 16;
@@ -240,7 +244,7 @@
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(305, 174);
+            this.textBox3.Location = new System.Drawing.Point(365, 140);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(43, 20);
             this.textBox3.TabIndex = 17;
@@ -249,7 +253,7 @@
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(354, 174);
+            this.textBox4.Location = new System.Drawing.Point(414, 140);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(43, 20);
             this.textBox4.TabIndex = 18;
@@ -258,7 +262,7 @@
             // 
             // textBox5
             // 
-            this.textBox5.Location = new System.Drawing.Point(403, 174);
+            this.textBox5.Location = new System.Drawing.Point(463, 140);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(43, 20);
             this.textBox5.TabIndex = 19;
@@ -267,7 +271,7 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(452, 174);
+            this.textBox6.Location = new System.Drawing.Point(512, 140);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(43, 20);
             this.textBox6.TabIndex = 20;
@@ -276,7 +280,7 @@
             // 
             // textBox7
             // 
-            this.textBox7.Location = new System.Drawing.Point(501, 174);
+            this.textBox7.Location = new System.Drawing.Point(561, 140);
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(43, 20);
             this.textBox7.TabIndex = 21;
@@ -286,16 +290,17 @@
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(15, 211);
+            this.label5.Location = new System.Drawing.Point(12, 171);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(185, 31);
+            this.label5.Size = new System.Drawing.Size(248, 31);
             this.label5.TabIndex = 22;
-            this.label5.Text = "Вероятность превышения в течении 50 лет";
+            this.label5.Text = "Вероятность превышения в течение 50 лет, %";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // textBox8
             // 
             this.textBox8.Enabled = false;
-            this.textBox8.Location = new System.Drawing.Point(206, 211);
+            this.textBox8.Location = new System.Drawing.Point(266, 167);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(43, 20);
             this.textBox8.TabIndex = 29;
@@ -303,7 +308,7 @@
             // textBox9
             // 
             this.textBox9.Enabled = false;
-            this.textBox9.Location = new System.Drawing.Point(256, 211);
+            this.textBox9.Location = new System.Drawing.Point(316, 167);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(43, 20);
             this.textBox9.TabIndex = 28;
@@ -311,7 +316,7 @@
             // textBox10
             // 
             this.textBox10.Enabled = false;
-            this.textBox10.Location = new System.Drawing.Point(305, 211);
+            this.textBox10.Location = new System.Drawing.Point(365, 167);
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(43, 20);
             this.textBox10.TabIndex = 27;
@@ -319,7 +324,7 @@
             // textBox11
             // 
             this.textBox11.Enabled = false;
-            this.textBox11.Location = new System.Drawing.Point(354, 211);
+            this.textBox11.Location = new System.Drawing.Point(414, 167);
             this.textBox11.Name = "textBox11";
             this.textBox11.Size = new System.Drawing.Size(43, 20);
             this.textBox11.TabIndex = 26;
@@ -327,7 +332,7 @@
             // textBox12
             // 
             this.textBox12.Enabled = false;
-            this.textBox12.Location = new System.Drawing.Point(403, 211);
+            this.textBox12.Location = new System.Drawing.Point(463, 167);
             this.textBox12.Name = "textBox12";
             this.textBox12.Size = new System.Drawing.Size(43, 20);
             this.textBox12.TabIndex = 25;
@@ -335,7 +340,7 @@
             // textBox13
             // 
             this.textBox13.Enabled = false;
-            this.textBox13.Location = new System.Drawing.Point(452, 211);
+            this.textBox13.Location = new System.Drawing.Point(512, 167);
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(43, 20);
             this.textBox13.TabIndex = 24;
@@ -343,7 +348,7 @@
             // textBox14
             // 
             this.textBox14.Enabled = false;
-            this.textBox14.Location = new System.Drawing.Point(501, 211);
+            this.textBox14.Location = new System.Drawing.Point(561, 167);
             this.textBox14.Name = "textBox14";
             this.textBox14.Size = new System.Drawing.Size(43, 20);
             this.textBox14.TabIndex = 23;
@@ -351,7 +356,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(445, 386);
+            this.label6.Location = new System.Drawing.Point(445, 293);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 13);
             this.label6.TabIndex = 30;
@@ -360,7 +365,7 @@
             // 
             this.radioButton4.AutoSize = true;
             this.radioButton4.Checked = true;
-            this.radioButton4.Location = new System.Drawing.Point(14, 41);
+            this.radioButton4.Location = new System.Drawing.Point(14, 32);
             this.radioButton4.Name = "radioButton4";
             this.radioButton4.Size = new System.Drawing.Size(110, 17);
             this.radioButton4.TabIndex = 32;
@@ -372,7 +377,7 @@
             // radioButton5
             // 
             this.radioButton5.AutoSize = true;
-            this.radioButton5.Location = new System.Drawing.Point(14, 76);
+            this.radioButton5.Location = new System.Drawing.Point(14, 63);
             this.radioButton5.Name = "radioButton5";
             this.radioButton5.Size = new System.Drawing.Size(100, 17);
             this.radioButton5.TabIndex = 33;
@@ -383,7 +388,7 @@
             // textBox_net
             // 
             this.textBox_net.Enabled = false;
-            this.textBox_net.Location = new System.Drawing.Point(198, 73);
+            this.textBox_net.Location = new System.Drawing.Point(198, 60);
             this.textBox_net.Name = "textBox_net";
             this.textBox_net.Size = new System.Drawing.Size(370, 20);
             this.textBox_net.TabIndex = 34;
@@ -391,16 +396,16 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(268, 6);
+            this.label7.Location = new System.Drawing.Point(11, 11);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(72, 13);
+            this.label7.Size = new System.Drawing.Size(127, 13);
             this.label7.TabIndex = 35;
-            this.label7.Text = "Выбор сетки";
+            this.label7.Text = "Выбор расчетной сетки";
             // 
             // button_net
             // 
             this.button_net.Enabled = false;
-            this.button_net.Location = new System.Drawing.Point(120, 73);
+            this.button_net.Location = new System.Drawing.Point(120, 60);
             this.button_net.Name = "button_net";
             this.button_net.Size = new System.Drawing.Size(67, 23);
             this.button_net.TabIndex = 36;
@@ -410,7 +415,7 @@
             // 
             // textBox_lat
             // 
-            this.textBox_lat.Location = new System.Drawing.Point(196, 40);
+            this.textBox_lat.Location = new System.Drawing.Point(196, 31);
             this.textBox_lat.Name = "textBox_lat";
             this.textBox_lat.Size = new System.Drawing.Size(95, 20);
             this.textBox_lat.TabIndex = 37;
@@ -419,7 +424,7 @@
             // 
             // textBox_lon
             // 
-            this.textBox_lon.Location = new System.Drawing.Point(346, 40);
+            this.textBox_lon.Location = new System.Drawing.Point(346, 31);
             this.textBox_lon.Name = "textBox_lon";
             this.textBox_lon.Size = new System.Drawing.Size(92, 20);
             this.textBox_lon.TabIndex = 38;
@@ -429,7 +434,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(159, 43);
+            this.label8.Location = new System.Drawing.Point(159, 34);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(22, 13);
             this.label8.TabIndex = 39;
@@ -438,7 +443,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(305, 43);
+            this.label9.Location = new System.Drawing.Point(305, 34);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(25, 13);
             this.label9.TabIndex = 40;
@@ -446,12 +451,12 @@
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "Файлы сетки (*.geg)|*.geg";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.radioButton4);
             this.panel1.Controls.Add(this.label9);
             this.panel1.Controls.Add(this.radioButton5);
@@ -461,52 +466,76 @@
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.textBox_lat);
             this.panel1.Controls.Add(this.button_net);
-            this.panel1.Location = new System.Drawing.Point(24, 255);
+            this.panel1.Location = new System.Drawing.Point(15, 194);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(579, 101);
+            this.panel1.Size = new System.Drawing.Size(589, 92);
             this.panel1.TabIndex = 41;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(356, 102);
+            this.label10.Location = new System.Drawing.Point(161, 77);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(151, 13);
+            this.label10.Size = new System.Drawing.Size(216, 13);
             this.label10.TabIndex = 42;
-            this.label10.Text = "Число реализаций каталога";
+            this.label10.Text = "Длительность модельного каталога, лет";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(354, 136);
+            this.label11.Location = new System.Drawing.Point(161, 103);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(153, 13);
+            this.label11.Size = new System.Drawing.Size(215, 13);
             this.label11.TabIndex = 43;
-            this.label11.Text = "Время модельного каталога";
-            this.label11.Visible = false;
+            this.label11.Text = "Число реализаций модельного каталога";
             // 
             // textBox15
             // 
-            this.textBox15.Location = new System.Drawing.Point(513, 99);
+            this.textBox15.Location = new System.Drawing.Point(387, 100);
             this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(45, 20);
+            this.textBox15.Size = new System.Drawing.Size(70, 20);
             this.textBox15.TabIndex = 44;
             this.textBox15.Text = "200";
             // 
             // textBox16
             // 
             this.textBox16.Enabled = false;
-            this.textBox16.Location = new System.Drawing.Point(514, 136);
+            this.textBox16.Location = new System.Drawing.Point(388, 74);
             this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(44, 20);
+            this.textBox16.Size = new System.Drawing.Size(69, 20);
             this.textBox16.TabIndex = 45;
-            this.textBox16.Visible = false;
+            this.textBox16.Text = "5000";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.справкаToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(629, 24);
+            this.menuStrip1.TabIndex = 46;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // справкаToolStripMenuItem
+            // 
+            this.справкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.оПрограммеToolStripMenuItem});
+            this.справкаToolStripMenuItem.Name = "справкаToolStripMenuItem";
+            this.справкаToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.справкаToolStripMenuItem.Text = "Справка";
+            // 
+            // оПрограммеToolStripMenuItem
+            // 
+            this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.оПрограммеToolStripMenuItem.Text = "О программе";
+            this.оПрограммеToolStripMenuItem.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(630, 435);
+            this.ClientSize = new System.Drawing.Size(629, 339);
             this.Controls.Add(this.textBox16);
             this.Controls.Add(this.textBox15);
             this.Controls.Add(this.label11);
@@ -542,14 +571,18 @@
             this.Controls.Add(this.buttonOpen);
             this.Controls.Add(this.textBox_mdbPath);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "East 2016 v2.5.13";
+            this.Text = "East v2.5.15";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -603,6 +636,9 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox15;
         private System.Windows.Forms.TextBox textBox16;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem справкаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
     }
 }
 

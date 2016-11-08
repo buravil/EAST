@@ -124,7 +124,7 @@ namespace East_CSharp
         double NLB, NWB, NL, NL2, NW, NW2;
         long IMW, LLOOP;
         int IYR, IMON, IDAY, iii;
-        long KPIECE, KPIECE0, NETPNT;
+        long KPIECE, KPIECE0, NETPNT=0;
         int INDC1, INDC2;
         double CMAG1, CMAG2;
         long KPCAT, KFAIL;
@@ -358,7 +358,7 @@ for(int i = 0; i < 500; i++)
 
             i_gst2 = 0;
             emexit = 0;
-            PrefixName = applicationDir + "EAST_2003_";
+            PrefixName = applicationDir + "EAST_2016_";
 
             //NAME3 = PrefixName + "_B.TXT"; //id5
             //NAME5 = PrefixName + "_C.TXT"; //res
@@ -581,6 +581,9 @@ a308:
 
             if (!netIsFile)
             {
+                if (NETPNT == 1)
+                    goto a306;
+
                 XNET[1] = lat;
                 YNET[1] = lon;
 
@@ -621,7 +624,7 @@ a308:
 
 
 
-        a305:
+a305:
 
             /*
             while (net.EndOfStream != true)
@@ -664,7 +667,7 @@ a308:
 
             if (DEAG == 1)//Проводить деагрегацию
             {
-                BALLDEAGREG = new StreamReader(applicationDir + "EAST_2003__ABCD_.TXT");
+                BALLDEAGREG = new StreamReader(applicationDir + "EAST_2016__ABCD_.TXT");
                 
             }
             iii = 1;
@@ -708,9 +711,12 @@ a308:
                         SA_0_1_deagreg[iii, i] = Convert.ToDouble(nums[14 + (i * 11)]);
                     }
                     
-
                     iii++;
                 }
+
+                BALLDEAGREG.Close();
+                BALLDEAGREG.Dispose();
+
             }
 
 
@@ -721,7 +727,7 @@ a308:
 
             if(DEAG == 1)
             {
-                currentDeag = new Deaggregation(applicationDir + "EAST_2003__ABCD_.TXT", NETPNT);
+                currentDeag = new Deaggregation(applicationDir + "EAST_2016__ABCD_.TXT", NETPNT);
            }
             
 
@@ -1882,7 +1888,7 @@ al2:
             net.Close();
 a306:
 
-            if(fla != null)
+            if (fla != null)
                 if(fla.BaseStream != null)
                     fla.Close();
 
@@ -1894,6 +1900,8 @@ a306:
             if(wrng_out != null)
                 if(wrng_out.BaseStream != null)
                     wrng_out.Close();
+
+
 
             //POVTOR_BALL.Close();
         }
@@ -4869,12 +4877,16 @@ a12:
 
 
             NIo[0] = Convert.ToInt32(Math.Round(massiv_ABCD[13, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[0] < 1)
+                NIo[0] = 1;
             NIo[1] = Convert.ToInt32(Math.Round(massiv_ABCD[2, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             NIo[2] = Convert.ToInt32(Math.Round(massiv_ABCD[5, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             NIo[3] = Convert.ToInt32(Math.Round(massiv_ABCD[12, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             NIo[4] = Convert.ToInt32(Math.Round(massiv_ABCD[8, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             NIo[5] = Convert.ToInt32(Math.Round(massiv_ABCD[11, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             NIo[6] = Convert.ToInt32(Math.Round(massiv_ABCD[14, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if(NIo[6] > 61)
+                NIo[6] = 61;
 
             for (int i = 0; i < 62; i++)
             {
