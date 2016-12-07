@@ -59,7 +59,7 @@ namespace East_CSharp
 
         private void StartThread()
         {
-            int typeOfGrunt=666;
+            int typeOfGrunt=1;
 
             if (radioButton1.Checked)
                 typeOfGrunt = 0;
