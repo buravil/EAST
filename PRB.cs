@@ -76,7 +76,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 100000;//500000
+        const int NRP = 11000;//500000
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -131,7 +131,8 @@ namespace East_CSharp
 
         double FIRSTMAG,FIRSTMAGRound;
 
-        double[,] IGST = new double[NRP + 1, 7];
+        //double[,] IGST = new double[NRP + 1, 7];
+        double[,] IGST = new double[NRP + 1, IMGS + 1];//////////////////////////////////////////////////////////////////////
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
         double[,] DEAGREGRespSpectr = new double[100, 77001];
@@ -196,9 +197,16 @@ namespace East_CSharp
 
 
         //Массив с длительностями
-        double[,,] DurrationMassive;
+        double[][,] DurrationMassive = new double[NRP][,];
+                
 
-        
+
+    //переменные в методе CalculateDuration
+    int[] NIo = new int[7];
+        double[,] A2 = new double[62, 62];
+        double[,] A3 = new double[62, 62];
+        double[,] A4 = new double[62, 8];
+
         double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
 
 
@@ -214,12 +222,28 @@ namespace East_CSharp
 
         int round_i;
         int round_j;
+
+
+        //задание массива спектров реакций
+         ResponseSpectra[] RS = new ResponseSpectra[NRP + 1];
+
         #endregion
 
 
 
         public PRB(string SQLitePath)
         {
+            for (int i = 0; i<NRP; i++)
+              {
+                   DurrationMassive[i] = new double[62, 62];
+              }
+
+            for (int sk = 1; sk <= NRP; sk++)//
+            {
+                 RS[sk] = new ResponseSpectra(typeOfGrunt);
+               
+            }
+
             applicationDir = Application.StartupPath;//System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().GetModules()[ 0 ].FullyQualifiedName.ToString() );
 
             if(!applicationDir.EndsWith( @"\" ))
@@ -618,7 +642,11 @@ a308:
 
                 ii++;
                 if (ii > NRP)
-                    goto a305;
+                    {
+                        MessageBox.Show("В подсетке " + Convert.ToString(KPIECE) + " превышено количество точек ( " + Convert.ToString(NRP) + " ), часть будет пропущена");
+                        goto a305;
+                    }
+                    
             }
             }
 
@@ -874,28 +902,43 @@ a305:
             NFAIL = 0;
             NGEN = 0;
             //long[ , ] 
-            IGST = new double[ NRP + 1,IMGS + 1 ];/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-           // IGST = new long[NRP + 1, IMGS + 1];//
+            ///////////////////////////////////////////////////////////////////////////////////////////////
 
+
+            // IGST = new long[NRP + 1, IMGS + 1];//
+            Array.Clear(IGST, 0, IGST.Length);
             long iw,Jf,Jx;//,Jq;
             posi = 0;
             double T;
 
             //задание массива спектров реакций
-            ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
-            DurrationMassive = new double[NETPNT, 62, 62];
+           // ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
+
+
+
+            for (int i = 0; i<NRP; i++)
+              {
+                   Array.Clear(DurrationMassive[i],0, DurrationMassive[i].Length);
+               }
+
+
+
+            // DurrationMassive = new double[NETPNT, 62, 62];
 
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
-                RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
-
+                // RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
+                //обнуление RS
+                RS[sk].Clear(TMAX);
 
                 //Инициализация массива с длительностями
 
                 for (int i = 0; i <= 60; i++)
                 {
-                    DurrationMassive[sk-1,0, i + 1] = 5.5 + (double)i / 10;
-                    DurrationMassive[sk-1,i + 1, 0] = i;
+                    
+                    DurrationMassive[sk - 1][0, i + 1] = 5.5 + (double)i / 10;
+                    DurrationMassive[sk - 1][i + 1, 0] = i;
+
                 }
             }
                         
@@ -1864,13 +1907,12 @@ al2:
                     return;
                 }
             }
-            GSTPRC( NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
+            GSTPRC(worker, NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
             if(emexit == 1)
                 goto a306;//критическая остановка
             Debug.Print( "IY = " + IY.ToString() );
             ct_endwork = DateTime.Now;
             TimeSpan TS = ct_endwork - ct;
-
             day = Convert.ToInt32( TS.TotalDays );
             hours = Convert.ToInt32( TS.TotalHours );
             min = Convert.ToInt32( TS.TotalMinutes );
@@ -1916,7 +1958,7 @@ a306:
                 round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
                 if(round_i < 62 && round_j < 62)
                 {
-                    DurrationMassive[pointNumber, round_i, round_j]++;
+                    DurrationMassive[pointNumber][round_i, round_j]++;
                 }
                 
 
@@ -1965,7 +2007,7 @@ a306:
                     {
                         for (int j = 0; j <= 61; j++)
                         {
-                            Filewriter.Write("{0}\t", DurrationMassive[num, i, j]);
+                            Filewriter.Write("{0}\t", DurrationMassive[num][i, j]);
                         }
                         Filewriter.Write("\n");
                     }
@@ -4413,7 +4455,7 @@ a10:
             }
         }
 
-        private void GSTPRC(long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX, ResponseSpectra[] RS)
+        private void GSTPRC(System.ComponentModel.BackgroundWorker worker, long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX, ResponseSpectra[] RS)
         {
             double gs1 = 0.0,gs2 = 0.0;
 
@@ -4444,33 +4486,38 @@ a10:
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
 
-            fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
-                periodsOfRepeating[0],
-                periodsOfRepeating[1],
-                periodsOfRepeating[2],
-                periodsOfRepeating[3],
-                periodsOfRepeating[4],
-                periodsOfRepeating[5],
-                periodsOfRepeating[6]);
 
-
-
-            for (int i = 0; i < 7; i++)
+            if (KPIECE == 1)
             {
-                fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
-    periodsOfRepeating[i]);
+
+                fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
+                    periodsOfRepeating[0],
+                    periodsOfRepeating[1],
+                    periodsOfRepeating[2],
+                    periodsOfRepeating[3],
+                    periodsOfRepeating[4],
+                    periodsOfRepeating[5],
+                    periodsOfRepeating[6]);
+
+
+
+                for (int i = 0; i < 7; i++)
+                {
+                    fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
+        periodsOfRepeating[i]);
+                }
+                fla.Write("d_{0}\td_{1}\td_{2}\td_{3}\td_{4}\td_{5}\td_{6}\t",
+        periodsOfRepeating[0],
+        periodsOfRepeating[1],
+        periodsOfRepeating[2],
+        periodsOfRepeating[3],
+        periodsOfRepeating[4],
+        periodsOfRepeating[5],
+        periodsOfRepeating[6]);
+
+                fla.Write("\n");
+
             }
-            fla.Write("d_{0}\td_{1}\td_{2}\td_{3}\td_{4}\td_{5}\td_{6}\t",
-    periodsOfRepeating[0],
-    periodsOfRepeating[1],
-    periodsOfRepeating[2],
-    periodsOfRepeating[3],
-    periodsOfRepeating[4],
-    periodsOfRepeating[5],
-    periodsOfRepeating[6]);
-
-            fla.Write("\n");
-
             
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
@@ -4631,6 +4678,9 @@ a12:
 
                 double[] TP = CalculateDuration(k, massiv_ABCD);
 
+                NameOfCurrentCalculation = "Сохранение подсетки № " + Convert.ToString(KPIECE) + " ( " + Convert.ToString(k) + " из " + Convert.ToString(NETPNT) + " )";
+                worker.ReportProgress(percents, NameOfCurrentCalculation);
+
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                 fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t",
                     massiv_ABCD[0, k],
@@ -4680,7 +4730,7 @@ a12:
 
 
             }
-            fla.Close();
+           // fla.Close();
 
             if (DEAG == 2)
             {
@@ -4866,12 +4916,15 @@ a12:
         {
             double[] TP = new double[7];
 
-            //DurationInABCDfile
-            int[] NIo = new int[7];
-            double[,] A2 = new double[62, 62];
-            double[,] A3 = new double[62, 62];
-            double[,] A4 = new double[62, 8];
-            //DurrationMassive[num, i, j]
+            Array.Clear(NIo,0, NIo.Length);
+
+            Array.Clear(A2, 0, A2.Length);
+
+            Array.Clear(A3, 0, A3.Length);
+
+            Array.Clear(A4, 0, A4.Length);
+
+
             double X1, X2, Y1, Y2;
             
 
@@ -4879,25 +4932,55 @@ a12:
             NIo[0] = Convert.ToInt32(Math.Round(massiv_ABCD[13, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             if (NIo[0] < 1)
                 NIo[0] = 1;
+            else if (NIo[0] > 61)
+                NIo[0] = 61;
+
             NIo[1] = Convert.ToInt32(Math.Round(massiv_ABCD[2, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[1] < 1)
+                NIo[1] = 1;
+            else if (NIo[1] > 61)
+                NIo[1] = 61;
+
             NIo[2] = Convert.ToInt32(Math.Round(massiv_ABCD[5, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[2] < 1)
+                NIo[2] = 1;
+            else if (NIo[2] > 61)
+                NIo[2] = 61;
+
             NIo[3] = Convert.ToInt32(Math.Round(massiv_ABCD[12, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[3] < 1)
+                NIo[3] = 1;
+            else if (NIo[3] > 61)
+                NIo[3] = 61;
+
             NIo[4] = Convert.ToInt32(Math.Round(massiv_ABCD[8, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[4] < 1)
+                NIo[4] = 1;
+            else if (NIo[4] > 61)
+                NIo[4] = 61;
+
             NIo[5] = Convert.ToInt32(Math.Round(massiv_ABCD[11, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[5] < 1)
+                NIo[5] = 1;
+            else if (NIo[5] > 61)
+                NIo[5] = 61;
+
             NIo[6] = Convert.ToInt32(Math.Round(massiv_ABCD[14, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            if(NIo[6] > 61)
+            if (NIo[6] < 1)
+                NIo[6] = 1;
+            else if (NIo[6] > 61)
                 NIo[6] = 61;
 
             for (int i = 0; i < 62; i++)
             {
-                A2[i, 0] = DurrationMassive[k-1, i, 0];
-                A3[i, 0] = DurrationMassive[k-1, i, 0];
+                A2[i, 0] = DurrationMassive[k-1][ i, 0];
+                A3[i, 0] = DurrationMassive[k-1][ i, 0];
             }
 
             for (int i = 0; i < 62; i++)
             {
-                A2[0, i] = DurrationMassive[k-1, 0, i];
-                A3[0, i] = DurrationMassive[k-1, 0, i];
+                A2[0, i] = DurrationMassive[k - 1][ 0, i];
+                A3[0, i] = DurrationMassive[k - 1][ 0, i];
             }
 
             for (int i = 1; i < 62; i++)
@@ -4907,7 +4990,7 @@ a12:
                     double A = 0;
                     for (int jj = j; jj < 62; jj++)
                     {
-                        A += DurrationMassive[k-1, i, jj];
+                        A += DurrationMassive[k - 1][ i, jj];
                     }
                      A2[i, j] = A;
                 }
@@ -4936,12 +5019,12 @@ a12:
 
             for (int i = 0; i < 62; i++)
             {
-                A4[i, 0] = DurrationMassive[k - 1, i, 0];
+                A4[i, 0] = DurrationMassive[k - 1][ i, 0];
             }
 
             for (int nn = 1; nn < 8; nn++)
             {
-                A4[0, nn] = DurrationMassive[k - 1, 0, NIo[nn - 1]];
+                A4[0, nn] = DurrationMassive[k - 1][ 0, NIo[nn - 1]];
             }
 
             for (int i = 1; i < 62; i++)
