@@ -66,7 +66,7 @@ namespace East_CSharp
 
 
         //Конструктор
-        public ResponseSpectra(int typeOfGrunt)
+        public ResponseSpectra(int typeOfGrunt, double Tmax)
         {
             //Задаем коэффициенты
             C2 = C2array[typeOfGrunt];
@@ -81,7 +81,7 @@ namespace East_CSharp
 
             //Iter = 100;
             //T = 5000 * Iter;
-            //T = Tmax;
+            T = Tmax;
                    
             Bitog = new double[NN + 1, 2];
            

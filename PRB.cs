@@ -66,7 +66,7 @@ namespace East_CSharp
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
         public int fastCalc, LCAT, DEAG;
-        public int typeOfGrunt;
+        //public int typeOfGrunt;
         public int ncycl;
 
 
@@ -231,7 +231,7 @@ namespace East_CSharp
 
 
 
-        public PRB(string SQLitePath)
+        public PRB(string SQLitePath, int typeOfGrunt, int tmax_text)
         {
             for (int i = 0; i<NRP; i++)
               {
@@ -240,7 +240,7 @@ namespace East_CSharp
 
             for (int sk = 1; sk <= NRP; sk++)//
             {
-                 RS[sk] = new ResponseSpectra(typeOfGrunt);
+                 RS[sk] = new ResponseSpectra(typeOfGrunt, tmax_text);
                
             }
 

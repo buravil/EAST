@@ -59,9 +59,16 @@ namespace East_CSharp
 
         private void StartThread()
         {
-           
+            int typeOfGrunt=666;
 
-            prb = new PRB(textBox_mdbPath.Text);
+            if (radioButton1.Checked)
+                typeOfGrunt = 0;
+            if (radioButton2.Checked)
+                typeOfGrunt = 1;
+            if (radioButton3.Checked)
+                typeOfGrunt = 2;
+
+            prb = new PRB(textBox_mdbPath.Text, typeOfGrunt, Convert.ToInt32(textBox15.Text)* Convert.ToInt32(textBox16.Text));
 
             DT = DateTime.Now;
 
@@ -138,12 +145,7 @@ namespace East_CSharp
                 label6.Text = "Деагрегация";
                 prb.DEAG = 1;
             }
-                if (radioButton1.Checked)
-                    prb.typeOfGrunt = 0;
-                if (radioButton2.Checked)
-                    prb.typeOfGrunt = 1;
-                if (radioButton3.Checked)
-                    prb.typeOfGrunt = 2;
+
             
             
 
