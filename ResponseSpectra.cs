@@ -39,10 +39,10 @@ namespace East_CSharp
         int NN;
 
         //Количество периодов в матрице SA
-        int Njsa;
+        int Njsa = 33;
 
         //Количество значений PGA в матрице SA
-        int Nisa;
+        int Nisa = 62;
 
         //текущий расчитанный спектр реакций
         public double[,] Bitog;
@@ -51,9 +51,9 @@ namespace East_CSharp
         public double PGA;
 
         //Матрица
-        double[,] SA;
-        double[,] SAkum;
-        double[,] SAitog;
+        double[,] SA = new double[62, 33];
+        double[,] SAkum = new double[62, 33];
+        double[,] SAitog = new double[62, 33];
 
         //расчитанная вероятностная функция
         double[,] YY3;
@@ -85,12 +85,7 @@ namespace East_CSharp
             //T = 5000 * Iter;
             T = Tmax;
 
-            Njsa = 33;
-            Nisa = 62;
             Bitog = new double[NN + 1, 2];
-            SA = new double[Nisa, Njsa];
-            SAitog = new double[Nisa, Njsa];
-            SAkum = new double[Nisa, Njsa];
             YY3 = new double[2, 61];
 
 
