@@ -143,8 +143,6 @@
             // checkBoxDeagreg
             // 
             this.checkBoxDeagreg.AutoSize = true;
-            this.checkBoxDeagreg.Checked = true;
-            this.checkBoxDeagreg.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxDeagreg.Location = new System.Drawing.Point(15, 99);
             this.checkBoxDeagreg.Name = "checkBoxDeagreg";
             this.checkBoxDeagreg.Size = new System.Drawing.Size(93, 17);
@@ -497,7 +495,7 @@
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(70, 20);
             this.textBox15.TabIndex = 44;
-            this.textBox15.Text = "2";
+            this.textBox15.Text = "200";
             // 
             // textBox16
             // 
@@ -578,7 +576,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "East v2.5.19";
+            this.Text = "East v2.6.2";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
