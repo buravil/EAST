@@ -618,8 +618,11 @@ a308:
 
                 ii++;
                 if (ii > NRP)
-                    goto a305;
-            }
+                    {
+                        MessageBox.Show("В подсетке " + Convert.ToString(KPIECE) + " превышено количество точек ( " + Convert.ToString(NRP) + " ), часть будет пропущена");
+                        goto a305;
+                    }
+                }
             }
 
 
@@ -1864,7 +1867,7 @@ al2:
                     return;
                 }
             }
-            GSTPRC( NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
+            GSTPRC(worker, NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
             if(emexit == 1)
                 goto a306;//критическая остановка
             Debug.Print( "IY = " + IY.ToString() );
@@ -4413,7 +4416,7 @@ a10:
             }
         }
 
-        private void GSTPRC(long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX, ResponseSpectra[] RS)
+        private void GSTPRC(System.ComponentModel.BackgroundWorker worker, long NETPNT,double PHI0,double AL0,double AZ0,double NCYCL,double[] XNET,double[] YNET,double GI0,double TMAX, ResponseSpectra[] RS)
         {
             double gs1 = 0.0,gs2 = 0.0;
 
@@ -4443,8 +4446,9 @@ a10:
             i_gst3 = 0;
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
-
-            fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
+            if (KPIECE == 1)
+            {
+                fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
                 periodsOfRepeating[0],
                 periodsOfRepeating[1],
                 periodsOfRepeating[2],
@@ -4455,22 +4459,22 @@ a10:
 
 
 
-            for (int i = 0; i < 7; i++)
-            {
-                fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
-    periodsOfRepeating[i]);
+                for (int i = 0; i < 7; i++)
+                {
+                    fla.Write("PGA_{0}\tSA_0_1_{0}\tSA_0_2_{0}\tSA_0_3_{0}\tSA_0_4_{0}\tSA_0_5_{0}\tSA_0_7_{0}\tSA_1_{0}\tSA_2_{0}\tSA_3_{0}\tSA_5_{0}\t",
+        periodsOfRepeating[i]);
+                }
+                fla.Write("d_{0}\td_{1}\td_{2}\td_{3}\td_{4}\td_{5}\td_{6}\t",
+        periodsOfRepeating[0],
+        periodsOfRepeating[1],
+        periodsOfRepeating[2],
+        periodsOfRepeating[3],
+        periodsOfRepeating[4],
+        periodsOfRepeating[5],
+        periodsOfRepeating[6]);
+
+                fla.Write("\n");
             }
-            fla.Write("d_{0}\td_{1}\td_{2}\td_{3}\td_{4}\td_{5}\td_{6}\t",
-    periodsOfRepeating[0],
-    periodsOfRepeating[1],
-    periodsOfRepeating[2],
-    periodsOfRepeating[3],
-    periodsOfRepeating[4],
-    periodsOfRepeating[5],
-    periodsOfRepeating[6]);
-
-            fla.Write("\n");
-
             
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
             
@@ -4631,6 +4635,9 @@ a12:
 
                 double[] TP = CalculateDuration(k, massiv_ABCD);
 
+                NameOfCurrentCalculation = "Сохранение подсетки № " + Convert.ToString(KPIECE) + " ( " + Convert.ToString(k) + " из " + Convert.ToString(NETPNT) + " )";
+                worker.ReportProgress(percents, NameOfCurrentCalculation);
+
                 //ОКОНЧАТЕЛЬНАЯ запись в файл всех параметров:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
                 fla.Write(String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t",
                     massiv_ABCD[0, k],
@@ -4680,7 +4687,7 @@ a12:
 
 
             }
-            fla.Close();
+          //  fla.Close();
 
             if (DEAG == 2)
             {
