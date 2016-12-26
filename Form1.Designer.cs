@@ -143,6 +143,8 @@
             // checkBoxDeagreg
             // 
             this.checkBoxDeagreg.AutoSize = true;
+            this.checkBoxDeagreg.Checked = true;
+            this.checkBoxDeagreg.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxDeagreg.Location = new System.Drawing.Point(15, 99);
             this.checkBoxDeagreg.Name = "checkBoxDeagreg";
             this.checkBoxDeagreg.Size = new System.Drawing.Size(93, 17);
@@ -495,7 +497,7 @@
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(70, 20);
             this.textBox15.TabIndex = 44;
-            this.textBox15.Text = "200";
+            this.textBox15.Text = "2";
             // 
             // textBox16
             // 

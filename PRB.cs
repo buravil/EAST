@@ -4879,13 +4879,43 @@ a12:
             NIo[0] = Convert.ToInt32(Math.Round(massiv_ABCD[13, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
             if (NIo[0] < 1)
                 NIo[0] = 1;
+            else if (NIo[0] > 61)
+                NIo[0] = 61;
+
             NIo[1] = Convert.ToInt32(Math.Round(massiv_ABCD[2, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[1] < 1)
+                NIo[1] = 1;
+            else if (NIo[1] > 61)
+                NIo[1] = 61;
+
             NIo[2] = Convert.ToInt32(Math.Round(massiv_ABCD[5, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[2] < 1)
+                NIo[2] = 1;
+            else if (NIo[2] > 61)
+                NIo[2] = 61;
+
             NIo[3] = Convert.ToInt32(Math.Round(massiv_ABCD[12, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[3] < 1)
+                NIo[3] = 1;
+            else if (NIo[3] > 61)
+                NIo[3] = 61;
+
             NIo[4] = Convert.ToInt32(Math.Round(massiv_ABCD[8, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[4] < 1)
+                NIo[4] = 1;
+            else if (NIo[4] > 61)
+                NIo[4] = 61;
+
             NIo[5] = Convert.ToInt32(Math.Round(massiv_ABCD[11, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
+            if (NIo[5] < 1)
+                NIo[5] = 1;
+            else if (NIo[5] > 61)
+                NIo[5] = 61;
+
             NIo[6] = Convert.ToInt32(Math.Round(massiv_ABCD[14, k], 1, MidpointRounding.AwayFromZero) * 10 - 54);
-            if(NIo[6] > 61)
+            if (NIo[6] < 1)
+                NIo[6] = 1;
+            else if (NIo[6] > 61)
                 NIo[6] = 61;
 
             for (int i = 0; i < 62; i++)
