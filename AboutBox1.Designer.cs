@@ -73,7 +73,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 35;
-            this.label1.Text = "East 2.5.14";
+            this.label1.Text = "East 2.5.19";
             // 
             // textBoxDescription
             // 
@@ -87,7 +87,6 @@
             this.textBoxDescription.Size = new System.Drawing.Size(310, 91);
             this.textBoxDescription.TabIndex = 34;
             this.textBoxDescription.TabStop = false;
-            this.textBoxDescription.Text = "Описание";
             // 
             // logoPictureBox
             // 
