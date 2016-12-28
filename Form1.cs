@@ -264,6 +264,7 @@ namespace East_CSharp
             label6.Text = "";
             if (prb.DEAG == 2)
             {
+                prb = null;
                 flagOfDeag = 1;
                 StartThread();
             }

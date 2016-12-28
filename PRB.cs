@@ -76,7 +76,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 2500;//Максимальное количество точек в подседке
+        const int NRP = 10000;//Максимальное количество точек в подседке
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -201,6 +201,11 @@ namespace East_CSharp
         
         double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
 
+        //DurationInABCDfile
+        int[] NIo = new int[7];
+        double[,] A2 = new double[62, 62];
+        double[,] A3 = new double[62, 62];
+        double[,] A4 = new double[62, 8];
 
         //Сетка
         string netfilePath = "";
@@ -211,6 +216,7 @@ namespace East_CSharp
         public double Lat { set { lat = value; } }
         public double Lon { set { lon = value; } }
         public bool NetIsFile { set { netIsFile = value; } }
+
 
         int round_i;
         int round_j;
@@ -262,7 +268,8 @@ for(int i = 0; i < 500; i++)
             m_e_int_voz_do = 1000000000;
             m_e_int_voz_ot = 0;
             DBcount = 0;
-            
+
+            DurrationMassive = new double[NRP, 62, 62];
         }
 
         public bool Close()
@@ -433,6 +440,8 @@ for(int i = 0; i < 500; i++)
         private void PreWork(System.ComponentModel.BackgroundWorker worker,
         System.ComponentModel.DoWorkEventArgs e)
         {
+            
+
             //CStringFile net,mto;
             StreamReader net = null, mto = null, BALLDEAGREG = null;
 
@@ -886,7 +895,7 @@ a305:
 
             //задание массива спектров реакций
             ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
-            DurrationMassive = new double[NETPNT, 62, 62];
+
 
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
@@ -4873,11 +4882,7 @@ a12:
         {
             double[] TP = new double[7];
 
-            //DurationInABCDfile
-            int[] NIo = new int[7];
-            double[,] A2 = new double[62, 62];
-            double[,] A3 = new double[62, 62];
-            double[,] A4 = new double[62, 8];
+
             //DurrationMassive[num, i, j]
             double X1, X2, Y1, Y2;
             
