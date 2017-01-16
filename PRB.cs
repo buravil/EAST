@@ -29,7 +29,7 @@ namespace East_CSharp
         public bool m_ch_make_katalog = false;
         public int m_e_int_voz_ot, m_e_int_voz_do;
         public double m_e_int_mag_do, m_e_int_mag_ot;
-        double[,] mass_gist_lat_lon = new double[500000, 2];
+        double[,] mass_gist_lat_lon = new double[NRP + 1, 2];
         
         public double m_e_tmax = 0.1;
         public int m_e_iter = 1;
@@ -135,7 +135,7 @@ namespace East_CSharp
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
         double[,] DEAGREGRespSpectr = new double[100, 77001];
-        double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, NRP]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
         long[] KPNT = new long[7];
@@ -184,7 +184,7 @@ namespace East_CSharp
         //char[ , ] ZONE = new char[ 12, 5 ];//CHARACTER*12 ZONE*4
         String ZONE = "";
         ///char[ , ] PRBL = new char[ 50, 7 ];//CHARACTER*4 PRBL(50)
-        string[] PRBL = new string[500000];
+        string[] PRBL = new string[NRP];
         string applicationDir = "";
 
         public string NameOfCurrentCalculation="";
@@ -892,6 +892,10 @@ a305:
             long iw,Jf,Jx;//,Jq;
             posi = 0;
             double T;
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             //задание массива спектров реакций
             ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
@@ -2004,8 +2008,9 @@ a306:
             double lat,lon,igs;
             int ind;
             double ball = 0.0,b_prom = 0.0;
+            i_gst2 = 0;
 
-            for(int i = 0; i < mass_gist_lat_lon.Length; i++)
+            for (int i = 0; i < mass_gist_lat_lon.Length; i++)
             {
                 ind = 0;
                 lat = 0.0;
@@ -4486,8 +4491,8 @@ a10:
             }
             
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
-            
-            for(k = 1; k <= NETPNT; k++)
+            i_gst2 = 0;
+            for (k = 1; k <= NETPNT; k++)
             {
 
                 DEGEDCON( PHI0,AL0,AZ0,XNET[ k ],YNET[ k ],ref X[ 1 ],ref X[ 2 ] );

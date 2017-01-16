@@ -265,6 +265,11 @@ namespace East_CSharp
             if (prb.DEAG == 2)
             {
                 prb = null;
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
                 flagOfDeag = 1;
                 StartThread();
             }
