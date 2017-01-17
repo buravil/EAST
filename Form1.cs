@@ -68,7 +68,7 @@ namespace East_CSharp
             if (radioButton3.Checked)
                 typeOfGrunt = 2;
 
-            prb = new PRB(textBox_mdbPath.Text, typeOfGrunt, Convert.ToInt32(textBox15.Text)* Convert.ToInt32(textBox16.Text));
+            prb = new PRB(textBox_mdbPath.Text);
 
             DT = DateTime.Now;
 
