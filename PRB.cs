@@ -29,7 +29,7 @@ namespace East_CSharp
         public bool m_ch_make_katalog = false;
         public int m_e_int_voz_ot, m_e_int_voz_do;
         public double m_e_int_mag_do, m_e_int_mag_ot;
-        double[,] mass_gist_lat_lon = new double[500000, 2];
+        double[,] mass_gist_lat_lon = new double[NRP + 1, 2];
         
         public double m_e_tmax = 0.1;
         public int m_e_iter = 1;
@@ -66,7 +66,7 @@ namespace East_CSharp
         public int i_rz, i_az, i_bz, i_cz;
         public int DBcount = 0;
         public int fastCalc, LCAT, DEAG;
-        //public int typeOfGrunt;
+        public int typeOfGrunt;
         public int ncycl;
 
 
@@ -76,7 +76,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 11000;//500000
+        const int NRP = 10000;//Максимальное количество точек в подседке
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -131,12 +131,11 @@ namespace East_CSharp
 
         double FIRSTMAG,FIRSTMAGRound;
 
-        //double[,] IGST = new double[NRP + 1, 7];
-        double[,] IGST = new double[NRP + 1, IMGS + 1];//////////////////////////////////////////////////////////////////////
+        double[,] IGST = new double[NRP + 1, 7];
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
         double[,] DEAGREGRespSpectr = new double[100, 77001];
-        double[,] POVTOR = new double[10, 500000]; //double[,] POVTOR = new double[10, 500000];
+        double[,] POVTOR = new double[10, NRP]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
         long[] KPNT = new long[7];
@@ -185,7 +184,7 @@ namespace East_CSharp
         //char[ , ] ZONE = new char[ 12, 5 ];//CHARACTER*12 ZONE*4
         String ZONE = "";
         ///char[ , ] PRBL = new char[ 50, 7 ];//CHARACTER*4 PRBL(50)
-        string[] PRBL = new string[500000];
+        string[] PRBL = new string[NRP];
         string applicationDir = "";
 
         public string NameOfCurrentCalculation="";
@@ -197,18 +196,16 @@ namespace East_CSharp
 
 
         //Массив с длительностями
-        double[][,] DurrationMassive = new double[NRP][,];
-                
+        double[,,] DurrationMassive;
 
+        
+        double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
 
-    //переменные в методе CalculateDuration
-    int[] NIo = new int[7];
+        //DurationInABCDfile
+        int[] NIo = new int[7];
         double[,] A2 = new double[62, 62];
         double[,] A3 = new double[62, 62];
         double[,] A4 = new double[62, 8];
-
-        double[] DurationInABCDfile = new double[7];//новый массив с длительностями в файл 
-
 
         //Сетка
         string netfilePath = "";
@@ -220,30 +217,15 @@ namespace East_CSharp
         public double Lon { set { lon = value; } }
         public bool NetIsFile { set { netIsFile = value; } }
 
+
         int round_i;
         int round_j;
-
-
-        //задание массива спектров реакций
-         ResponseSpectra[] RS = new ResponseSpectra[NRP + 1];
-
         #endregion
 
 
 
-        public PRB(string SQLitePath, int typeOfGrunt, int tmax_text)
+        public PRB(string SQLitePath)
         {
-            for (int i = 0; i<NRP; i++)
-              {
-                   DurrationMassive[i] = new double[62, 62];
-              }
-
-            for (int sk = 1; sk <= NRP; sk++)//
-            {
-                 RS[sk] = new ResponseSpectra(typeOfGrunt, tmax_text);
-               
-            }
-
             applicationDir = Application.StartupPath;//System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().GetModules()[ 0 ].FullyQualifiedName.ToString() );
 
             if(!applicationDir.EndsWith( @"\" ))
@@ -286,7 +268,8 @@ for(int i = 0; i < 500; i++)
             m_e_int_voz_do = 1000000000;
             m_e_int_voz_ot = 0;
             DBcount = 0;
-            
+
+            DurrationMassive = new double[NRP, 62, 62];
         }
 
         public bool Close()
@@ -457,6 +440,8 @@ for(int i = 0; i < 500; i++)
         private void PreWork(System.ComponentModel.BackgroundWorker worker,
         System.ComponentModel.DoWorkEventArgs e)
         {
+            
+
             //CStringFile net,mto;
             StreamReader net = null, mto = null, BALLDEAGREG = null;
 
@@ -646,8 +631,7 @@ a308:
                         MessageBox.Show("В подсетке " + Convert.ToString(KPIECE) + " превышено количество точек ( " + Convert.ToString(NRP) + " ), часть будет пропущена");
                         goto a305;
                     }
-                    
-            }
+                }
             }
 
 
@@ -902,43 +886,32 @@ a305:
             NFAIL = 0;
             NGEN = 0;
             //long[ , ] 
-            ///////////////////////////////////////////////////////////////////////////////////////////////
+            IGST = new double[ NRP + 1,IMGS + 1 ];/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           // IGST = new long[NRP + 1, IMGS + 1];//
 
-
-            // IGST = new long[NRP + 1, IMGS + 1];//
-            Array.Clear(IGST, 0, IGST.Length);
             long iw,Jf,Jx;//,Jq;
             posi = 0;
             double T;
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             //задание массива спектров реакций
-           // ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
+            ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
 
-
-
-            for (int i = 0; i<NRP; i++)
-              {
-                   Array.Clear(DurrationMassive[i],0, DurrationMassive[i].Length);
-               }
-
-
-
-            // DurrationMassive = new double[NETPNT, 62, 62];
 
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
-                // RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
-                //обнуление RS
-                RS[sk].Clear(TMAX);
+                RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
+
 
                 //Инициализация массива с длительностями
 
                 for (int i = 0; i <= 60; i++)
                 {
-                    
-                    DurrationMassive[sk - 1][0, i + 1] = 5.5 + (double)i / 10;
-                    DurrationMassive[sk - 1][i + 1, 0] = i;
-
+                    DurrationMassive[sk-1,0, i + 1] = 5.5 + (double)i / 10;
+                    DurrationMassive[sk-1,i + 1, 0] = i;
                 }
             }
                         
@@ -1913,6 +1886,7 @@ al2:
             Debug.Print( "IY = " + IY.ToString() );
             ct_endwork = DateTime.Now;
             TimeSpan TS = ct_endwork - ct;
+
             day = Convert.ToInt32( TS.TotalDays );
             hours = Convert.ToInt32( TS.TotalHours );
             min = Convert.ToInt32( TS.TotalMinutes );
@@ -1958,7 +1932,7 @@ a306:
                 round_j = Convert.ToInt16(Math.Round((rESI - 5.5) * 10 + 1, MidpointRounding.AwayFromZero));
                 if(round_i < 62 && round_j < 62)
                 {
-                    DurrationMassive[pointNumber][round_i, round_j]++;
+                    DurrationMassive[pointNumber, round_i, round_j]++;
                 }
                 
 
@@ -2007,7 +1981,7 @@ a306:
                     {
                         for (int j = 0; j <= 61; j++)
                         {
-                            Filewriter.Write("{0}\t", DurrationMassive[num][i, j]);
+                            Filewriter.Write("{0}\t", DurrationMassive[num, i, j]);
                         }
                         Filewriter.Write("\n");
                     }
@@ -2034,8 +2008,9 @@ a306:
             double lat,lon,igs;
             int ind;
             double ball = 0.0,b_prom = 0.0;
+            i_gst2 = 0;
 
-            for(int i = 0; i < mass_gist_lat_lon.Length; i++)
+            for (int i = 0; i < mass_gist_lat_lon.Length; i++)
             {
                 ind = 0;
                 lat = 0.0;
@@ -4485,19 +4460,16 @@ a10:
             i_gst3 = 0;
 
             double[ , ] massiv_ABCD = new double[ 15,NETPNT+1 ];
-
-
             if (KPIECE == 1)
             {
-
                 fla.Write("lat\tlon\tT{0}\tT{1}\tT{2}\tT{3}\tT{4}\tT{5}\tT{6}\tVI\tVII\tVIII\tIX\t",
-                    periodsOfRepeating[0],
-                    periodsOfRepeating[1],
-                    periodsOfRepeating[2],
-                    periodsOfRepeating[3],
-                    periodsOfRepeating[4],
-                    periodsOfRepeating[5],
-                    periodsOfRepeating[6]);
+                periodsOfRepeating[0],
+                periodsOfRepeating[1],
+                periodsOfRepeating[2],
+                periodsOfRepeating[3],
+                periodsOfRepeating[4],
+                periodsOfRepeating[5],
+                periodsOfRepeating[6]);
 
 
 
@@ -4516,12 +4488,11 @@ a10:
         periodsOfRepeating[6]);
 
                 fla.Write("\n");
-
             }
             
             gst.WriteLine("LAT\tLON\tBALL\tIGS\tKUM\tKUMNORM\tGRAN1\tGRAN2");//////////////////////////////////////////////////////////////////////////////////////////////////////
-            
-            for(k = 1; k <= NETPNT; k++)
+            i_gst2 = 0;
+            for (k = 1; k <= NETPNT; k++)
             {
 
                 DEGEDCON( PHI0,AL0,AZ0,XNET[ k ],YNET[ k ],ref X[ 1 ],ref X[ 2 ] );
@@ -4730,7 +4701,7 @@ a12:
 
 
             }
-           // fla.Close();
+          //  fla.Close();
 
             if (DEAG == 2)
             {
@@ -4916,15 +4887,8 @@ a12:
         {
             double[] TP = new double[7];
 
-            Array.Clear(NIo,0, NIo.Length);
 
-            Array.Clear(A2, 0, A2.Length);
-
-            Array.Clear(A3, 0, A3.Length);
-
-            Array.Clear(A4, 0, A4.Length);
-
-
+            //DurrationMassive[num, i, j]
             double X1, X2, Y1, Y2;
             
 
@@ -4973,14 +4937,14 @@ a12:
 
             for (int i = 0; i < 62; i++)
             {
-                A2[i, 0] = DurrationMassive[k-1][ i, 0];
-                A3[i, 0] = DurrationMassive[k-1][ i, 0];
+                A2[i, 0] = DurrationMassive[k-1, i, 0];
+                A3[i, 0] = DurrationMassive[k-1, i, 0];
             }
 
             for (int i = 0; i < 62; i++)
             {
-                A2[0, i] = DurrationMassive[k - 1][ 0, i];
-                A3[0, i] = DurrationMassive[k - 1][ 0, i];
+                A2[0, i] = DurrationMassive[k-1, 0, i];
+                A3[0, i] = DurrationMassive[k-1, 0, i];
             }
 
             for (int i = 1; i < 62; i++)
@@ -4990,7 +4954,7 @@ a12:
                     double A = 0;
                     for (int jj = j; jj < 62; jj++)
                     {
-                        A += DurrationMassive[k - 1][ i, jj];
+                        A += DurrationMassive[k-1, i, jj];
                     }
                      A2[i, j] = A;
                 }
@@ -5019,12 +4983,12 @@ a12:
 
             for (int i = 0; i < 62; i++)
             {
-                A4[i, 0] = DurrationMassive[k - 1][ i, 0];
+                A4[i, 0] = DurrationMassive[k - 1, i, 0];
             }
 
             for (int nn = 1; nn < 8; nn++)
             {
-                A4[0, nn] = DurrationMassive[k - 1][ 0, NIo[nn - 1]];
+                A4[0, nn] = DurrationMassive[k - 1, 0, NIo[nn - 1]];
             }
 
             for (int i = 1; i < 62; i++)

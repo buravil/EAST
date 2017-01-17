@@ -29,6 +29,8 @@ namespace East_CSharp
         //шаг
         double lg_D;
 
+       //количество итераций
+        int Iter;
 
         //Период повторяемости
         double T;
@@ -40,7 +42,7 @@ namespace East_CSharp
         int Njsa = 33;
 
         //Количество значений PGA в матрице SA
-        int Nisa =62;
+        int Nisa = 62;
 
         //текущий расчитанный спектр реакций
         public double[,] Bitog;
@@ -66,7 +68,7 @@ namespace East_CSharp
 
 
         //Конструктор
-        public ResponseSpectra(int typeOfGrunt, double Tmax)
+        public ResponseSpectra(int typeOfGrunt, double Tmax )
         {
             //Задаем коэффициенты
             C2 = C2array[typeOfGrunt];
@@ -82,12 +84,12 @@ namespace East_CSharp
             //Iter = 100;
             //T = 5000 * Iter;
             T = Tmax;
-                   
+
             Bitog = new double[NN + 1, 2];
-           
-            
-            
             YY3 = new double[2, 61];
+
+
+            double test = Math.Pow(10, (-1.5 + (1.0 / 10)));
 
 
             NameDIR = Application.StartupPath;
@@ -390,30 +392,6 @@ namespace East_CSharp
         //    SAwriter.Close();
             SAwriterProbabil.Close();
 
-
-        }
-
-        public void Clear(double Tmax)
-        {
-            T = Tmax;
-            fl = false;
-            Duration = 0;
-            PGA = 0;
-            Array.Clear(Bitog, 0, Bitog.Length);
-            Array.Clear(SA, 0, SA.Length);
-            Array.Clear(SAkum, 0, SAkum.Length);
-            Array.Clear(SAitog, 0, SAitog.Length);
-            Array.Clear(YY3, 0, YY3.Length);
-
-            for (int i = 0; i < Njsa - 2; i++)
-            {
-                SA[0, i + 2] = Math.Pow(10, (-1.5 + (Convert.ToDouble(i) / 10.0)));
-            }
-
-            for (int i = 0; i < Nisa - 1; i++)
-            {
-                SA[i + 1, 0] = Math.Pow(10, -3 + (Convert.ToDouble(i) / 10.0));
-            }
 
         }
 
