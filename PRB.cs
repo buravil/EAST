@@ -90,6 +90,7 @@ namespace East_CSharp
         DateTime ct, ct_endwork;
         long NEQ, NGE;
         double RAD, RR, rbb, rbb55, rbb60, rbb65, rbb70, rbb75, rbb80, TMAX, TMAX2, DIPF, kszon;
+        double[] I_dependency = new double[8];
         double RESI;
         long KDEP, IY;
         long M2, ITWO, IA, IC, MIC, kp, i_p; //, KP
@@ -117,7 +118,7 @@ namespace East_CSharp
         int typeOfMovement;
 
         double CC, RA, RB, DR, SB, XX, YY, R3D, DENOM, DIDA, DIDMW, R35, R36, R37, R38, R39;
-        double GI0, AN1, AN2, DL, DW, HB, PHIB, RNLB, FCORB, CBET, SBET;
+        double GI0, AN1, AN2, DL, DW, HB, PHIB, RNLB, FCORB, CBET, SBET, tipRazbrosa;
         double ALB, AWB, RNWB, CMAG, AIBAS, ALBYWB, DIST, CONTRIB, RSWITCH;
         double RQ1, RQ2, CMW1, CMW2, CLW1, CLW2, DISTMIN, RBAS, AMLHBAS, AMW, ML;
         double PI, PHI0, AL0, X1, X2, X3, Y1, Y2, Y3, X, Y, AZ0;
@@ -220,6 +221,9 @@ namespace East_CSharp
 
         int round_i;
         int round_j;
+
+        NormalRandom normRand = new NormalRandom();
+
         #endregion
 
 
@@ -493,10 +497,19 @@ a307:
                 rbb65 = Convert.ToDouble(rsDT.Rows[0]["rb65"]); 
                 rbb70 = Convert.ToDouble(rsDT.Rows[0]["rb70"]); 
                 rbb75 = Convert.ToDouble(rsDT.Rows[0]["rb75"]); 
-                rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]); 
+                rbb80 = Convert.ToDouble(rsDT.Rows[0]["rb80"]);
+
+                I_dependency[0] = Convert.ToDouble(rsDT.Rows[0]["I_2"]);
+                I_dependency[1] = Convert.ToDouble(rsDT.Rows[0]["I_3"]);
+                I_dependency[2] = Convert.ToDouble(rsDT.Rows[0]["I_4"]);
+                I_dependency[3] = Convert.ToDouble(rsDT.Rows[0]["I_5"]);
+                I_dependency[4] = Convert.ToDouble(rsDT.Rows[0]["I_6"]);
+                I_dependency[5] = Convert.ToDouble(rsDT.Rows[0]["I_7"]);
+                I_dependency[6] = Convert.ToDouble(rsDT.Rows[0]["I_8"]);
+                I_dependency[7] = Convert.ToDouble(rsDT.Rows[0]["I_9"]);
             }
 
-            
+
             rsDT.Clear();
 
             if (LCAT == 1)//&&(catinp.DoModal()!=2))
@@ -1174,7 +1187,31 @@ ad82:
 
 */
                     //Конечный расчет балла
-                    RESI = BALL + UI * SDEVI + GLBVI;
+                    if (tipRazbrosa == 0)
+                    {
+                        RESI = BALL + UI * SDEVI + GLBVI;
+                    }
+                    else
+                    {
+                        var round_RESI = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
+
+                        if (round_RESI <= 2)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[0];
+                        else if (round_RESI == 3)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[1];
+                        else if (round_RESI == 4)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[2];
+                        else if (round_RESI == 5)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[3];
+                        else if (round_RESI == 6)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[4];
+                        else if (round_RESI == 7)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[5];
+                        else if (round_RESI == 8)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[6];
+                        else if (round_RESI >= 9)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[7];
+                    }
                     
                     //считаем длительность
 
@@ -1594,32 +1631,59 @@ al82:
                     NORMRND( ref UI,ref VI );
                     if(emexit == 1)
                         goto a306;//критическая остановка
-/*
-                    if(BALL <= 4)
+                                  /*
+                                                      if(BALL <= 4)
+                                                      {
+                                                          SDEVI = 0.015 * BALL * BALL - 0.225 * BALL + 1.41;
+                                                      }
+                                                      else
+                                                      {
+                                                          if (BALL > 7)
+                                                          {
+                                                              SDEVI = -0.005 * BALL * BALL + 0.005 * BALL + 0.71;
+                                                          }
+                                                          else
+                                                          {
+                                                              if (BALL > 6)
+                                                              {
+                                                                  SDEVI = -0.22 * BALL + 2.04;
+                                                              }
+                                                              else
+                                                              {
+                                                                  SDEVI = 0.015 * BALL * BALL - 0.165 * BALL + 1.17;                             
+                                                              }
+                                                          }                    
+                                                      }
+
+                                  */
+//Конечный расчет балла
+                    if (tipRazbrosa == 0)
                     {
-                        SDEVI = 0.015 * BALL * BALL - 0.225 * BALL + 1.41;
+                        RESI = BALL + UI * SDEVI + GLBVI;
                     }
                     else
                     {
-                        if (BALL > 7)
-                        {
-                            SDEVI = -0.005 * BALL * BALL + 0.005 * BALL + 0.71;
-                        }
-                        else
-                        {
-                            if (BALL > 6)
-                            {
-                                SDEVI = -0.22 * BALL + 2.04;
-                            }
-                            else
-                            {
-                                SDEVI = 0.015 * BALL * BALL - 0.165 * BALL + 1.17;                             
-                            }
-                        }                    
+                        var round_RESI = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
+
+                        if (round_RESI <= 2)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[0];
+                        else if (round_RESI == 3)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[1];
+                        else if (round_RESI == 4)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[2];
+                        else if (round_RESI == 5)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[3];
+                        else if (round_RESI == 6)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[4];
+                        else if (round_RESI == 7)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[5];
+                        else if (round_RESI == 8)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[6];
+                        else if (round_RESI >= 9)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[7];
                     }
 
-*/
-                    RESI = BALL + UI * SDEVI + GLBVI;
+                    //считаем длительность
 
                     if ( RESI >= 5.5 && RS[sk].Duration < 60)
                     {
@@ -2186,7 +2250,9 @@ a306:
                     AIBAS = Convert.ToDouble(rprfDT.Rows[i]["aibas"]);
                     ALBYWB = Convert.ToDouble(rprfDT.Rows[i]["albywb"]);
                     GI0 = Convert.ToDouble(rprfDT.Rows[i]["gi0"]);
-                   
+                    tipRazbrosa = Convert.ToInt32(rprfDT.Rows[i]["Tip_rasbrosa"]);
+
+
                 }
                 catch (Exception ex)
                 {
