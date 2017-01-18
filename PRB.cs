@@ -1193,24 +1193,24 @@ ad82:
                     }
                     else
                     {
-                        var round_RESI = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
+                        var round_BALL = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
 
-                        if (round_RESI <= 2)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[0];
-                        else if (round_RESI == 3)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[1];
-                        else if (round_RESI == 4)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[2];
-                        else if (round_RESI == 5)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[3];
-                        else if (round_RESI == 6)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[4];
-                        else if (round_RESI == 7)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[5];
-                        else if (round_RESI == 8)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[6];
-                        else if (round_RESI >= 9)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[7];
+                        if (round_BALL <= 2)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[0] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 3)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[1] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 4)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[2] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 5)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[3] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 6)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[4] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 7)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[5] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 8)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[6] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL >= 9)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[7] + normRand.NextDouble() * SDEVM;
                     }
                     
                     //считаем длительность
@@ -1663,24 +1663,24 @@ al82:
                     }
                     else
                     {
-                        var round_RESI = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
+                        var round_BALL = Convert.ToInt16(Math.Round(BALL, MidpointRounding.AwayFromZero));
 
-                        if (round_RESI <= 2)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[0];
-                        else if (round_RESI == 3)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[1];
-                        else if (round_RESI == 4)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[2];
-                        else if (round_RESI == 5)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[3];
-                        else if (round_RESI == 6)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[4];
-                        else if (round_RESI == 7)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[5];
-                        else if (round_RESI == 8)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[6];
-                        else if (round_RESI >= 9)
-                            RESI = BALL + normRand.NextDouble() * I_dependency[7];
+                        if (round_BALL <= 2)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[0] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 3)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[1] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 4)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[2] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 5)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[3] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 6)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[4] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 7)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[5] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL == 8)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[6] + normRand.NextDouble() * SDEVM;
+                        else if (round_BALL >= 9)
+                            RESI = BALL + normRand.NextDouble() * I_dependency[7] + normRand.NextDouble() * SDEVM;
                     }
 
                     //считаем длительность
