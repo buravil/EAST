@@ -4767,7 +4767,9 @@ a12:
 
 
             }
-          //  fla.Close();
+
+            //TODO : Проверить. При закрытии файла - деагрегация не выполняется. Скорее всего связано с подсетками.
+            fla.Close();
 
             if (DEAG == 2)
             {
@@ -4949,6 +4951,7 @@ a12:
 
         }
 
+        //Вычисление длительности
         private double[] CalculateDuration(long k, double[,] massiv_ABCD)
         {
             double[] TP = new double[7];
@@ -5638,6 +5641,7 @@ a3:
             }
         }
 
+        //Можно удалить
         private void DeagregForRS(double PGA_SA,  double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
         {
             if (PGA_SA < PGA_SA_deagreg[sk,0]) { }
