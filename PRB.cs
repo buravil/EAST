@@ -692,6 +692,7 @@ a305:
 
             if (DEAG == 1)//Проводить деагрегацию
             {
+              //  fla.Close();
                 BALLDEAGREG = new StreamReader(applicationDir + "EAST_2016__ABCD_.TXT");
                 
             }
@@ -1944,7 +1945,11 @@ al2:
                     return;
                 }
             }
-            GSTPRC(worker, NETPNT,PHI0,AL0,AZ0,NCYCL,XNET,YNET,GI0,TMAX , RS);
+         //   if (DEAG != 1)//Проводить деагрегацию
+         //   {
+                GSTPRC(worker, NETPNT, PHI0, AL0, AZ0, NCYCL, XNET, YNET, GI0, TMAX, RS);
+          //  }
+                
             if(emexit == 1)
                 goto a306;//критическая остановка
             Debug.Print( "IY = " + IY.ToString() );
@@ -4769,10 +4774,11 @@ a12:
             }
 
             //TODO : Проверить. При закрытии файла - деагрегация не выполняется. Скорее всего связано с подсетками.
-            fla.Close();
+            //fla.Close();
 
             if (DEAG == 2)
             {
+                fla.Close();
                 if (File.Exists(NAMEA))
                 {
                     File.Copy(NAMEA, Path.GetDirectoryName(NAMEA) + "\\" + Path.GetFileNameWithoutExtension(NAMEA) + "_.TXT");
