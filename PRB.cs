@@ -890,8 +890,17 @@ a305:
             lin_kol = rsDT.Rows.Count;
             rsDT = FillTable( "select ind from Домены ORDER BY ind ASC" );
             dom_kol = rsDT.Rows.Count;
-            rsDT = FillTable( "select ind from Очаги ORDER BY ind ASC" );
-            och_kol = rsDT.Rows.Count;
+            try
+            {
+                rsDT = FillTable("select ind from Очаги ORDER BY ind ASC");
+                och_kol = rsDT.Rows.Count;
+            }
+            catch (Exception)
+            {
+                och_kol = 0;
+            }
+
+            
 
             NZ1 = lin_kol + dom_kol + och_kol;
 
