@@ -7,115 +7,154 @@ namespace East_CSharp
     class ResponseSpectra
     {
         //Массив с коэффициентами типа грунта и кинематики
-        double[] C2array = new double[] { -0.1, 0, 0.1 };
-        double[] C1array = new double[] { -0.05, -0.025, 0, 0.025, 0.05 };
-        double[] C3array = new double[] { -0.15, 0, 0.45 };
-        double[] C4array = new double[] { -0.25, -0.12, 0, 0.12, 0.25 };
-        double[] C5array = new double[] { -0.1, -0.05, 0, 0.05, 0.1 };
-        double[] C6array = new double[] { 0.800, 0.717, 0.633, 0.550, 0.467 };
-        double[] C7array = new double[] { -0.15, 0, 0.15 };
-        double[] C8array = new double[] { -0.05, 0, 0.2 };
+        private double[] C2array = new double[] { -0.1, 0, 0.1 };
+        private double[] C1array = new double[] { -0.05, -0.025, 0, 0.025, 0.05 };
+        private double[] C3array = new double[] { -0.15, 0, 0.45 };
+        private double[] C4array = new double[] { -0.25, -0.12, 0, 0.12, 0.25 };
+        private double[] C5array = new double[] { -0.1, -0.05, 0, 0.05, 0.1 };
+        private double[] C6array = new double[] { 0.800, 0.717, 0.633, 0.550, 0.467 };
+        private double[] C7array = new double[] { -0.15, 0, 0.15 };
+        private double[] C8array = new double[] { -0.05, 0, 0.2 };
 
-        NormalRandom normRand = new NormalRandom();
+        private NormalRandom normRand = new NormalRandom();
 
         //Коэффициенты
-        double C1, C2, C3, C4, C5, C6, C7, C8;
+        private double C1, C2, C3, C4, C5, C6, C7, C8;
 
         //Массив со значениями: S-ширина спектра, d-длительность, t-период, b-бетта
         // double[] SDTB;
 
-        public double Duration;
+        private double duration;
 
         //шаг
-        double lg_D;
-
-       //количество итераций
-        int Iter;
+        private double stepLgD;
 
         //Период повторяемости
-        double T;
+        private double returnPeriodT;
 
         //Количество периодов в единичном спектре реакций
-        int NN;
+        private int periondCountInOneRS;
 
         //Количество периодов в матрице SA
-        int Njsa = 33;
+        private int periodCountInSaMatrix = 33;
 
         //Количество значений PGA в матрице SA
-        int Nisa = 62;
+        private int pgaCountInSaMatrix = 62;
 
         //текущий расчитанный спектр реакций
-        public double[,] Bitog;
+        private double[,] currentBettaResponseSpectra;
 
-        //
-        public double PGA;
+        //значение PGA
+        private double pga;
 
         //Матрица
-        double[,] SA = new double[62, 33];
-        double[,] SAkum = new double[62, 33];
-        double[,] SAitog = new double[62, 33];
+        private double[,] matrixSa = new double[62, 33];
+        private double[,] matrixSaKumulative = new double[62, 33];
+        private double[,] matrixSaItog = new double[62, 33];
 
         //расчитанная вероятностная функция
-        double[,] YY3;
+        private double[,] probabilityFunction;
 
         //сохранение 
-        private String NameDIR;
-        private DirectoryInfo Dir;
+        private String directoryName;
+        private DirectoryInfo directoryInfo;
 
         //переменная-флаг, истина - если расчитался текущий спектр реакций
-        public bool fl;
-
-
+        private bool isCalculated;
 
         //Конструктор
-        public ResponseSpectra(int typeOfGrunt, double Tmax )
+        public ResponseSpectra(double Tmax)
         {
-            //Задаем коэффициенты
-            C2 = C2array[typeOfGrunt];
-           
-            C3 = C3array[typeOfGrunt];
+            this.stepLgD = 0.1;
+            this.periondCountInOneRS = Convert.ToInt32(Math.Round(2 * Math.Pow(stepLgD, -1)));
+            this.returnPeriodT = Tmax;
+            this.currentBettaResponseSpectra = new double[periondCountInOneRS + 1, 2];
+            this.probabilityFunction = new double[2, 61];
+            this.directoryName = Application.StartupPath;
 
-            C7 = C7array[typeOfGrunt];
-            C8 = C8array[typeOfGrunt];
-            lg_D = 0.1;
-
-            NN = Convert.ToInt32(Math.Round(2 * Math.Pow(lg_D, -1)));
-
-            //Iter = 100;
-            //T = 5000 * Iter;
-            T = Tmax;
-
-            Bitog = new double[NN + 1, 2];
-            YY3 = new double[2, 61];
-
-
-            double test = Math.Pow(10, (-1.5 + (1.0 / 10)));
-
-
-            NameDIR = Application.StartupPath;
-            //Dir = Directory.CreateDirectory(NameDIR + "\\Out");
-
-            for (int i = 0; i < Njsa - 2; i++)
+            for (int i = 0; i < periodCountInSaMatrix - 2; i++)
             {
-                SA[0, i + 2] = Math.Pow(10, (-1.5 + (Convert.ToDouble(i) / 10.0)));
+                matrixSa[0, i + 2] = Math.Pow(10, (-1.5 + (Convert.ToDouble(i) / 10.0)));
             }
 
-            for (int i = 0; i < Nisa - 1; i++)
+            for (int i = 0; i < pgaCountInSaMatrix - 1; i++)
             {
-                SA[i + 1, 0] = Math.Pow(10, -3 + (Convert.ToDouble(i) / 10.0));
+                matrixSa[i + 1, 0] = Math.Pow(10, -3 + (Convert.ToDouble(i) / 10.0));
             }
         }
 
-        public void Calculat(int kinematika, double M, double R)
+        public bool IsCalculated { get => isCalculated; set => isCalculated = value; }
+        public double Pga { get => pga; set => pga = value; }
+        public double[,] CurrentBettaResponseSpectra { get => currentBettaResponseSpectra; set => currentBettaResponseSpectra = value; }
+        public double Duration { get => duration; set => duration = value; }
+
+        public void Calculate(int kinematika, int typeOfGrunt, double M, double R)
         {
-            C1 = C1array[kinematika];
-            C4 = C4array[kinematika];
-            C5 = C5array[kinematika];
-            C6 = C6array[kinematika];
+            //Задаем коэффициенты
+            this.C2 = C2array[typeOfGrunt];
+            this.C3 = C3array[typeOfGrunt];
+            this.C7 = C7array[typeOfGrunt];
+            this.C8 = C8array[typeOfGrunt];
+
+            this.C1 = C1array[kinematika];
+            this.C4 = C4array[kinematika];
+            this.C5 = C5array[kinematika];
+            this.C6 = C6array[kinematika];
 
             SAcalculation(M, R);
+        }
 
+        public void SAcalculation(double M, double R)
+        {
+            double deltaA, deltaB, deltaT, deltaD;
 
+            Array.Clear(CurrentBettaResponseSpectra, 0, CurrentBettaResponseSpectra.Length);
+            Pga = 0;
+            int isa, jsa, ipga;
+            IsCalculated = false;
+            double logInIsa, doubleIsa, doubleIpga;
+
+            if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
+            {
+
+                deltaA = normRand.NextDouble() * 0.18;
+                deltaB = normRand.NextDouble() * 0.07;
+                deltaT = normRand.NextDouble() * 0.2;
+                deltaD = normRand.NextDouble() * 0.3;
+
+                Pga = PGAcalculation(M, R) + deltaA;
+
+                if (Pga > 0.01)
+                {
+                    IsCalculated = true;
+                    CurrentBettaResponseSpectra = BettaCalculation(M, R, deltaB, deltaT, deltaD);
+                    for (int i = 0; i <= periondCountInOneRS; i++)
+                    {
+                        //находим номер столбца
+                        jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(CurrentBettaResponseSpectra[i, 0])) * 10 + 2));
+
+                        logInIsa = Math.Log10((Math.Pow(10, Pga) / 981) * CurrentBettaResponseSpectra[i, 1]);
+
+                        doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                        //находим номер строки
+                        isa = Convert.ToInt32(doubleIsa);
+
+                        if (isa > 0 && isa < 40 && jsa > 1 && jsa < 30)
+                        {
+                            matrixSa[isa, jsa] = matrixSa[isa, jsa] + 1;
+                        }
+                    }
+
+                    //заполняем значения для второго столбца - PGA
+                    doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, Pga)) / 981) * Math.Pow(stepLgD, -1)) * stepLgD) * 10) + 1;
+                    ipga = Convert.ToInt32(doubleIpga);
+
+                    if (ipga > 1 && ipga < 30)
+                    {
+                        matrixSa[ipga, 1] = matrixSa[ipga, 1] + 1;
+                    }
+                }
+            }
         }
 
         //Расчет PGA
@@ -149,15 +188,14 @@ namespace East_CSharp
             //sdtb[1] = Math.Pow(10, 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3);
             sdtb[1] = 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3;
             h = (R < Math.Pow(10, 0.33 * M - 1.51)) ? Math.Pow(10, 0.33 * M - 1.51) : R;
-            sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9 + C5) * Math.Pow(lg_D, -1), 0) * lg_D);
+            sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9 + C5) * Math.Pow(stepLgD, -1), 0) * stepLgD);
             sdtb[3] = 0.72 - 0.28 * sdtb[0] + 0.07 * sdtb[1];
 
             return sdtb;
         }
 
- 
         //Расчет кривой бэтта с определенной магнитудой и расстоянием
-        public double[,] BettaCalculation(double M, double R, double deltaB, double deltaT, double deltaD)
+        private double[,] BettaCalculation(double M, double R, double deltaB, double deltaT, double deltaD)
         {
             //случайные величины
             double tg_alfa;
@@ -166,16 +204,16 @@ namespace East_CSharp
             double B2;
 
             //Массив вспомогательных значений
-            double[] lg_B = new double[NN + 1];
+            double[] lg_B = new double[periondCountInOneRS + 1];
 
             //Массив выходных значений
-            double[,] AA = AA = new double[NN + 1, 2];
+            double[,] AA = AA = new double[periondCountInOneRS + 1, 2];
 
             //S-ширина спектра
             double S = SDTBcalculation(M, R)[0];
-            
+
             //Расчитываем длительность
-            Duration = Math.Pow(10,(SDTBcalculation(M, R)[1] + deltaD));
+            Duration = Math.Pow(10, (SDTBcalculation(M, R)[1] + deltaD));
 
             //T-период
             double T = SDTBcalculation(M, R)[2] + deltaT;
@@ -190,13 +228,13 @@ namespace East_CSharp
             Lgf1 = LogBmax * Math.Pow(tg_alfa, -1);
             Lgf2 = -(0.8 * LogBmax) * Math.Pow(tg_alfa, -1);
 
-            i0 = Math.Round((Lgf1 + 1) * Math.Pow(lg_D, -1));
+            i0 = Math.Round((Lgf1 + 1) * Math.Pow(stepLgD, -1));
             B2 = LogBmax - 2 * tg_alfa * Lgf2 - 0.8 * LogBmax;
 
             //Формирование спектра реакций в зависимости от условия
-            for (int i = 0; i <= NN; i++)
+            for (int i = 0; i <= periondCountInOneRS; i++)
             {
-                double ii = -1 + lg_D * i;
+                double ii = -1 + stepLgD * i;
 
                 if (ii < Lgf2)
                 {
@@ -215,98 +253,47 @@ namespace East_CSharp
                     lg_B[i] = 0;
                 }
 
-                AA[NN - i, 1] = Math.Pow(10, lg_B[i]);
-                AA[NN - i, 0] = T * Math.Pow(10, 1 - lg_D * i);
+                AA[periondCountInOneRS - i, 1] = Math.Pow(10, lg_B[i]);
+                AA[periondCountInOneRS - i, 0] = T * Math.Pow(10, 1 - stepLgD * i);
             }
 
             return AA;
         }
 
-        public void SAcalculation(double M, double R)
-        {
-            double deltaA, deltaB, deltaT, deltaD;
-            
-            Array.Clear(Bitog, 0, Bitog.Length);
-            PGA = 0;
-            int isa, jsa, ipga;
-            fl = false;
-            double logInIsa, doubleIsa, doubleIpga;
 
-            if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
-            {
-               
-                deltaA = normRand.NextDouble() * 0.18;
-                deltaB = normRand.NextDouble() * 0.07;
-                deltaT = normRand.NextDouble() * 0.2;
-                deltaD = normRand.NextDouble() * 0.3;
-
-                PGA = PGAcalculation(M, R) + deltaA;
-
-                if (PGA > 0.01)
-                {
-                    fl = true;
-                    Bitog = BettaCalculation(M, R, deltaB, deltaT, deltaD);
-                    for (int i = 0; i <= NN; i++)
-                    {
-                        //находим номер столбца
-                        jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(Bitog[i, 0])) * 10 + 2));
-
-                        logInIsa = Math.Log10((Math.Pow(10, PGA)/981) * Bitog[i, 1]);
-
-                        doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(lg_D, -1)) * lg_D) * 10 + 1;
-                        //находим номер строки
-                        isa = Convert.ToInt32(doubleIsa);
-
-                        if (isa > 0 && isa < 40 && jsa > 1 && jsa < 30)
-                        {
-                            SA[isa, jsa] = SA[isa, jsa] + 1;
-                        }
-                    }
-
-                    //заполняем значения для второго столбца - PGA
-                    doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, PGA))/981) * Math.Pow(lg_D, -1)) * lg_D) * 10) + 1;
-                    ipga = Convert.ToInt32(doubleIpga);
-
-                    if (ipga > 1 && ipga < 30)
-                    {
-                        SA[ipga, 1] = SA[ipga, 1] + 1;
-                    }
-                }
-            }
-        }
 
         //Расчет куммулятивной таблицы
         public void SAItogCalculation()
         {
-            Array.Copy(SA, SAkum, SA.Length);
+            Array.Copy(matrixSa, matrixSaKumulative, matrixSa.Length);
 
             for (int j = 1; j <= 30; j++)
             {
                 for (int i = 1; i <= 50; i++)
                 {
-                    SAkum[51 - i, j] = SA[51 - i, j] + SAkum[52 - i, j];
+                    matrixSaKumulative[51 - i, j] = matrixSa[51 - i, j] + matrixSaKumulative[52 - i, j];
                 }
             }
 
-            Array.Copy(SAkum, SAitog, SAkum.Length);
+            Array.Copy(matrixSaKumulative, matrixSaItog, matrixSaKumulative.Length);
 
             for (int j = 1; j <= 30; j++)
             {
                 for (int i = 1; i <= 50; i++)
                 {
-                    double pow = (-50 * (SAkum[i, j] / T));
-                    SAitog[i, j] = Math.Round((1 - Math.Pow(Math.E, pow)) * 1000) * 0.1;
+                    double pow = (-50 * (matrixSaKumulative[i, j] / returnPeriodT));
+                    matrixSaItog[i, j] = Math.Round((1 - Math.Pow(Math.E, pow)) * 1000) * 0.1;
                 }
             }
 
         }
 
         //функция пересчета в вероятность
-        public void ProbabilityCalculation(double P)
+        private void ProbabilityCalculation(double P)
         {
             double X1, X2, Y1, Y2;
 
-            Array.Clear(YY3, 0, YY3.Length);
+            Array.Clear(probabilityFunction, 0, probabilityFunction.Length);
 
             for (int i = 1; i <= 32; i++)
             {
@@ -316,23 +303,23 @@ namespace East_CSharp
                 Y2 = 0;
                 for (int j = 2; j <= 60; j++)
                 {
-                    if (((SAitog[j - 1, i] <= P) && (SAitog[j, i] >= P)) || ((SAitog[j - 1, i] >= P) && (SAitog[j, i] <= P)))
+                    if (((matrixSaItog[j - 1, i] <= P) && (matrixSaItog[j, i] >= P)) || ((matrixSaItog[j - 1, i] >= P) && (matrixSaItog[j, i] <= P)))
                     {
-                        X1 = (SAitog[j - 1, i] > 0) ? Math.Log10(SAitog[j - 1, i]) : 0;
-                        X2 = (SAitog[j, i] > 0) ? Math.Log10(SAitog[j, i]) : 0;
-                        Y1 = SAitog[j - 1, 0];
-                        Y2 = SAitog[j, 0];
+                        X1 = (matrixSaItog[j - 1, i] > 0) ? Math.Log10(matrixSaItog[j - 1, i]) : 0;
+                        X2 = (matrixSaItog[j, i] > 0) ? Math.Log10(matrixSaItog[j, i]) : 0;
+                        Y1 = matrixSaItog[j - 1, 0];
+                        Y2 = matrixSaItog[j, 0];
 
-                        YY3[1, i] = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(P) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : ((Y2 + Y1)/2);
+                        probabilityFunction[1, i] = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(P) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : ((Y2 + Y1) / 2);
                     }
                 }
             }
 
             for (int i = 0; i <= 30; i++)
             {
-                YY3[0, i + 2] = Math.Pow(10, (-1.5 + (i / 10.0)));
+                probabilityFunction[0, i + 2] = Math.Pow(10, (-1.5 + (i / 10.0)));
             }
-            YY3[0, 1] = 0.01;
+            probabilityFunction[0, 1] = 0.01;
         }
 
         //Функция, возвращающая значение с вероятностной кривой для любого значения периода
@@ -344,12 +331,12 @@ namespace East_CSharp
 
             for (int i = 1; i <= 32; i++)
             {
-                if (((YY3[0, i - 1] <= t) && (YY3[0, i] >= t)) || ((YY3[0, i - 1] >= t) && (YY3[0, i] <= t)))
+                if (((probabilityFunction[0, i - 1] <= t) && (probabilityFunction[0, i] >= t)) || ((probabilityFunction[0, i - 1] >= t) && (probabilityFunction[0, i] <= t)))
                 {
-                    X1 = (YY3[0, i - 1] > 0) ? Math.Log10(YY3[0, i - 1]) : 0;
-                    X2 = (YY3[0, i] > 0) ? Math.Log10(YY3[0, i]) : 0;
-                    Y1 = YY3[1, i - 1];
-                    Y2 = YY3[1, i];
+                    X1 = (probabilityFunction[0, i - 1] > 0) ? Math.Log10(probabilityFunction[0, i - 1]) : 0;
+                    X2 = (probabilityFunction[0, i] > 0) ? Math.Log10(probabilityFunction[0, i]) : 0;
+                    Y1 = probabilityFunction[1, i - 1];
+                    Y2 = probabilityFunction[1, i];
 
                     outPGA = (X1 != X2) ? ((Y2 - Y1) / (X2 - X1)) * Math.Log10(t) + Y1 - ((Y2 - Y1) / (X2 - X1)) * X1 : ((Y2 + Y1) / 2);
                 }
@@ -359,40 +346,19 @@ namespace East_CSharp
         }
 
 
-
         //Сохранение результатов в текстовый файл
         public void SAsave(string str)
         {
-        
-
-
-         //   StreamWriter SAwriter = new StreamWriter(Dir.FullName + "\\" + "SA" + str + ".txt");
-
-            StreamWriter SAwriterProbabil = new StreamWriter(Dir.FullName + "\\" + "RS_" + str + ".txt");
-
-           // for (int i = 0; i < Nisa; i++)
-           // {
-           //     for (int j = 0; j < Njsa; j++)
-          //      {
-         //           SAwriter.Write("{0}\t", SAitog[i, j]);
-         //       }
-         //       SAwriter.Write("\n");
-         //   }
-
+            StreamWriter SAwriterProbabil = new StreamWriter(directoryInfo.FullName + "\\" + "RS_" + str + ".txt");
             for (int i = 0; i < 2; i++)
             {
                 for (int j = 0; j < 33; j++)
                 {
-                    SAwriterProbabil.Write("{0}\t", YY3[i, j]);
+                    SAwriterProbabil.Write("{0}\t", probabilityFunction[i, j]);
                 }
                 SAwriterProbabil.Write("\n");
             }
-
-
-        //    SAwriter.Close();
             SAwriterProbabil.Close();
-
-
         }
 
     }

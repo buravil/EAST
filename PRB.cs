@@ -926,9 +926,8 @@ a307:
 
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
-                RS[sk] = new ResponseSpectra(typeOfGrunt, TMAX);
-
-
+                RS[sk] = new ResponseSpectra(TMAX);
+                
                 //Инициализация массива с длительностями
 
                 for (int i = 0; i <= 60; i++)
@@ -1163,9 +1162,7 @@ a307:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(typeOfMovement, ML, DISTMIN);
-
-
+                    RS[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1230,11 +1227,6 @@ a307:
                     {
                         FillingDuration(RESI, RS[sk].Duration, sk - 1);
                     }
-
-
-
-
-
 
                     // RESI = BALL + UI * SDEVI + GLBVI;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1355,7 +1347,7 @@ a307:
                             currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
 
                         //Деагрегация по спектрам реакций
-                        if (RS[sk].fl)
+                        if (RS[sk].IsCalculated)
                         {
                             //считаем для PGA
                             double freq = 0;
@@ -1364,8 +1356,8 @@ a307:
 
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
-                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
-                            RS[sk].fl = false;
+                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].CurrentBettaResponseSpectra, RS[sk].Pga, sk - 1);
+                            RS[sk].IsCalculated = false;
                         }
 
 
@@ -1642,7 +1634,7 @@ a307:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculat(typeOfMovement, ML, DISTMIN);
+                    RS[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1825,7 +1817,7 @@ a307:
                             currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
 
                         //Деагрегация по спектрам реакций
-                        if (RS[sk].fl)
+                        if (RS[sk].IsCalculated)
                         {
                             //считаем для PGA
                             double freq = 0;
@@ -1834,8 +1826,8 @@ a307:
 
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
-                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].Bitog, RS[sk].PGA, sk - 1);
-                            RS[sk].fl = false;
+                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].CurrentBettaResponseSpectra, RS[sk].Pga, sk - 1);
+                            RS[sk].IsCalculated = false;
                         }
 
 
@@ -4124,7 +4116,7 @@ a307:
         private void GSTPRC(System.ComponentModel.BackgroundWorker worker, long NETPNT, double PHI0, double AL0, double AZ0, double NCYCL, double[] XNET, double[] YNET, double GI0, double TMAX, ResponseSpectra[] RS)
         {
             double gs1 = 0.0, gs2 = 0.0;
-
+            //Расчет куммулятивной таблицы
             for (int i_rs = 1; i_rs <= NETPNT; i_rs++)
             {
                 RS[i_rs].SAItogCalculation();
