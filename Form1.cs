@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Media;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -37,7 +38,7 @@ namespace East_CSharp
 
         private void buttonRun_Click(object sender,EventArgs e)
         {
-            string pattern = "^-?\\d*(\\.\\d+)?$";
+             string pattern = "^-?\\d*(\\.\\d+)?$";
             Regex regex = new Regex(pattern);
 
            
@@ -68,7 +69,7 @@ namespace East_CSharp
             if (radioButton3.Checked)
                 typeOfGrunt = 2;
 
-            prb = new PRB(textBox_mdbPath.Text);
+            prb = new PRB(textBox_mdbPath.Text, typeOfGrunt);
 
             DT = DateTime.Now;
 
@@ -410,6 +411,11 @@ namespace East_CSharp
         {
             AboutBox1 AboutBox = new AboutBox1();
             AboutBox.Show();
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
