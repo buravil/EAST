@@ -48,7 +48,9 @@ namespace East_CSharp
         DataTable rdomDT = new DataTable("rdomDT");
         DataTable rlinDT = new DataTable("rlinDT");
         DataTable rsloiDT = new DataTable("rsloiDT");
-
+        DataTable equationParametersDT = new DataTable("equationParametersDT");
+        EquationParameters equationParameters = new EquationParameters();
+        ResponseSpectraCalculatorFactory responseSpectraFactory = new ResponseSpectraCalculatorFactory();
 
         long posi;//позиция прогресс бара
         int total;//общее количество значений в прогрессбаре
@@ -136,7 +138,7 @@ namespace East_CSharp
         double[,] IGST = new double[NRP + 1, 7];
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-        double[,] DEAGREGRespSpectr = new double[100, 77001];
+       // double[,] DEAGREGRespSpectr = new double[100, 77001];
         double[,] POVTOR = new double[10, NRP]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
@@ -153,6 +155,7 @@ namespace East_CSharp
         double[,] RECS = new double[3, 4];
         double[] HA = new double[3], VH = new double[3];
         double[] XNET = new double[NRP + 1], YNET = new double[NRP + 1];
+        double[] netVs = new double[NRP + 1], netVref = new double[NRP + 1], netT30 = new double[NRP + 1];
         double[] SPAR = new double[IPAR + 1];
         double[] RPAR = new double[8], ABC = new double[10];
         double[,] XYP = new double[4, NM1 + 1];
@@ -555,6 +558,9 @@ a307:
             KFAIL = 0;
             XNET = new double[NRP + 1];
             YNET = new double[NRP + 1];
+            netVs = new double[NRP + 1];
+            netVref = new double[NRP + 1];
+            netT30 = new double[NRP + 1];
 
             if (KPIECE == 1) //если сетка первая
             {
@@ -608,7 +614,10 @@ a307:
 
                 XNET[1] = lat;
                 YNET[1] = lon;
-
+                //TODO сделать чтение из формы
+                netVs[1] = 350;
+                netVref[1] = 1150;
+                netT30[1] = 0.3;
                 ii = 2;
             }
             else
@@ -629,7 +638,9 @@ a307:
 
                     XNET[ii] = Convert.ToDouble(nums[0]);
                     YNET[ii] = Convert.ToDouble(nums[1]);
-
+                    netVs[ii] = Convert.ToDouble(nums[2]); 
+                    netVref[ii] = Convert.ToDouble(nums[3]);
+                    netT30[ii] = Convert.ToDouble(nums[4]);
                     //XNET[ii] = Convert.ToDouble(aa.Substring(0, aa.IndexOf(" ")).Trim());
                     //YNET[ii] = Convert.ToDouble(aa.Substring(aa.IndexOf(" ")).Trim());
 
@@ -921,12 +932,11 @@ a307:
             GC.Collect();
 
             //задание массива спектров реакций
-            ResponseSpectra[] RS = new ResponseSpectra[NETPNT + 1];
-
-
+            MatrixSa[] matrixSA = new MatrixSa[NETPNT + 1];
+            
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
-                RS[sk] = new ResponseSpectra(TMAX);
+                matrixSA[sk] = new MatrixSa(TMAX);
                 
                 //Инициализация массива с длительностями
 
@@ -936,7 +946,8 @@ a307:
                     DurrationMassive[sk - 1, i + 1, 0] = i;
                 }
             }
-
+            ////TODO читать тут параметры уравнений
+            equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean_Idini ORDER BY N ASC");
 
         ///pMainWnd->m_progress.SetRange(0,100);
         add321:
@@ -1007,7 +1018,17 @@ a307:
                 {
                     typeOfMovement = rnd.Next(0, 5);
                 }
+                //задание параметров уравнений
+                // задать в equationParameters -> typeOfMovement, typeOfGrunt
+                AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
+                equationParameters.AptikaevParameters = aptikaevParameters;
+                SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
+                equationParameters.SaAndRsParameters = saAndRsParameters;                   
+                responseSpectraFactory.Parameters = equationParameters;
 
+                //задать тип вычисления
+                int typeOfEquation = 1;
+                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(typeOfEquation);
                 //проверка
                 LLOOP = 1;
                 MACRR3();
@@ -1026,9 +1047,6 @@ a307:
                     if (IGER == 1)
                         goto ad2;
                 }
-
-
-
 
                 FIRSTMAGRound = Math.Truncate(FIRSTMAG * 2) / 2;
 
@@ -1162,7 +1180,14 @@ a307:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
+
+                    ResponseSpectra responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN);
+                    if (responseSpectra.IsCalculated)
+                    {
+                        matrixSA[sk].Calculate(responseSpectra);
+                    }
+                    
+                    //matrixSA[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1223,9 +1248,9 @@ a307:
 
                     //считаем длительность
 
-                    if (RESI >= 5.5 && RS[sk].Duration < 60)
+                    if (RESI >= 5.5 && responseSpectra.Duration < 60)
                     {
-                        FillingDuration(RESI, RS[sk].Duration, sk - 1);
+                        FillingDuration(RESI, responseSpectra.Duration, sk - 1);
                     }
 
                     // RESI = BALL + UI * SDEVI + GLBVI;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1347,17 +1372,17 @@ a307:
                             currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
 
                         //Деагрегация по спектрам реакций
-                        if (RS[sk].IsCalculated)
+                        if (responseSpectra.IsCalculated)
                         {
                             //считаем для PGA
                             double freq = 0;
                             //входные 
-                            //  DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+                            //  DeagregForRS(matrixSA[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
-                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].CurrentBettaResponseSpectra, RS[sk].Pga, sk - 1);
-                            RS[sk].IsCalculated = false;
+                                currentDeag.SA_deag(ML, DISTMIN, responseSpectra.CurrentBettaResponseSpectra, responseSpectra.Pga, sk - 1);
+                           // responseSpectra.IsCalculated = false;
                         }
 
 
@@ -1487,6 +1512,17 @@ a307:
                 {
                     typeOfMovement = rnd.Next(0, 5);
                 }
+                //задание параметров уравнений
+                // задать в equationParameters -> typeOfMovement, typeOfGrunt
+                AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
+                equationParameters.AptikaevParameters = aptikaevParameters;
+                SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
+                equationParameters.SaAndRsParameters = saAndRsParameters;
+                responseSpectraFactory.Parameters = equationParameters;
+
+                //задать тип вычисления
+                int typeOfEquation = 1;
+                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(typeOfEquation);
 
                 //ITY - здесь = 1
                 ITY = 1;
@@ -1634,7 +1670,12 @@ a307:
 
                     //считается спектр реакций
                     ML = MwToMl(AMW);
-                    RS[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
+                    ResponseSpectra responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN);
+                    if (responseSpectra.IsCalculated)
+                    {
+                        matrixSA[sk].Calculate(responseSpectra);
+                    }
+                    //matrixSA[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
 
                     if (emexit == 1)
                         goto a306;//критическая остановка
@@ -1695,9 +1736,9 @@ a307:
 
                     //считаем длительность
 
-                    if (RESI >= 5.5 && RS[sk].Duration < 60)
+                    if (RESI >= 5.5 && responseSpectra.Duration < 60)
                     {
-                        FillingDuration(RESI, RS[sk].Duration, sk - 1);
+                        FillingDuration(RESI, responseSpectra.Duration, sk - 1);
                     }
 
                     if (RESI < GI0)
@@ -1817,17 +1858,17 @@ a307:
                             currentDeag.RESI_deag(ML, DISTMIN, RESI, sk - 1);
 
                         //Деагрегация по спектрам реакций
-                        if (RS[sk].IsCalculated)
+                        if (responseSpectra.IsCalculated)
                         {
                             //считаем для PGA
                             double freq = 0;
                             //входные 
-                            //  DeagregForRS(RS[sk].PGA, PGA_deagreg, sk, ideg, 3);
+                            //  DeagregForRS(matrixSA[sk].PGA, PGA_deagreg, sk, ideg, 3);
 
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
-                                currentDeag.SA_deag(ML, DISTMIN, RS[sk].CurrentBettaResponseSpectra, RS[sk].Pga, sk - 1);
-                            RS[sk].IsCalculated = false;
+                                currentDeag.SA_deag(ML, DISTMIN, responseSpectra.CurrentBettaResponseSpectra, responseSpectra.Pga, sk - 1);
+                            //responseSpectra.IsCalculated = false;
                         }
 
 
@@ -1956,7 +1997,7 @@ a307:
             }
             //   if (DEAG != 1)//Проводить деагрегацию
             //   {
-            GSTPRC(worker, NETPNT, PHI0, AL0, AZ0, NCYCL, XNET, YNET, GI0, TMAX, RS);
+            GSTPRC(worker, NETPNT, PHI0, AL0, AZ0, NCYCL, XNET, YNET, GI0, TMAX, matrixSA);
             //  }
 
             if (emexit == 1)
@@ -4113,7 +4154,7 @@ a307:
             }
         }
 
-        private void GSTPRC(System.ComponentModel.BackgroundWorker worker, long NETPNT, double PHI0, double AL0, double AZ0, double NCYCL, double[] XNET, double[] YNET, double GI0, double TMAX, ResponseSpectra[] RS)
+        private void GSTPRC(System.ComponentModel.BackgroundWorker worker, long NETPNT, double PHI0, double AL0, double AZ0, double NCYCL, double[] XNET, double[] YNET, double GI0, double TMAX, MatrixSa[] RS)
         {
             double gs1 = 0.0, gs2 = 0.0;
             //Расчет куммулятивной таблицы
@@ -4121,8 +4162,8 @@ a307:
             {
                 RS[i_rs].SAItogCalculation();
 
-                //  RS[i_rs].ProbabilityCalculation(5);
-                //RS[i_rs].SAsave(Convert.ToString(i_rs));
+                //  matrixSA[i_rs].ProbabilityCalculation(5);
+                //matrixSA[i_rs].SAsave(Convert.ToString(i_rs));
             }
 
             double[] IGS = new double[IMGS + 1];
@@ -5156,7 +5197,7 @@ a307:
         }
 
         //Можно удалить
-        private void DeagregForRS(double PGA_SA, double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
+ /*       private void DeagregForRS(double PGA_SA, double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
         {
             if (PGA_SA < PGA_SA_deagreg[sk, 0]) { }
             else  ////////////////////деагрегация
@@ -5227,6 +5268,6 @@ a307:
                     DEAGREGRespSpectr[(Num + 6), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
                 }
             }
-        }
+        }*/
     }
 }

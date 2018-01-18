@@ -113,7 +113,14 @@
     <Compile Include="PRB.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResponseSpectra.cs" />
+    <Compile Include="MatrixSa.cs" />
+    <Compile Include="ResponseSpectra\AptikaevResponseSpectraCalculator.cs" />
+    <Compile Include="ResponseSpectra\parameters\AptikaevParameters.cs" />
+    <Compile Include="ResponseSpectra\parameters\EquationParameters.cs" />
+    <Compile Include="ResponseSpectra\IResponseSpectraCalculator.cs" />
+    <Compile Include="ResponseSpectra\parameters\SaAndRsParameters.cs" />
+    <Compile Include="ResponseSpectra\ResponseSpectra.cs" />
+    <Compile Include="ResponseSpectra\ResponseSpectraCalculatorFactory.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
