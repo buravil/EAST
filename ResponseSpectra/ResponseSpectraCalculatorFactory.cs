@@ -10,8 +10,10 @@
         {
             switch (type)
             {
+                case 1:
+                    return new IdiniResponseSpectraCalculator(parameters);
                 default:
-                    return new AptikaevResponseSpectraCalculator(Parameters.AptikaevParameters, parameters.SaAndRsParameters);
+                    return new AptikaevResponseSpectraCalculator(parameters);
             }
             
         }

@@ -12,10 +12,10 @@ namespace East_CSharp
         private double duration;
 
 
-        public ResponseSpectra(SaAndRsParameters saAndRsParameters)
+        public ResponseSpectra(int periodCount)
         {
             this.isCalculated = false;
-            this.CurrentBettaResponseSpectra = new double[saAndRsParameters.PeriondCountInOneRS + 1, 2];
+            this.CurrentBettaResponseSpectra = new double[periodCount + 1, 2];
         }
 
         public double[,] CurrentBettaResponseSpectra { get => currentBettaResponseSpectra; set => currentBettaResponseSpectra = value; }

@@ -7,13 +7,11 @@ namespace East_CSharp
     class AptikaevResponseSpectraCalculator : IResponseSpectraCalculator
     {
         private NormalRandom normRand = new NormalRandom();
-        private AptikaevParameters aptikaevParameters;
-        private SaAndRsParameters saAndRsParameters;
+        public EquationParameters EqParam { get; set; }
 
-        public AptikaevResponseSpectraCalculator(AptikaevParameters aptikaevParameters, SaAndRsParameters saAndRsParameters)
+        public AptikaevResponseSpectraCalculator(EquationParameters equationParameters)
         {
-            this.aptikaevParameters = aptikaevParameters;
-            this.saAndRsParameters = saAndRsParameters;
+            EqParam = equationParameters;
         }
 
         public ResponseSpectra CalculateBetta(double M, double R)
@@ -53,15 +51,15 @@ namespace East_CSharp
             //Расчет PGA в зависимости от условия
             if (R < Math.Pow(10, 0.33 * M - 1.51))
             {
-                return aptikaevParameters.C6 * (0.33 * M - 0.61 - Math.Log10(Math.Pow(10, 0.33 * M - 1.51)));
+                return EqParam.AptikaevParameters.C6 * (0.33 * M - 0.61 - Math.Log10(Math.Pow(10, 0.33 * M - 1.51)));
             }
-            else if (R >= Math.Pow(10, 0.33 * M - 1.51) && R <= Math.Pow(10, 0.33 * M - 0.61 + aptikaevParameters.C7 * 0.8))
+            else if (R >= Math.Pow(10, 0.33 * M - 1.51) && R <= Math.Pow(10, 0.33 * M - 0.61 + EqParam.AptikaevParameters.C7 * 0.8))
             {
-                return (aptikaevParameters.C6 * (0.33 * M - 0.61 - Math.Log10(R))) + 2.23;
+                return (EqParam.AptikaevParameters.C6 * (0.33 * M - 0.61 - Math.Log10(R))) + 2.23;
             }
-            else if (R > Math.Pow(10, 0.33 * M - 0.61 + aptikaevParameters.C7 * 0.8))
+            else if (R > Math.Pow(10, 0.33 * M - 0.61 + EqParam.AptikaevParameters.C7 * 0.8))
             {
-                return 0.634 * M - 1.92 * Math.Log10(R) + 1.076 + aptikaevParameters.C7;
+                return 0.634 * M - 1.92 * Math.Log10(R) + 1.076 + EqParam.AptikaevParameters.C7;
             }
             else
                 return 0;
@@ -72,7 +70,7 @@ namespace East_CSharp
         //Расчет кривой бэтта с определенной магнитудой и расстоянием
         private ResponseSpectra BettaCalculation(double M, double R, double deltaB, double deltaT, double deltaD)
         {
-            ResponseSpectra responseSpectra = new ResponseSpectra(saAndRsParameters);
+            ResponseSpectra responseSpectra = new ResponseSpectra(EqParam.SaAndRsParameters.PeriondCountInOneRS);
             //случайные величины
             double tg_alfa;
             double Lgf1, Lgf2;
@@ -80,10 +78,10 @@ namespace East_CSharp
             double B2;
 
             //Массив вспомогательных значений
-            double[] lg_B = new double[saAndRsParameters.PeriondCountInOneRS + 1];
+            double[] lg_B = new double[EqParam.SaAndRsParameters.PeriondCountInOneRS + 1];
 
             //Массив выходных значений
-            double[,] AA = AA = new double[saAndRsParameters.PeriondCountInOneRS + 1, 2];
+            double[,] AA = AA = new double[EqParam.SaAndRsParameters.PeriondCountInOneRS + 1, 2];
 
             //S-ширина спектра
             double S = SDTBcalculation(M, R)[0];
@@ -104,13 +102,13 @@ namespace East_CSharp
             Lgf1 = LogBmax * Math.Pow(tg_alfa, -1);
             Lgf2 = -(0.8 * LogBmax) * Math.Pow(tg_alfa, -1);
 
-            i0 = Math.Round((Lgf1 + 1) * Math.Pow(saAndRsParameters.StepLgD, -1));
+            i0 = Math.Round((Lgf1 + 1) * Math.Pow(EqParam.SaAndRsParameters.StepLgD, -1));
             B2 = LogBmax - 2 * tg_alfa * Lgf2 - 0.8 * LogBmax;
 
             //Формирование спектра реакций в зависимости от условия
-            for (int i = 0; i <= saAndRsParameters.PeriondCountInOneRS; i++)
+            for (int i = 0; i <= EqParam.SaAndRsParameters.PeriondCountInOneRS; i++)
             {
-                double ii = -1 + saAndRsParameters.StepLgD * i;
+                double ii = -1 + EqParam.SaAndRsParameters.StepLgD * i;
 
                 if (ii < Lgf2)
                 {
@@ -129,8 +127,8 @@ namespace East_CSharp
                     lg_B[i] = 0;
                 }
 
-                AA[saAndRsParameters.PeriondCountInOneRS - i, 1] = Math.Pow(10, lg_B[i]);
-                AA[saAndRsParameters.PeriondCountInOneRS - i, 0] = T * Math.Pow(10, 1 - saAndRsParameters.StepLgD * i);
+                AA[EqParam.SaAndRsParameters.PeriondCountInOneRS - i, 1] = Math.Pow(10, lg_B[i]);
+                AA[EqParam.SaAndRsParameters.PeriondCountInOneRS - i, 0] = T * Math.Pow(10, 1 - EqParam.SaAndRsParameters.StepLgD * i);
             }
             responseSpectra.CurrentBettaResponseSpectra = AA;
             return responseSpectra;
@@ -141,11 +139,12 @@ namespace East_CSharp
         {
             double h;
             double[] sdtb = new double[4];
-            sdtb[0] = 0.6 + aptikaevParameters.C8 + aptikaevParameters.C1;
+            sdtb[0] = 0.6 + EqParam.AptikaevParameters.C8 + EqParam.AptikaevParameters.C1;
             //sdtb[1] = Math.Pow(10, 0.15 * M + 0.5 * Math.Log10(R) + C3 + C4 - 1.3);
-            sdtb[1] = 0.15 * M + 0.5 * Math.Log10(R) + aptikaevParameters.C3 + aptikaevParameters.C4 - 1.3;
+            sdtb[1] = 0.15 * M + 0.5 * Math.Log10(R) + EqParam.AptikaevParameters.C3 + EqParam.AptikaevParameters.C4 - 1.3;
             h = (R < Math.Pow(10, 0.33 * M - 1.51)) ? Math.Pow(10, 0.33 * M - 1.51) : R;
-            sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9 + aptikaevParameters.C5) * Math.Pow(saAndRsParameters.StepLgD, -1), 0) * saAndRsParameters.StepLgD);
+            sdtb[2] = Math.Pow(10, Math.Round((0.15 * M + 0.25 * Math.Log10(h) - 1.9
+                + EqParam.AptikaevParameters.C5) * Math.Pow(EqParam.SaAndRsParameters.StepLgD, -1), 0) * EqParam.SaAndRsParameters.StepLgD);
             sdtb[3] = 0.72 - 0.28 * sdtb[0] + 0.07 * sdtb[1];
 
             return sdtb;

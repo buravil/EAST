@@ -931,14 +931,14 @@ a307:
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            //задание массива спектров реакций
+ //задание массива спектров реакций
             MatrixSa[] matrixSA = new MatrixSa[NETPNT + 1];
             
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
                 matrixSA[sk] = new MatrixSa(TMAX);
                 
-                //Инициализация массива с длительностями
+//Инициализация массива с длительностями
 
                 for (int i = 0; i <= 60; i++)
                 {
@@ -946,25 +946,25 @@ a307:
                     DurrationMassive[sk - 1, i + 1, 0] = i;
                 }
             }
-            ////TODO читать тут параметры уравнений
-            equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean_Idini ORDER BY N ASC");
 
-        ///pMainWnd->m_progress.SetRange(0,100);
-        add321:
+            ///pMainWnd->m_progress.SetRange(0,100);
+            add321:
 
             rdomDT = FillTable("select * from Домены ORDER BY ind ASC");
             rlinDT = FillTable("select * from Линеаменты ORDER BY ind ASC");
 
             NameOfCurrentCalculation = "Расчет по доменам";
 
-            //расчет прогрессбара
+//расчет прогрессбара
             total = rdomDT.Rows.Count + rlinDT.Rows.Count;
             k_progress = 0;
             percents = (k_progress * 100) / total;
             worker.ReportProgress(percents, NameOfCurrentCalculation);
 
+////TODO читать тут параметры уравнений
+            equationParameters.IdinParameters = getIdiniParameters();
 
-            // начало доменов
+// начало доменов
             iw = 1;
             for (int j = 0; j < rdomDT.Rows.Count; j++)//начало доменов
             {
@@ -1018,15 +1018,15 @@ a307:
                 {
                     typeOfMovement = rnd.Next(0, 5);
                 }
-                //задание параметров уравнений
-                // задать в equationParameters -> typeOfMovement, typeOfGrunt
+ //задание параметров уравнений
+// задать в equationParameters -> typeOfMovement, typeOfGrunt
                 AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;                   
                 responseSpectraFactory.Parameters = equationParameters;
 
-                //задать тип вычисления
+//задать тип вычисления
                 int typeOfEquation = 1;
                 IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(typeOfEquation);
                 //проверка
@@ -1143,9 +1143,13 @@ a307:
 
                 GLBVI = SDEVM * VI;
                 int sk;
-                //цикл расчета по точекам сетки
+//цикл расчета по точекам сетки
                 for (sk = 1; sk <= NETPNT; sk++)//
                 {
+//обновить параметры
+                    equationParameters.IdinParameters.Vs = netVs[sk];
+                    equationParameters.IdinParameters.Vref = netVref[sk];
+                    equationParameters.IdinParameters.T30 = netT30[sk];
                     double zz = 0.0;
                     DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
                     if (emexit == 1)
@@ -1178,9 +1182,8 @@ a307:
                     MACRR3();
 
 
-                    //считается спектр реакций
+//считается спектр реакций
                     ML = MwToMl(AMW);
-
                     ResponseSpectra responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN);
                     if (responseSpectra.IsCalculated)
                     {
@@ -2040,6 +2043,65 @@ a307:
 
             //POVTOR_BALL.Close();
         }
+
+        private IdiniParameters getIdiniParameters()
+        {
+           // IdiniParameters idini = new IdiniParameters
+            equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean_Idini ORDER BY N ASC");
+
+            //rs.Fill( rsDT );
+            int count = equationParametersDT.Rows.Count;
+            double temp;
+            IdiniParameters parameters = new IdiniParameters(count);
+            for (int i = 0; i < count; i++)
+            {
+                parameters.Chilean[i, 0] = i;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Periods"]);
+                parameters.Chilean[i, 1] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["S_II"]);
+                parameters.Chilean[i, 2] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["S_III"]);
+                parameters.Chilean[i, 3] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["S_IV"]);
+                parameters.Chilean[i, 4] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["S_V"]);
+                parameters.Chilean[i, 5] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["S_VI"]);
+                parameters.Chilean[i, 6] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C1"]);
+                parameters.Chilean[i, 7] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C2"]);
+                parameters.Chilean[i, 8] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C3"]);
+                parameters.Chilean[i, 9] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C4"]);
+                parameters.Chilean[i, 10] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C5"]);
+                parameters.Chilean[i, 11] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C6"]);
+                parameters.Chilean[i, 12] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C7"]);
+                parameters.Chilean[i, 13] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C8"]);
+                parameters.Chilean[i, 14] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["C9"]);
+                parameters.Chilean[i, 15] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Dc1"]);
+                parameters.Chilean[i, 16] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Dc2"]);
+                parameters.Chilean[i, 17] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Dc3"]);
+                parameters.Chilean[i, 18] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Qe"]);
+                parameters.Chilean[i, 19] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Qt"]);
+                parameters.Chilean[i, 20] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["Qr"]);
+                parameters.Chilean[i, 21] = temp;
+            }
+            return parameters;
+            }
+
 
         private void FillingDuration(double rESI, double duration, int pointNumber)
         {

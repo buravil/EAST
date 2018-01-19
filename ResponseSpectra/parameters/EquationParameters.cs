@@ -6,11 +6,8 @@ namespace East_CSharp
 {
     class EquationParameters
     {
-        private AptikaevParameters aptikaevParameters;
-        private SaAndRsParameters saAndRsParameters;
-        
-
-        internal AptikaevParameters AptikaevParameters { get => aptikaevParameters; set => aptikaevParameters = value; }
-        internal SaAndRsParameters SaAndRsParameters { get => saAndRsParameters; set => saAndRsParameters = value; }
+        public AptikaevParameters AptikaevParameters { get; set; }
+        public SaAndRsParameters SaAndRsParameters { get; set; }
+        public IdiniParameters IdinParameters { get; set; }
     }
 }
