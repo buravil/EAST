@@ -4,7 +4,7 @@ using System.Text;
 
 namespace East_CSharp
 {
-    class IdiniParameters
+    class ChileanParameters
     {
         private double[,] chilean = new double[31 , 23];
 
@@ -33,10 +33,11 @@ namespace East_CSharp
         public double Vs { get; set; }
         public double Vref { get; set; }
         public double T30 { get; set; }
+        public int Feve { get; set; }
 
-        public IdiniParameters(int size)
+        public ChileanParameters()
         {
-            this.periods = new double[size];
+   /*         this.periods = new double[size];
             this.sII = new double[size];
             this.sIII = new double[size];
             this.sIV = new double[size];
@@ -56,7 +57,7 @@ namespace East_CSharp
             this.dc3 = new double[size];
             this.qe = new double[size];
             this.qt = new double[size];
-            this.qr = new double[size];
+            this.qr = new double[size];*/
         }
 
         public double[] Periods { get => periods; set => periods = value; }

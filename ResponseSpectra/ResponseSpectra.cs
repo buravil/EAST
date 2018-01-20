@@ -10,12 +10,16 @@ namespace East_CSharp
         private bool isCalculated;
         private double pga;
         private double duration;
+        public String Type { get; set; }
 
 
-        public ResponseSpectra(int periodCount)
+        public ResponseSpectra(int periodCount, String type)
         {
             this.isCalculated = false;
-            this.CurrentBettaResponseSpectra = new double[periodCount + 1, 2];
+            this.Type = type;
+            this.CurrentBettaResponseSpectra = new double[2, periodCount + 1];
+
+            
         }
 
         public double[,] CurrentBettaResponseSpectra { get => currentBettaResponseSpectra; set => currentBettaResponseSpectra = value; }

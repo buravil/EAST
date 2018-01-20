@@ -6,19 +6,7 @@ namespace East_CSharp
 {
     class MatrixSa
     {
-        //Массив с коэффициентами типа грунта и кинематики
-        private double[] C2array = new double[] { -0.1, 0, 0.1 };
-        private double[] C1array = new double[] { -0.05, -0.025, 0, 0.025, 0.05 };
-        private double[] C3array = new double[] { -0.15, 0, 0.45 };
-        private double[] C4array = new double[] { -0.25, -0.12, 0, 0.12, 0.25 };
-        private double[] C5array = new double[] { -0.1, -0.05, 0, 0.05, 0.1 };
-        private double[] C6array = new double[] { 0.800, 0.717, 0.633, 0.550, 0.467 };
-        private double[] C7array = new double[] { -0.15, 0, 0.15 };
-        private double[] C8array = new double[] { -0.05, 0, 0.2 };
-
         private NormalRandom normRand = new NormalRandom();
-
-
         //Период повторяемости
         private double returnPeriodT;
 
@@ -53,47 +41,73 @@ namespace East_CSharp
             {
                 matrixSa[i + 1, 0] = Math.Pow(10, -3 + (Convert.ToDouble(i) / 10.0));
             }
+
+            matrixSa[0, 1] = 0.01;
         }
 
         public void Calculate(ResponseSpectra responseSpectra)
         {
-            SAcalculation(responseSpectra);
+            if ("SIS17".Equals(responseSpectra.Type))
+            {
+                AptikaevCalcualte(responseSpectra);
+                return;
+            } else
+            {
+                OtherCalculation(responseSpectra);
+                return;
+            }
         }
 
-        public void SAcalculation(ResponseSpectra responseSpectra)
+        private void OtherCalculation(ResponseSpectra responseSpectra)
         {
+            double stepLgD = 0.1;
+            for (int i = 0; i < 30; i++)
+            {
+                //double logInIsa = Math.Log10((Math.Pow(10, responseSpectra.Pga) / 981) * responseSpectra.CurrentBettaResponseSpectra[i, 1]);
+
+                double doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i])  * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                int isa = Convert.ToInt32(doubleIsa);
+
+                if (isa > 0 && isa < 40 && i > 0 && i < 30)
+                {
+                    matrixSa[isa, i] = matrixSa[isa, i] + 1;
+                }
+            }
+
+        }
+
+        private void AptikaevCalcualte(ResponseSpectra responseSpectra)
+        {
+
             int isa, jsa, ipga;
-             double logInIsa, doubleIsa, doubleIpga;
+            double logInIsa, doubleIsa, doubleIpga;
             int periondCountInOneRS = 20;
             double stepLgD = 0.1;
+            for (int i = 0; i <= periondCountInOneRS; i++)
+            {
+                //находим номер столбца
+                jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(responseSpectra.CurrentBettaResponseSpectra[i, 0])) * 10 + 2));
 
+                logInIsa = Math.Log10((Math.Pow(10, responseSpectra.Pga) / 981) * responseSpectra.CurrentBettaResponseSpectra[i, 1]);
 
-                    for (int i = 0; i <= periondCountInOneRS; i++)
-                    {
-                        //находим номер столбца
-                        jsa = Convert.ToInt32(Math.Round((1.5 + Math.Log10(responseSpectra.CurrentBettaResponseSpectra[i, 0])) * 10 + 2));
+                doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                //находим номер строки
+                isa = Convert.ToInt32(doubleIsa);
 
-                        logInIsa = Math.Log10((Math.Pow(10, responseSpectra.Pga) / 981) * responseSpectra.CurrentBettaResponseSpectra[i, 1]);
+                if (isa > 0 && isa < 40 && jsa > 1 && jsa < 30)
+                {
+                    matrixSa[isa, jsa] = matrixSa[isa, jsa] + 1;
+                }
+            }
 
-                        doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
-                        //находим номер строки
-                        isa = Convert.ToInt32(doubleIsa);
+            //заполняем значения для второго столбца - PGA
+            doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, responseSpectra.Pga)) / 981) * Math.Pow(stepLgD, -1)) * stepLgD) * 10) + 1;
+            ipga = Convert.ToInt32(doubleIpga);
 
-                        if (isa > 0 && isa < 40 && jsa > 1 && jsa < 30)
-                        {
-                            matrixSa[isa, jsa] = matrixSa[isa, jsa] + 1;
-                        }
-                    }
-
-                    //заполняем значения для второго столбца - PGA
-                    doubleIpga = ((3 + Math.Round(Math.Log10((Math.Pow(10, responseSpectra.Pga)) / 981) * Math.Pow(stepLgD, -1)) * stepLgD) * 10) + 1;
-                    ipga = Convert.ToInt32(doubleIpga);
-
-                    if (ipga > 1 && ipga < 30)
-                    {
-                        matrixSa[ipga, 1] = matrixSa[ipga, 1] + 1;
-                    }
-
+            if (ipga > 1 && ipga < 30)
+            {
+                matrixSa[ipga, 1] = matrixSa[ipga, 1] + 1;
+            }
         }
 
 
@@ -118,7 +132,7 @@ namespace East_CSharp
                 for (int i = 1; i <= 50; i++)
                 {
                     double pow = (-50 * (matrixSaKumulative[i, j] / returnPeriodT));
-                    matrixSaItog[i, j] = Math.Round((1 - Math.Pow(Math.E, pow)) * 1000) * 0.1;
+                    matrixSaItog[i, j] = Math.Round((1 - Math.Pow(Math.E, pow)) * 988) * 0.1;
                 }
             }
 
@@ -184,6 +198,18 @@ namespace East_CSharp
         }
 
 
+        public void WriteSAInConsole()
+        {
+            for (int i = 0; i < 62; i++)
+            {
+                for (int j = 0; j < 33; j++)
+                {
+                    Console.Write("{0,3:f3}\t", matrixSa[i, j]);
+                }
+                Console.WriteLine();
+
+            }
+        }
         //Сохранение результатов в текстовый файл для тестирования
        /* public void SAsave(string str)
         {

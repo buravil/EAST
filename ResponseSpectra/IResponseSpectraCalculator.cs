@@ -6,6 +6,6 @@ namespace East_CSharp
 {
     interface IResponseSpectraCalculator
     {
-        ResponseSpectra CalculateBetta(double M, double R);
+        ResponseSpectra CalculateBetta(double M, double R, double H);
     }
 }

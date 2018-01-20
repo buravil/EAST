@@ -14,16 +14,16 @@ namespace East_CSharp
             EqParam = equationParameters;
         }
 
-        public ResponseSpectra CalculateBetta(double M, double R)
+        public ResponseSpectra CalculateBetta(double M, double R, double H)
         {
             double deltaA, deltaB, deltaT, deltaD;
 
             double pga = 0;
-  //          int isa, jsa, ipga;
-     //       bool IsCalculated = false;
-       //     double logInIsa, doubleIsa, doubleIpga;
+            //          int isa, jsa, ipga;
+            //       bool IsCalculated = false;
+            //     double logInIsa, doubleIsa, doubleIpga;
 
-            ResponseSpectra responseSpectra = null;
+            ResponseSpectra responseSpectra = new ResponseSpectra(EqParam.SaAndRsParameters.PeriondCountInOneRS, "SIS17"); ;
 
             if (R < 1.0807 * Math.Pow(Math.E, 0.976 * M))
             {
@@ -36,12 +36,11 @@ namespace East_CSharp
                 pga = PGAcalculation(M, R) + deltaA;
                 if (pga > 0.01)
                 {
-                    responseSpectra = BettaCalculation(M, R, deltaB, deltaT, deltaD);
+                    responseSpectra = BettaCalculation(responseSpectra, M, R, deltaB, deltaT, deltaD);
                     responseSpectra.Pga = pga;
                     responseSpectra.IsCalculated = true;
                 }
             }
-
             return responseSpectra;
         }
 
@@ -68,9 +67,9 @@ namespace East_CSharp
         }
 
         //Расчет кривой бэтта с определенной магнитудой и расстоянием
-        private ResponseSpectra BettaCalculation(double M, double R, double deltaB, double deltaT, double deltaD)
+        private ResponseSpectra BettaCalculation(ResponseSpectra responseSpectra, double M, double R, double deltaB, double deltaT, double deltaD)
         {
-            ResponseSpectra responseSpectra = new ResponseSpectra(EqParam.SaAndRsParameters.PeriondCountInOneRS);
+            
             //случайные величины
             double tg_alfa;
             double Lgf1, Lgf2;

@@ -79,7 +79,7 @@ namespace East_CSharp
         int sec;
 
         const int NM1 = 200; //50
-        const int NRP = 10000;//Максимальное количество точек в подседке
+        const int NRP = 600;//Максимальное количество точек в подседке
         const int IMM = 30;
         const int IPAR = 14;////////qqqqqqqqqqqq
         const int IMGS = 80;
@@ -113,6 +113,7 @@ namespace East_CSharp
         long KSTIC, IGIST, INMAX, JMAX, NVS, KOBH, KUMUL, KPNTR;
         double SPR1, SPR2, SPR3, SPR4, SPR5, SPR6, SPR7, VI, RMI, CRN, RBALL3, UI, DT;
         long IY0, NZ1, NZ, NEQS, NFAIL, NGEN, NFAI, IND, ITY, KMAG, ISBR, IGER, IFLT, ISM;
+        int FEVE;
         double SDEVA, SDEVM, TPR, TPR1, AMWBAS, DX1, UX, DEVL, UY, DEVC, DX2;
         double[] ATTPAR = new double[6];
         double CROT, SROT, FCOR, XRC, YRC, CP, SP, SUM, SUMW, XS, YS, ZS;
@@ -138,7 +139,7 @@ namespace East_CSharp
         double[,] IGST = new double[NRP + 1, 7];
         //long[,] IGST = new long[NRP + 1, 7];
         double[,] DEAGREG = new double[10, 77001];
-       // double[,] DEAGREGRespSpectr = new double[100, 77001];
+        // double[,] DEAGREGRespSpectr = new double[100, 77001];
         double[,] POVTOR = new double[10, NRP]; //double[,] POVTOR = new double[10, 500000];
         long ideg, jdeg;
         long KMOD;
@@ -183,7 +184,7 @@ namespace East_CSharp
         ///	char NAME[4],NAME1[11],NAME2[16],NAME3[16],NAME4[16];
         String NAME6, NAME_NET_GEG, NAMGRP, NAME_Warning, NAMCTL, NAMEA;
         ///    char NAME5[16],NAME6[16],NAME7[11],NAME8[16],NAMGRP[16],NAME9[16],NAMCTL[16];
-        String PARFLN, MTOMW, IndEffect;//CHARACTER*12 PARFLN,MTOMW	 !CDATE,CTIME,
+        String PARFLN, PARFLN_SA, MTOMW, IndEffect;//CHARACTER*12 PARFLN,MTOMW	 !CDATE,CTIME,
 
         ///    char PARFLN[12],MTOMW[12];//CHARACTER*12 PARFLN,MTOMW	 !CDATE,CTIME,
         //char[ , ] ZONE = new char[ 12, 5 ];//CHARACTER*12 ZONE*4
@@ -466,12 +467,12 @@ namespace East_CSharp
             rbz = new OleDbDataAdapter();
             rsloi = new OleDbDataAdapter();//SQLiteDataAdapter( "", maindb );
             rprf = new OleDbDataAdapter();
-            
+
             ITWO = 2;
             M2 = 0;
             int kk, k1, ii, NN = 0;
             long k22 = 0;
-a307:
+        a307:
             rsDT = FillTable("select * from _Входные_параметры");
             //rs.Fill( rsDT );
 
@@ -638,7 +639,7 @@ a307:
 
                     XNET[ii] = Convert.ToDouble(nums[0]);
                     YNET[ii] = Convert.ToDouble(nums[1]);
-                    netVs[ii] = Convert.ToDouble(nums[2]); 
+                    netVs[ii] = Convert.ToDouble(nums[2]);
                     netVref[ii] = Convert.ToDouble(nums[3]);
                     netT30[ii] = Convert.ToDouble(nums[4]);
                     //XNET[ii] = Convert.ToDouble(aa.Substring(0, aa.IndexOf(" ")).Trim());
@@ -931,14 +932,14 @@ a307:
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
- //задание массива спектров реакций
+            //задание массива спектров реакций
             MatrixSa[] matrixSA = new MatrixSa[NETPNT + 1];
-            
+
             for (int sk = 1; sk <= NETPNT; sk++)//
             {
                 matrixSA[sk] = new MatrixSa(TMAX);
-                
-//Инициализация массива с длительностями
+
+                //Инициализация массива с длительностями
 
                 for (int i = 0; i <= 60; i++)
                 {
@@ -947,24 +948,24 @@ a307:
                 }
             }
 
-            ///pMainWnd->m_progress.SetRange(0,100);
-            add321:
+        ///pMainWnd->m_progress.SetRange(0,100);
+        add321:
 
             rdomDT = FillTable("select * from Домены ORDER BY ind ASC");
             rlinDT = FillTable("select * from Линеаменты ORDER BY ind ASC");
 
             NameOfCurrentCalculation = "Расчет по доменам";
 
-//расчет прогрессбара
+            //расчет прогрессбара
             total = rdomDT.Rows.Count + rlinDT.Rows.Count;
             k_progress = 0;
             percents = (k_progress * 100) / total;
             worker.ReportProgress(percents, NameOfCurrentCalculation);
 
-////TODO читать тут параметры уравнений
-            equationParameters.IdinParameters = getIdiniParameters();
+            ////TODO читать тут параметры уравнений
+            equationParameters.ChileanParameters = getIdiniParameters();
 
-// начало доменов
+            // начало доменов
             iw = 1;
             for (int j = 0; j < rdomDT.Rows.Count; j++)//начало доменов
             {
@@ -1000,6 +1001,8 @@ a307:
 
                 KMAG = Convert.ToInt32(rdomDT.Rows[position_rdom]["kmag"]);
                 PARFLN = Convert.ToString(rdomDT.Rows[position_rdom]["parfln"]);
+                FEVE = Convert.ToInt32(rlinDT.Rows[position_rdom]["FEVE"]);
+                PARFLN_SA = Convert.ToString(rdomDT.Rows[position_rdom]["parfln_SA"]);
                 kszon = Convert.ToDouble(rdomDT.Rows[position_rdom]["kszon"]);// площадь домена в км2
                 SDEVA = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdeva"]);
                 SDEVM = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdevm"]);
@@ -1018,17 +1021,18 @@ a307:
                 {
                     typeOfMovement = rnd.Next(0, 5);
                 }
- //задание параметров уравнений
-// задать в equationParameters -> typeOfMovement, typeOfGrunt
+                //задание параметров уравнений
+                // задать в equationParameters -> typeOfMovement, typeOfGrunt
+
+                equationParameters.ChileanParameters.Feve = FEVE;
                 AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
-                equationParameters.SaAndRsParameters = saAndRsParameters;                   
+                equationParameters.SaAndRsParameters = saAndRsParameters;
                 responseSpectraFactory.Parameters = equationParameters;
 
-//задать тип вычисления
-                int typeOfEquation = 1;
-                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(typeOfEquation);
+                //задать тип вычисления
+                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
                 //проверка
                 LLOOP = 1;
                 MACRR3();
@@ -1075,8 +1079,6 @@ a307:
                 {
                     rbb = rbb80;
                 }
-
-
 
 
                 if (fastCalc == 1)
@@ -1143,13 +1145,13 @@ a307:
 
                 GLBVI = SDEVM * VI;
                 int sk;
-//цикл расчета по точекам сетки
+                //цикл расчета по точекам сетки
                 for (sk = 1; sk <= NETPNT; sk++)//
                 {
-//обновить параметры
-                    equationParameters.IdinParameters.Vs = netVs[sk];
-                    equationParameters.IdinParameters.Vref = netVref[sk];
-                    equationParameters.IdinParameters.T30 = netT30[sk];
+                    //обновить параметры
+                    equationParameters.ChileanParameters.Vs = netVs[sk];
+                    equationParameters.ChileanParameters.Vref = netVref[sk];
+                    equationParameters.ChileanParameters.T30 = netT30[sk];
                     double zz = 0.0;
                     DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
                     if (emexit == 1)
@@ -1182,14 +1184,24 @@ a307:
                     MACRR3();
 
 
-//считается спектр реакций
-                    ML = MwToMl(AMW);
-                    ResponseSpectra responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN);
+                    //считается спектр реакций
+
+                    ResponseSpectra responseSpectra;
+                    double H = SPAR[8];
+                    if (PARFLN_SA.Equals("SIS17"))
+                    {
+                        ML = MwToMl(AMW);
+                        responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN, H);
+                    }
+                    else
+                    {
+                        responseSpectra = responseSpectraCalculator.CalculateBetta(AMW, DISTMIN, H);
+                    }
                     if (responseSpectra.IsCalculated)
                     {
                         matrixSA[sk].Calculate(responseSpectra);
                     }
-                    
+                   // matrixSA[sk].WriteSAInConsole();
                     //matrixSA[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
 
                     if (emexit == 1)
@@ -1385,7 +1397,7 @@ a307:
                             //Деагрегация для всех периодов
                             if (DISTMIN <= 350)
                                 currentDeag.SA_deag(ML, DISTMIN, responseSpectra.CurrentBettaResponseSpectra, responseSpectra.Pga, sk - 1);
-                           // responseSpectra.IsCalculated = false;
+                            // responseSpectra.IsCalculated = false;
                         }
 
 
@@ -1499,6 +1511,8 @@ a307:
 
                 KMAG = Convert.ToInt64(rlinDT.Rows[li]["kmag"]);
                 PARFLN = Convert.ToString(rlinDT.Rows[li]["parfln"]);
+                FEVE = Convert.ToInt32(rlinDT.Rows[li]["FEVE"]);
+                PARFLN_SA = Convert.ToString(rlinDT.Rows[li]["parfln_SA"]);
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
                 SDEVM = Convert.ToDouble(rlinDT.Rows[li]["sdevm"]);
                 SDEVI = Convert.ToDouble(rlinDT.Rows[li]["sdevi"]);
@@ -1517,15 +1531,15 @@ a307:
                 }
                 //задание параметров уравнений
                 // задать в equationParameters -> typeOfMovement, typeOfGrunt
+                equationParameters.ChileanParameters.Feve = FEVE;
                 AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;
                 responseSpectraFactory.Parameters = equationParameters;
 
-                //задать тип вычисления
-                int typeOfEquation = 1;
-                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(typeOfEquation);
+                //берем соответствующую формулу
+                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
 
                 //ITY - здесь = 1
                 ITY = 1;
@@ -1638,6 +1652,9 @@ a307:
                 // цикл расчета по точекам сетки
                 for (sk = 1; sk <= NETPNT; sk++)
                 {
+                    equationParameters.ChileanParameters.Vs = netVs[sk];
+                    equationParameters.ChileanParameters.Vref = netVref[sk];
+                    equationParameters.ChileanParameters.T30 = netT30[sk];
                     double zz = 0.0;
                     DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
                     if (emexit == 1)
@@ -1670,16 +1687,25 @@ a307:
 
                     MACRR3();
 
-
                     //считается спектр реакций
-                    ML = MwToMl(AMW);
-                    ResponseSpectra responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN);
+
+                    ResponseSpectra responseSpectra;
+                    double H = SPAR[8];
+                    if (PARFLN_SA.Equals("SIS17"))
+                    {
+                        ML = MwToMl(AMW);
+                        responseSpectra = responseSpectraCalculator.CalculateBetta(ML, DISTMIN, H);
+                    }
+                    else
+                    {
+                        responseSpectra = responseSpectraCalculator.CalculateBetta(AMW, DISTMIN, H);
+                    }
                     if (responseSpectra.IsCalculated)
                     {
                         matrixSA[sk].Calculate(responseSpectra);
                     }
                     //matrixSA[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
-
+                    //matrixSA[sk].WriteSAInConsole();
                     if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND(ref UI, ref VI);
@@ -2044,15 +2070,15 @@ a307:
             //POVTOR_BALL.Close();
         }
 
-        private IdiniParameters getIdiniParameters()
+        private ChileanParameters getIdiniParameters()
         {
-           // IdiniParameters idini = new IdiniParameters
-            equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean_Idini ORDER BY N ASC");
+            // ChileanParameters idini = new ChileanParameters
+            equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean2017 ORDER BY N ASC");
 
             //rs.Fill( rsDT );
             int count = equationParametersDT.Rows.Count;
             double temp;
-            IdiniParameters parameters = new IdiniParameters(count);
+            ChileanParameters parameters = new ChileanParameters();
             for (int i = 0; i < count; i++)
             {
                 parameters.Chilean[i, 0] = i;
@@ -2100,7 +2126,7 @@ a307:
                 parameters.Chilean[i, 21] = temp;
             }
             return parameters;
-            }
+        }
 
 
         private void FillingDuration(double rESI, double duration, int pointNumber)
@@ -4222,6 +4248,7 @@ a307:
             //Расчет куммулятивной таблицы
             for (int i_rs = 1; i_rs <= NETPNT; i_rs++)
             {
+                RS[i_rs].WriteSAInConsole();
                 RS[i_rs].SAItogCalculation();
 
                 //  matrixSA[i_rs].ProbabilityCalculation(5);
@@ -4499,7 +4526,7 @@ a307:
 
             if (DEAG == 1)//Запись в файлы результаты деагрегации
             {
-                 int jjj = 0;//запись деагрегации для доменов и линеаментов
+                int jjj = 0;//запись деагрегации для доменов и линеаментов
                 while (jjj < NETPNT)
                 {
                     double[] SUMDEAGREGDOMLIN = new double[10];
@@ -5259,77 +5286,77 @@ a307:
         }
 
         //Можно удалить
- /*       private void DeagregForRS(double PGA_SA, double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
-        {
-            if (PGA_SA < PGA_SA_deagreg[sk, 0]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[Num, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+        /*       private void DeagregForRS(double PGA_SA, double[,] PGA_SA_deagreg, int sk, long ideg, int Num)
+               {
+                   if (PGA_SA < PGA_SA_deagreg[sk, 0]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[Num, (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 1]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 1), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+                   if (PGA_SA < PGA_SA_deagreg[sk, 1]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 1), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 2]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 2), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+                   if (PGA_SA < PGA_SA_deagreg[sk, 2]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 2), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 3]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 3), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+                   if (PGA_SA < PGA_SA_deagreg[sk, 3]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 3), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 4]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 4), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+                   if (PGA_SA < PGA_SA_deagreg[sk, 4]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 4), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 5]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 5), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
+                   if (PGA_SA < PGA_SA_deagreg[sk, 5]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 5), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
 
-            if (PGA_SA < PGA_SA_deagreg[sk, 6]) { }
-            else  ////////////////////деагрегация
-            {
-                jdeg = (int)(R3D / 5);
-                if (jdeg < 71)
-                {
-                    DEAGREGRespSpectr[(Num + 6), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
-                }
-            }
-        }*/
+                   if (PGA_SA < PGA_SA_deagreg[sk, 6]) { }
+                   else  ////////////////////деагрегация
+                   {
+                       jdeg = (int)(R3D / 5);
+                       if (jdeg < 71)
+                       {
+                           DEAGREGRespSpectr[(Num + 6), (ideg - 1) * 70 + jdeg + 1 + (sk - 1) * 770]++;
+                       }
+                   }
+               }*/
     }
 }
