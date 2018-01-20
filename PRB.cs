@@ -2309,27 +2309,56 @@ namespace East_CSharp
         {
             //C  geodezicheskie v dekartovy (konicheskie)
             //ff1(x)=6367.5584958746*x-16.0364802690885*Math.Sin(2*x)+0.0168280667831*Math.Sin(4*x)-0.0000219752790*Math.Sin(6*x)+0.0000000311243*Math.Sin(8*x);
-            double RZ = 6378245;
+
+          /*  double RZ = 6378245;
             double lat0 = f0;// * 3.1415927 / 180;
             double lon0 = al0;// * 3.1415927 / 180;
             double lat = f;// * 3.1415927 / 180;
             double lon = al;// * 3.1415927 / 180;
             x = 0.001 * RZ * (Math.Sin(lat) * Math.Cos(lat0) - Math.Cos(lat) * Math.Sin(lat0) * Math.Cos(lon - lon0));
-            y = 0.001 * RZ * Math.Cos(lat) * Math.Sin(lon - lon0);
+            y = 0.001 * RZ * Math.Cos(lat) * Math.Sin(lon - lon0);*/
+            
+            double c = 10374.71;
+            double alf = 0.854116;
+            double qu = c - (6367.5584958746 * f0 - 16.0364802690885 * Math.Sin(2 * f0) + 0.0168280667831 * Math.Sin(4 * f0) - 0.0000219752790 * Math.Sin(6 * f0) + 0.0000000311243 * Math.Sin(8 * f0));
+            double ro = c - (6367.5584958746 * f - 16.0364802690885 * Math.Sin(2 * f) + 0.0168280667831 * Math.Sin(4 * f) - 0.0000219752790 * Math.Sin(6 * f) + 0.0000000311243 * Math.Sin(8 * f));
+            double delt = alf * (al - al0);
+            double x1 = ro * Math.Sin(delt);
+            double y1 = qu - ro * Math.Cos(delt);
+            double sn = Math.Sin(az0);
+            double cs = Math.Cos(az0);
+            x = x1 * cs - y1 * sn;
+            y = x1 * sn + y1 * cs;
         }
 
         private void DEGEDCON(double f0, double al0, double az0, double x, double y, ref double f, ref double al)
         {
             //C  dekartovy (konicheskie) v geodezicheskie
             //	s(a)=6367.5584958746*a-16.0364802690885*Math.Sin(2*a)+0.0168280667831*Math.Sin(4*a)-0.0000219752790*Math.Sin(6*a)+0.0000000311243*Math.Sin(8*a);
-            double RZ = 6378245;
+            
+            /*double RZ = 6378245;
             double lat0 = f0;// * 3.1415927 / 180;
             double lon0 = al0;// * 3.1415927 / 180;
             double xx = -Math.Cos(lon0) * Math.Sin(lat0) * x * 1000 - Math.Sin(lon0) * y * 1000 + Math.Cos(lon0) * Math.Cos(lat0) * RZ;
             double yy = -Math.Sin(lon0) * Math.Sin(lat0) * x * 1000 + Math.Cos(lon0) * y * 1000 + Math.Sin(lon0) * Math.Cos(lat0) * RZ;
             double zz = Math.Cos(lat0) * x * 1000 + Math.Sin(lat0) * RZ;
             f = Math.Atan(zz / Math.Sqrt(xx * xx + yy * yy));
-            al = Math.Atan(yy / xx);
+            al = Math.Atan(yy / xx);*/
+
+            double rcros = 6367.5584958746;
+            double c = 10374.71;
+            double alf = 0.854116;
+            double qu = c - (6367.5584958746 * f0 - 16.0364802690885 * Math.Sin(2 * f0) +
+                0.0168280667831 * Math.Sin(4 * f0) - 0.0000219752790 * Math.Sin(6 * f0) +
+                0.0000000311243 * Math.Sin(8 * f0));
+            double x1 = x * Math.Cos(az0) + y * Math.Sin(az0);
+            double y1 = -x * Math.Sin(az0) + y * Math.Cos(az0);
+            double ros = ((qu - y1) * (qu - y1)) + (x1 * x1);
+            double ro = Math.Sqrt(ros);
+            f = (c - ro) / rcros + 0.0024412912;
+            double sn = x1 / ro;
+            double delt = Math.Asin(sn);
+            al = delt / alf + al0;
         }
 
         private void MACRR3()

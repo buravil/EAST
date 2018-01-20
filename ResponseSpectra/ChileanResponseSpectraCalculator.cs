@@ -111,12 +111,11 @@ namespace East_CSharp
 
             for (int i = 0; i <= jsa; i++)
             {
-                double deltaSA1 = normRand.NextDouble() * q[i, 1];
+                double deltaSA = normRand.NextDouble() * q[i, 2];
                 //double deltaSA1 = 0.313;
-                double deltaSA2 = normRand.NextDouble() * q[i, 3];
+               // double deltaSA2 = normRand.NextDouble() * q[i, 3];
                 //double deltaSA2 = 0.363;
-
-                double deltaSA = Math.Sqrt(deltaSA1 * deltaSA1 + deltaSA2 * deltaSA2);
+                //double deltaSA = Math.Sqrt(deltaSA1 * deltaSA1 + deltaSA2 * deltaSA2);
 
                 DfM = Feve == 0 ? C[i, 9] * (M * M) : DC[i, 1] + DC[i, 2] * M;
                 g = C[i, 3] + C[i, 4] * (M - Mr) + DC[i, 3] * Feve;
@@ -126,12 +125,6 @@ namespace East_CSharp
 
                 FS = STx[i, ST] * Math.Log10(Vs / Vref);
                 responseSpectra.CurrentBettaResponseSpectra[1, i] = Math.Pow(10, FF + FD + FS + deltaSA);
-                Console.WriteLine("[" + i + "] = " + responseSpectra.CurrentBettaResponseSpectra[1, i]);
-              //  double logInIsa = Math.Log10((Math.Pow(10, responseSpectra.Pga) / 981) * responseSpectra.CurrentBettaResponseSpectra[i, 1]);
-              //  double doubleIsa = (3 + Math.Round(logInIsa * Math.Pow(lg_D, -1)) * lg_D) * 10 + 1;
-                //находим номер строки
-              //  isa = Convert.ToInt32(doubleIsa);
-              //  responseSpectra.CurrentBettaResponseSpectra[i, 0] = (3 )
             }
             responseSpectra.IsCalculated = true;
 
