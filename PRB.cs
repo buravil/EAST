@@ -1029,6 +1029,9 @@ namespace East_CSharp
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;
+                ////TODO записать параметры  GraizerKalkanParameters
+                GraizerKalkanParameters graizerParameters = new GraizerKalkanParameters();
+                equationParameters.GraizerKalkanParameters = graizerParameters;
                 responseSpectraFactory.Parameters = equationParameters;
 
                 //задать тип вычисления
@@ -1472,7 +1475,7 @@ namespace East_CSharp
 
             ///	pMainWnd->m_progress.SetPos(0);
 
-            //начало линеаментов
+ //начало линеаментов
 
 
             iw = 1;
@@ -1537,6 +1540,9 @@ namespace East_CSharp
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;
                 responseSpectraFactory.Parameters = equationParameters;
+                ////TODO записать параметры  GraizerKalkanParameters
+                GraizerKalkanParameters graizerParameters = new GraizerKalkanParameters();
+                equationParameters.GraizerKalkanParameters = graizerParameters;
 
                 //берем соответствующую формулу
                 IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);

@@ -12,6 +12,8 @@
             {
                 case "Chilean2017":
                     return new ChileanResponseSpectraCalculator(parameters);
+                case "Graizer":
+                    return new GraizerKalkanResponseSpectraCalculator(parameters);
                 case "SIS17":
                     return new AptikaevResponseSpectraCalculator(parameters);
                 default:
