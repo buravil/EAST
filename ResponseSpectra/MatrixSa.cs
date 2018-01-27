@@ -67,10 +67,9 @@ namespace East_CSharp
 
                 double doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i])  * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
                 int isa = Convert.ToInt32(doubleIsa);
-
                 if (isa > 0 && isa < 40 && i > 0 && i < 30)
                 {
-                    matrixSa[isa, i] = matrixSa[isa, i] + 1;
+                    matrixSa[isa, i+2] = matrixSa[isa, i+2] + 1;
                 }
             }
 

@@ -121,7 +121,6 @@
     <Compile Include="ResponseSpectra\parameters\EquationParameters.cs" />
     <Compile Include="ResponseSpectra\IResponseSpectraCalculator.cs" />
     <Compile Include="ResponseSpectra\parameters\ChileanParameters.cs" />
-    <Compile Include="ResponseSpectra\parameters\GraizerKalkanParameters.cs" />
     <Compile Include="ResponseSpectra\parameters\SaAndRsParameters.cs" />
     <Compile Include="ResponseSpectra\ResponseSpectra.cs" />
     <Compile Include="ResponseSpectra\ResponseSpectraCalculatorFactory.cs" />

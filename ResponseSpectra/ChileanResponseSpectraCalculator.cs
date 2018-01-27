@@ -67,9 +67,9 @@ namespace East_CSharp
             int h0 = 50;
             int Mr = 5;
             int Feve = EqParam.ChileanParameters.Feve;
-            double Vs = EqParam.ChileanParameters.Vs;
-            double Vref = EqParam.ChileanParameters.Vref;
-            double T30 = EqParam.ChileanParameters.T30;
+            double Vs = EqParam.Vs;
+            double Vref = EqParam.Vref;
+            double T30 = EqParam.T30;
 
             ResponseSpectra responseSpectra = new ResponseSpectra(EqParam.SaAndRsParameters.PeriodCountInSaMatrix, "Chilean2017");
 

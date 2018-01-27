@@ -100,6 +100,7 @@ namespace East_CSharp
             prb.i_bz = 1;
             prb.i_cz = 1;
             prb.ncycl = Convert.ToInt32(textBox15.Text);
+            prb.TPR = Convert.ToInt32(textBox16.Text);
 
             prb.probabilityOfExceedance[0] = Convert.ToDouble(textBox8.Text);
             prb.probabilityOfExceedance[1] = Convert.ToDouble(textBox9.Text);

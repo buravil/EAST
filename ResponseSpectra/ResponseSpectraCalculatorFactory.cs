@@ -17,7 +17,7 @@
                 case "SIS17":
                     return new AptikaevResponseSpectraCalculator(parameters);
                 default:
-                    return new AptikaevResponseSpectraCalculator(parameters);
+                    throw new System.Exception("Заданный тип затухания - " + type + " не найден");
             }
             
         }

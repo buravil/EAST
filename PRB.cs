@@ -114,7 +114,8 @@ namespace East_CSharp
         double SPR1, SPR2, SPR3, SPR4, SPR5, SPR6, SPR7, VI, RMI, CRN, RBALL3, UI, DT;
         long IY0, NZ1, NZ, NEQS, NFAIL, NGEN, NFAI, IND, ITY, KMAG, ISBR, IGER, IFLT, ISM;
         int FEVE;
-        double SDEVA, SDEVM, TPR, TPR1, AMWBAS, DX1, UX, DEVL, UY, DEVC, DX2;
+        public double TPR;
+        double SDEVA, SDEVM, TPR1, AMWBAS, DX1, UX, DEVL, UY, DEVC, DX2;
         double[] ATTPAR = new double[6];
         double CROT, SROT, FCOR, XRC, YRC, CP, SP, SUM, SUMW, XS, YS, ZS;
 
@@ -493,7 +494,7 @@ namespace East_CSharp
                 //задания рандомного значения
                 IY0 = DateTime.Now.Millisecond * DateTime.Now.Minute;
                 PARFLN = Convert.ToString(rsDT.Rows[0]["parfln"]);
-                TPR = Convert.ToDouble(rsDT.Rows[0]["t"]);
+                //TPR = Convert.ToDouble(rsDT.Rows[0]["t"]);
                 //NCYCL = Convert.ToInt32(rsDT.Rows[0]["ncycl"]);
                 NCYCL = ncycl;
                 rbb55 = Convert.ToDouble(rsDT.Rows[0]["rb55"]);
@@ -1025,17 +1026,26 @@ namespace East_CSharp
                 // задать в equationParameters -> typeOfMovement, typeOfGrunt
 
                 equationParameters.ChileanParameters.Feve = FEVE;
+                equationParameters.TypeOfMovemant = typeOfMovement;
+                equationParameters.Z = 0.5;
                 AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;
                 ////TODO записать параметры  GraizerKalkanParameters
-                GraizerKalkanParameters graizerParameters = new GraizerKalkanParameters();
-                equationParameters.GraizerKalkanParameters = graizerParameters;
                 responseSpectraFactory.Parameters = equationParameters;
 
                 //задать тип вычисления
-                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
+                IResponseSpectraCalculator responseSpectraCalculator;
+                try
+                {
+                    responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
+                } catch (Exception ex)
+                {
+                    EmExit(ex.Message);
+                    goto a306;
+                }
+                
                 //проверка
                 LLOOP = 1;
                 MACRR3();
@@ -1152,9 +1162,9 @@ namespace East_CSharp
                 for (sk = 1; sk <= NETPNT; sk++)//
                 {
                     //обновить параметры
-                    equationParameters.ChileanParameters.Vs = netVs[sk];
-                    equationParameters.ChileanParameters.Vref = netVref[sk];
-                    equationParameters.ChileanParameters.T30 = netT30[sk];
+                    equationParameters.Vs = netVs[sk];
+                    equationParameters.Vref = netVref[sk];
+                    equationParameters.T30 = netT30[sk];
                     double zz = 0.0;
                     DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
                     if (emexit == 1)
@@ -1477,7 +1487,6 @@ namespace East_CSharp
 
  //начало линеаментов
 
-
             iw = 1;
             for (li = 0; li < rlinDT.Rows.Count; li++)
             {
@@ -1535,18 +1544,24 @@ namespace East_CSharp
                 //задание параметров уравнений
                 // задать в equationParameters -> typeOfMovement, typeOfGrunt
                 equationParameters.ChileanParameters.Feve = FEVE;
+                equationParameters.TypeOfMovemant = typeOfMovement;
+                equationParameters.Z = 0.5;
                 AptikaevParameters aptikaevParameters = new AptikaevParameters(typeOfMovement, typeOfGrunt);
                 equationParameters.AptikaevParameters = aptikaevParameters;
                 SaAndRsParameters saAndRsParameters = new SaAndRsParameters(33, 62);
                 equationParameters.SaAndRsParameters = saAndRsParameters;
                 responseSpectraFactory.Parameters = equationParameters;
-                ////TODO записать параметры  GraizerKalkanParameters
-                GraizerKalkanParameters graizerParameters = new GraizerKalkanParameters();
-                equationParameters.GraizerKalkanParameters = graizerParameters;
-
                 //берем соответствующую формулу
-                IResponseSpectraCalculator responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
-
+                IResponseSpectraCalculator responseSpectraCalculator;
+                try
+                {
+                    responseSpectraCalculator = responseSpectraFactory.getResponseSpectraCalculator(PARFLN_SA);
+                }
+                catch (Exception ex)
+                {
+                    EmExit(ex.Message);
+                    goto a306;
+                }
                 //ITY - здесь = 1
                 ITY = 1;
                 LLOOP = 1;
@@ -1658,9 +1673,9 @@ namespace East_CSharp
                 // цикл расчета по точекам сетки
                 for (sk = 1; sk <= NETPNT; sk++)
                 {
-                    equationParameters.ChileanParameters.Vs = netVs[sk];
-                    equationParameters.ChileanParameters.Vref = netVref[sk];
-                    equationParameters.ChileanParameters.T30 = netT30[sk];
+                    equationParameters.Vs = netVs[sk];
+                    equationParameters.Vref = netVref[sk];
+                    equationParameters.T30 = netT30[sk];
                     double zz = 0.0;
                     DSTPRG(XNET[sk], YNET[sk], zz, US1, US2, US3, US4, ref RMI);
                     if (emexit == 1)

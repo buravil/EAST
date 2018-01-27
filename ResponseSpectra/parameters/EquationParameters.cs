@@ -9,6 +9,11 @@ namespace East_CSharp
         public AptikaevParameters AptikaevParameters { get; set; }
         public SaAndRsParameters SaAndRsParameters { get; set; }
         public ChileanParameters ChileanParameters { get; set; }
-        public GraizerKalkanParameters GraizerKalkanParameters { get; set; }
+
+        public double Vs { get; set; }
+        public double Vref { get; set; }
+        public double T30 { get; set; }
+        public int TypeOfMovemant { get; set; }
+        public double Z { get; set; }
     }
 }

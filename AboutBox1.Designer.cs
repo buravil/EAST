@@ -55,7 +55,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(117, 13);
             this.label4.TabIndex = 38;
-            this.label4.Text = "© НП \'ЭЦ РОПР\' 2016";
+            this.label4.Text = "© НП \'ЭЦ РОПР\' 2017";
             // 
             // label2
             // 
@@ -73,7 +73,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 13);
             this.label1.TabIndex = 35;
-            this.label1.Text = "East 3.0";
+            this.label1.Text = "East 3.1";
             // 
             // textBoxDescription
             // 
