@@ -18,7 +18,7 @@ namespace East_CSharp
 
         public ResponseSpectra CalculateBetta(double M, double R, double H)
         {
-            ResponseSpectra responseSpectra = new ResponseSpectra(parameters.SaAndRsParameters.PeriodCountInSaMatrix, "Graizer");
+            ResponseSpectra responseSpectra = new ResponseSpectra(parameters.SaAndRsParameters.PeriodCountInSaMatrix, "GK2008");
             double F = 1;
             switch (parameters.TypeOfMovemant)
             {
@@ -38,8 +38,7 @@ namespace East_CSharp
 
             if (R < R_LIMIT)
             {
-                // double deltaA = normRand.NextDouble() * 0.552;
-                double deltaA = -0.15;
+                double deltaA = normRand.NextDouble() * 0.552;
                 double mu = -0.0012 * R + -0.4087 * M + 0.0006 * V_S30 + 3.63;
                 double I = (0.017 * M + 1.27) * Math.Pow(Math.E, 0.0001 * R);
                 double S = 0.001 * R - (0.077 * M + 0.3251);

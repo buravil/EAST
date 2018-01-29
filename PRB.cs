@@ -1725,8 +1725,6 @@ namespace East_CSharp
                     {
                         matrixSA[sk].Calculate(responseSpectra);
                     }
-                    //matrixSA[sk].Calculate(typeOfMovement, typeOfGrunt, ML, DISTMIN);
-                    //matrixSA[sk].WriteSAInConsole();
                     if (emexit == 1)
                         goto a306;//критическая остановка
                     NORMRND(ref UI, ref VI);

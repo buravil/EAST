@@ -51,7 +51,11 @@ namespace East_CSharp
             {
                 AptikaevCalcualte(responseSpectra);
                 return;
-            } else
+            } else if ("GK2008".Equals(responseSpectra.Type))
+            {
+                GraizerkalkanCalculate(responseSpectra);
+            }
+            else
             {
                 OtherCalculation(responseSpectra);
                 return;
@@ -65,14 +69,36 @@ namespace East_CSharp
             {
                 //double logInIsa = Math.Log10((Math.Pow(10, responseSpectra.Pga) / 981) * responseSpectra.CurrentBettaResponseSpectra[i, 1]);
 
-                double doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i])  * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                double doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i]) * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
                 int isa = Convert.ToInt32(doubleIsa);
                 if (isa > 0 && isa < 40 && i > 0 && i < 30)
                 {
-                    matrixSa[isa, i+2] = matrixSa[isa, i+2] + 1;
+                    matrixSa[isa, i] = matrixSa[isa, i] + 1;
                 }
             }
 
+        }
+
+        private void GraizerkalkanCalculate(ResponseSpectra responseSpectra)
+        {
+            double doubleIsa;
+            double stepLgD = 0.1;
+            for (int i = 0; i < 30; i++)
+            {
+                doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i]) * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                int isa = Convert.ToInt32(doubleIsa);
+                if (isa > 0 && isa < 40)
+                {
+                    matrixSa[isa, i + 2] = matrixSa[isa, i + 2] + 1;
+                }
+            }
+            doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.Pga) * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+            int ipga = Convert.ToInt32(doubleIsa);
+
+            if (ipga > 0 && ipga < 40)
+            {
+                matrixSa[ipga, 1] = matrixSa[ipga, 1] + 1;
+            }
         }
 
         private void AptikaevCalcualte(ResponseSpectra responseSpectra)
