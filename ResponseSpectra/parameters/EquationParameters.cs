@@ -9,6 +9,7 @@ namespace East_CSharp
         public AptikaevParameters AptikaevParameters { get; set; }
         public SaAndRsParameters SaAndRsParameters { get; set; }
         public ChileanParameters ChileanParameters { get; set; }
+        public IdrissaParameters IdrissaParameters { get; set; }
 
         public double Vs { get; set; }
         public double Vref { get; set; }

@@ -963,8 +963,9 @@ namespace East_CSharp
             percents = (k_progress * 100) / total;
             worker.ReportProgress(percents, NameOfCurrentCalculation);
 
-            ////TODO читать тут параметры уравнений
-            equationParameters.ChileanParameters = getIdiniParameters();
+            ////TODO читать тут параметры ураний
+            equationParameters.ChileanParameters = getChileanParameters();
+            equationParameters.IdrissaParameters = getIdrissaParameters();
 
             // начало доменов
             iw = 1;
@@ -2089,7 +2090,49 @@ namespace East_CSharp
             //POVTOR_BALL.Close();
         }
 
-        private ChileanParameters getIdiniParameters()
+        private IdrissaParameters getIdrissaParameters()
+        {
+            // ChileanParameters idini = new ChileanParameters
+            equationParametersDT = FillTable("select * from Сейсм_эффект_Idrissa2014 ORDER BY N ASC");
+
+            //rs.Fill( rsDT );
+            int count = equationParametersDT.Rows.Count;
+            double temp;
+            IdrissaParameters parameters = new IdrissaParameters();
+            for (int i = 0; i < count; i++)
+            {
+                parameters.Idrissa[i, 0] = i;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a1"]);
+                parameters.Idrissa[i, 1] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a2"]);
+                parameters.Idrissa[i, 2] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a3"]);
+                parameters.Idrissa[i, 3] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["b1"]);
+                parameters.Idrissa[i, 4] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["b2"]);
+                parameters.Idrissa[i, 5] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["g"]);
+                parameters.Idrissa[i, 6] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["y"]);
+                parameters.Idrissa[i, 7] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["f"]);
+                parameters.Idrissa[i, 8] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a1_"]);
+                parameters.Idrissa[i, 9] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a2_"]);
+                parameters.Idrissa[i, 10] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["a3_"]);
+                parameters.Idrissa[i, 11] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["b1_"]);
+                parameters.Idrissa[i, 12] = temp;
+                temp = Convert.ToDouble(equationParametersDT.Rows[i]["b2_"]);
+                parameters.Idrissa[i, 13] = temp;
+            }
+            return parameters;
+        }
+
+        private ChileanParameters getChileanParameters()
         {
             // ChileanParameters idini = new ChileanParameters
             equationParametersDT = FillTable("select * from Сейсм_эффект_Chilean2017 ORDER BY N ASC");

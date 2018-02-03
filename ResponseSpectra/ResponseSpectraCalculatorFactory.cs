@@ -16,6 +16,8 @@
                     return new GraizerKalkanResponseSpectraCalculator(parameters);
                 case "SIS17":
                     return new AptikaevResponseSpectraCalculator(parameters);
+                case "I14":
+                    return new IdrisaResponseSpectraCalculator(parameters);
                 default:
                     throw new System.Exception("Заданный тип затухания - " + type + " не найден");
             }

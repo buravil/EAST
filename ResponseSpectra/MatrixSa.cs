@@ -54,15 +54,43 @@ namespace East_CSharp
             } else if ("GK2008".Equals(responseSpectra.Type))
             {
                 GraizerkalkanCalculate(responseSpectra);
+                return;
+            }
+            else if ("I14".Equals(responseSpectra.Type))
+            {
+                IdrisaCalculate(responseSpectra);
+                return;
+            } else if ("Chilean2017".Equals(responseSpectra.Type))
+            {
+                ChileanCalculation(responseSpectra);
+                return;
             }
             else
             {
-                OtherCalculation(responseSpectra);
                 return;
             }
         }
 
-        private void OtherCalculation(ResponseSpectra responseSpectra)
+        private void IdrisaCalculate(ResponseSpectra responseSpectra)
+        {
+            double stepLgD = 0.1;
+            for (int i = 0; i < 31; i++)
+            {
+                double doubleIsa = (3 + Math.Round(Math.Log10(responseSpectra.CurrentBettaResponseSpectra[1, i]) * Math.Pow(stepLgD, -1)) * stepLgD) * 10 + 1;
+                int isa = Convert.ToInt32(doubleIsa);
+                if (isa > 0 && isa < 40)
+                {
+                    matrixSa[isa, i + 2] = matrixSa[isa, i + 2] + 1;
+                }
+            }
+
+            for (int i = 0; i < 61; i++)
+            {
+                matrixSa[i, 1] = matrixSa[i, 2];
+            }
+        }
+
+        private void ChileanCalculation(ResponseSpectra responseSpectra)
         {
             double stepLgD = 0.1;
             for (int i = 0; i < 30; i++)
