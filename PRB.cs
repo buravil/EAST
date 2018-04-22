@@ -1003,7 +1003,7 @@ namespace East_CSharp
 
                 KMAG = Convert.ToInt32(rdomDT.Rows[position_rdom]["kmag"]);
                 PARFLN = Convert.ToString(rdomDT.Rows[position_rdom]["parfln"]);
-                FEVE = Convert.ToInt32(rlinDT.Rows[position_rdom]["FEVE"]);
+                FEVE = Convert.ToInt32(rdomDT.Rows[position_rdom]["Feve"]);
                 PARFLN_SA = Convert.ToString(rdomDT.Rows[position_rdom]["parfln_SA"]);
                 kszon = Convert.ToDouble(rdomDT.Rows[position_rdom]["kszon"]);// площадь домена в км2
                 SDEVA = Convert.ToDouble(rdomDT.Rows[position_rdom]["sdeva"]);
@@ -1524,7 +1524,7 @@ namespace East_CSharp
 
                 KMAG = Convert.ToInt64(rlinDT.Rows[li]["kmag"]);
                 PARFLN = Convert.ToString(rlinDT.Rows[li]["parfln"]);
-                FEVE = Convert.ToInt32(rlinDT.Rows[li]["FEVE"]);
+                FEVE = Convert.ToInt32(rlinDT.Rows[li]["Feve"]);
                 PARFLN_SA = Convert.ToString(rlinDT.Rows[li]["parfln_SA"]);
                 SDEVA = Convert.ToDouble(rlinDT.Rows[li]["sdeva"]);
                 SDEVM = Convert.ToDouble(rlinDT.Rows[li]["sdevm"]);
